@@ -115,58 +115,177 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       pulmonary: "Clear to auscultation bilaterally, no wheezes, rales, or rhonchi",
       musculoskeletal: "Antalgic gait favoring left lower extremity. Lumbar lordosis flattened. Paraspinal muscle spasm noted L3-S1 bilaterally, left greater than right.",
       neurological: "Alert and oriented x3. Cranial nerves II-XII grossly intact. Decreased sensation to light touch in L5 dermatome distribution on left.",
-      psychiatric: "Appropriate mood and affect. No evidence of cognitive impairment."
+      psychiatric: "Appropriate mood and affect. No evidence of cognitive impairment.",
+      // Complete neuromuscular strength data (all 5/5 normal)
+      neuromuscularStrength: {
+        rightUpperExtremity: 5,
+        leftUpperExtremity: 5,
+        rightLowerExtremity: 5,
+        leftLowerExtremity: 5,
+        rightGrip: 5,
+        leftGrip: 5
+      },
+      // Fine & gross manipulative skills data
+      fineGrossManipulativeSkills: {
+        buttoning: { left: 5, right: 5 },
+        zipping: { left: 5, right: 5 },
+        pickingupcoin: { left: 5, right: 5 },
+        tyingshoelaces: { left: 5, right: 5 }
+      },
+      // Reflexes data (all 2+ normal)
+      reflexes: {
+        biceps: { left: "2+", right: "2+" },
+        triceps: { left: "2+", right: "2+" },
+        knee: { left: "2+", right: "2+" },
+        achilles: { left: "2+", right: "2+" }
+      }
     },
     rangeOfMotion: {
+      // Complete cervical spine with normal ranges
       cervicalSpine: {
-        flexion: { active: 45, passive: 50 },
-        extension: { active: 40, passive: 45 },
-        lateralFlexionLeft: { active: 35, passive: 40 },
-        lateralFlexionRight: { active: 40, passive: 45 },
-        rotationLeft: { active: 60, passive: 65 },
-        rotationRight: { active: 65, passive: 70 }
+        flexion: { active: 60, passive: 60 },
+        extension: { active: 60, passive: 60 },
+        lateralFlexionLeft: { active: 45, passive: 45 },
+        lateralFlexionRight: { active: 45, passive: 45 },
+        rotationLeft: { active: 80, passive: 80 },
+        rotationRight: { active: 80, passive: 80 }
       },
+      // Lumbar spine with some limitation due to condition
       lumbarSpine: {
         flexion: { active: 35, passive: 40 },
         extension: { active: 15, passive: 20 },
         lateralFlexionLeft: { active: 10, passive: 15 },
         lateralFlexionRight: { active: 20, passive: 25 }
       },
+      // Complete bilateral joint measurements
       shoulders: {
         left: {
-          flexion: { active: 170, passive: 175 },
-          extension: { active: 45, passive: 50 },
-          abduction: { active: 165, passive: 170 },
-          adduction: { active: 40, passive: 45 },
-          internalRotation: { active: 70, passive: 75 },
-          externalRotation: { active: 85, passive: 90 }
+          flexion: { active: 180, passive: 180 },
+          extension: { active: 60, passive: 60 },
+          abduction: { active: 180, passive: 180 },
+          adduction: { active: 50, passive: 50 },
+          internalrotation: { active: 90, passive: 90 },
+          externalrotation: { active: 90, passive: 90 }
         },
         right: {
-          flexion: { active: 175, passive: 180 },
-          extension: { active: 50, passive: 55 },
-          abduction: { active: 170, passive: 175 },
-          adduction: { active: 45, passive: 50 },
-          internalRotation: { active: 75, passive: 80 },
-          externalRotation: { active: 90, passive: 95 }
+          flexion: { active: 180, passive: 180 },
+          extension: { active: 60, passive: 60 },
+          abduction: { active: 180, passive: 180 },
+          adduction: { active: 50, passive: 50 },
+          internalrotation: { active: 90, passive: 90 },
+          externalrotation: { active: 90, passive: 90 }
+        }
+      },
+      elbows: {
+        left: {
+          flexion: { active: 150, passive: 150 },
+          pronation: { active: 80, passive: 80 },
+          supination: { active: 80, passive: 80 }
+        },
+        right: {
+          flexion: { active: 150, passive: 150 },
+          pronation: { active: 80, passive: 80 },
+          supination: { active: 80, passive: 80 }
+        }
+      },
+      wrists: {
+        left: {
+          flexion: { active: 80, passive: 80 },
+          extension: { active: 70, passive: 70 },
+          ulnardeviation: { active: 30, passive: 30 },
+          radialdeviation: { active: 20, passive: 20 }
+        },
+        right: {
+          flexion: { active: 80, passive: 80 },
+          extension: { active: 70, passive: 70 },
+          ulnardeviation: { active: 30, passive: 30 },
+          radialdeviation: { active: 20, passive: 20 }
+        }
+      },
+      hips: {
+        left: {
+          flexion: { active: 120, passive: 120 },
+          extension: { active: 30, passive: 30 },
+          abduction: { active: 45, passive: 45 },
+          adduction: { active: 30, passive: 30 },
+          internalrotation: { active: 45, passive: 45 },
+          externalrotation: { active: 45, passive: 45 }
+        },
+        right: {
+          flexion: { active: 120, passive: 120 },
+          extension: { active: 30, passive: 30 },
+          abduction: { active: 45, passive: 45 },
+          adduction: { active: 30, passive: 30 },
+          internalrotation: { active: 45, passive: 45 },
+          externalrotation: { active: 45, passive: 45 }
+        }
+      },
+      knees: {
+        left: {
+          flexion: { active: 135, passive: 135 },
+          extension: { active: 0, passive: 0 }
+        },
+        right: {
+          flexion: { active: 135, passive: 135 },
+          extension: { active: 0, passive: 0 }
+        }
+      },
+      ankles: {
+        left: {
+          dorsiflexion: { active: 20, passive: 20 },
+          plantarflexion: { active: 50, passive: 50 },
+          inversion: { active: 35, passive: 35 },
+          eversion: { active: 15, passive: 15 }
+        },
+        right: {
+          dorsiflexion: { active: 20, passive: 20 },
+          plantarflexion: { active: 50, passive: 50 },
+          inversion: { active: 35, passive: 35 },
+          eversion: { active: 15, passive: 15 }
         }
       }
     },
     gaitStation: {
-      gait: "Antalgic gait pattern with decreased stance phase on left lower extremity. Slight forward flexed posture. Able to walk on heels and toes but with difficulty on left. Tandem gait shows mild imbalance.",
-      station: "Standing posture shows slight forward flexion of trunk. Able to stand on one foot for 5 seconds bilaterally. Romberg test negative. Balance generally intact but cautious movement pattern noted."
+      // Degrees of Difficulty in Performance
+      performance: {
+        examinationTable: "able to perform with no difficulty",
+        walkingOnHeels: "able to perform",
+        walkingOnToes: "able to perform",
+        squattingRising: "able to perform",
+        fingerToNose: "intact",
+        straightLegRaise: "Negative"
+      },
+      // Gait description
+      gait: {
+        description: "Normal gait and normal station"
+      },
+      // Assistive device information
+      assistiveDevice: {
+        type: "does not use any",
+        medicalConditions: "N/A",
+        necessity: "Patient ambulates independently without assistive devices. No current need for mobility aids."
+      },
+      // Patient cooperation
+      patientCooperation: true
     },
     assessment: {
-      primaryDiagnosis: "Lumbar disc herniation L4-L5 with left L5 radiculopathy",
-      secondaryDiagnosis: "Chronic pain syndrome, muscle spasm",
-      clinicalImpression: "45-year-old female with 2-year history of chronic low back pain and left lower extremity radiculopathy consistent with L4-L5 disc herniation. Physical examination reveals decreased lumbar range of motion, positive neurological findings in L5 distribution, and functional limitations in sitting, standing, and walking tolerance. The patient demonstrates significant impairment in work-related activities and some limitations in activities of daily living.",
-      functionalLimitations: "Sitting tolerance: 30-60 minutes, Standing tolerance: 15-45 minutes, Walking tolerance: 1-4 blocks, Lifting restrictions: avoid lifting >20 lbs, Prolonged static positioning contraindicated",
-      workRelatedLimitations: "Unable to perform prolonged sitting, standing, or walking required for previous warehouse supervisor position. Restrictions on lifting, bending, and repetitive trunk movements.",
-      recommendations: "Continue conservative management with NSAIDs, consider referral to pain management for epidural steroid injection evaluation, physical therapy for core strengthening and postural training, ergonomic assessment for future work activities",
-      medicalRecordsReview: "Medical records were reviewed and are consistent with the claimant's reported history and current clinical findings. MRI findings support the clinical diagnosis of L4-L5 disc herniation with neural foraminal narrowing.",
-      examinerName: "Dr. Sarah Johnson",
-      examinerCredentials: "MD, Physical Medicine & Rehabilitation",
-      examinerLicense: "FL12345678",
-      examDate: "08/12/2025"
+      diagnosisAssessment: [
+        "Chronic low back pain, lumbar region",
+        "Lumbar disc herniation L4-L5",
+        "Left L5 radiculopathy",
+        "Muscle spasm, lumbar region"
+      ],
+      medicalSourceStatement: {
+        abilities: "stand, walk, sit, lift, carry, push, pull, reach, handle, finger, and feel within normal limits. Claimant demonstrates good upper extremity strength and dexterity. Fine motor skills are intact bilaterally. Cognitive function appears normal with good understanding and memory.",
+        understandingMemoryConcentration: "Normal",
+        limitations: "Sitting tolerance limited to 30-60 minutes due to increased low back pain. Standing tolerance limited to 15-45 minutes before requiring position change. Walking tolerance limited to 1-4 blocks before onset of back and leg symptoms. Lifting should be limited to 20 pounds maximum. Prolonged static positioning not recommended. Frequent position changes required during work activities."
+      },
+      recommendations: "Continue current conservative management with NSAIDs as needed. Consider referral to pain management for evaluation of epidural steroid injection if symptoms persist. Physical therapy for core strengthening and postural training may be beneficial. Ergonomic assessment recommended for future work activities. Return to modified work duties may be appropriate with above-mentioned restrictions.",
+      examinerInfo: {
+        name: "Dr. FNAME LNAME",
+        clinic: "EZMEDTECH Health & Wellness Center",
+        date: "August 12, 2025"
+      }
     }
   });
 

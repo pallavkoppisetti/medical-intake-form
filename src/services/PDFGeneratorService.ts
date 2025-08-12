@@ -82,75 +82,120 @@ export class PDFGeneratorService {
   }
 
   /**
-   * Add CE Exam header with proper formatting
+   * Add CE Exam header with exact format matching requirements
    */
   private addCEHeader(_headerData: any): void {
+    // Add doctor/clinic information in top-right corner
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    const rightMargin = this.pageWidth - this.margin;
+    
+    // Line 1: Doctor information
+    const doctorLine1 = 'Dr. FNAME LNAME, MD, FACP. 1234, W SR 001, Suite 1004,';
+    const doctorLine1Width = this.doc.getTextWidth(doctorLine1);
+    this.doc.text(doctorLine1, rightMargin - doctorLine1Width, this.currentY);
+    this.currentY += 6;
+    
+    // Line 2: Board certification and address
+    const doctorLine2 = 'Diplomate of American Board of Internal Medicine. Atlanta, GA, 32750.';
+    const doctorLine2Width = this.doc.getTextWidth(doctorLine2);
+    this.doc.text(doctorLine2, rightMargin - doctorLine2Width, this.currentY);
+    this.currentY += 6;
+    
+    // Line 3: Clinic and phone
+    const doctorLine3 = 'EZMEDTECH HEALTH & WELLNESS CENTER. Phone: 888-999-0000';
+    const doctorLine3Width = this.doc.getTextWidth(doctorLine3);
+    this.doc.text(doctorLine3, rightMargin - doctorLine3Width, this.currentY);
+    this.currentY += 15;
+    
+    // Reset position for centered title
+    this.currentY = Math.max(this.currentY, 35); // Ensure enough space below header info
+    
+    // Centered title - larger and bold
     this.doc.setFontSize(14);
     this.doc.setFont('helvetica', 'bold');
     
-    // Centered title
     const title = 'TO: FLORIDA DIVISION OF DISABILITY DETERMINATION';
     const titleWidth = this.doc.getTextWidth(title);
     this.doc.text(title, (this.pageWidth - titleWidth) / 2, this.currentY);
-    this.currentY += 12;
+    this.currentY += 15;
     
     // Add horizontal line separator
+    this.doc.setLineWidth(0.5);
     this.doc.line(this.margin, this.currentY, this.pageWidth - this.margin, this.currentY);
-    this.currentY += 15;
+    this.currentY += 10;
   }
 
   /**
-   * Add claimant info box
+   * Add claimant info box with exact CE Exam format
    */
   private addClaimantInfoBox(data: any): void {
     if (!data) return;
     
-    this.doc.setFontSize(12);
-    this.doc.setFont('helvetica', 'bold');
-    
-    // Create box for claimant info
-    const boxHeight = 25;
+    // Create box for claimant info with proper spacing
+    const boxHeight = 35;
     const boxY = this.currentY;
     
+    this.doc.setLineWidth(0.5);
     this.doc.rect(this.margin, boxY, this.pageWidth - (this.margin * 2), boxHeight);
     
-    // Add claimant info in format: NAME | DOB | DATE/TIME | CASE NUMBER
-    const claimantName = data.claimantName || '';
-    const dob = data.dateOfBirth || '';
-    const examDate = data.examDate || '';
-    const caseNumber = data.caseNumber || '';
-    
-    const infoLine = `NAME: ${claimantName} | DOB: ${dob} | DATE/TIME: ${examDate} | CASE NUMBER: ${caseNumber}`;
-    
-    // Calculate text position to center vertically in box
-    const textY = boxY + (boxHeight / 2) + 2;
-    
-    this.doc.setFontSize(10);
+    // Set font for labels and content
+    this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'normal');
     
-    // Split text if too long to fit in box
-    const splitText = this.doc.splitTextToSize(infoLine, this.pageWidth - (this.margin * 2) - 4);
-    this.doc.text(splitText, this.margin + 2, textY);
+    // Position for first line of fields
+    let fieldY = boxY + 8;
+    const leftColumn = this.margin + 5;
+    const rightColumn = this.pageWidth / 2 + 10;
+    
+    // First line: CLAIMANT'S NAME and DOB
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('CLAIMANT\'S NAME:', leftColumn, fieldY);
+    this.doc.setFont('helvetica', 'normal');
+    const claimantName = data.claimantName || '___________________________';
+    this.doc.text(claimantName, leftColumn + 45, fieldY);
+    
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('DOB:', rightColumn, fieldY);
+    this.doc.setFont('helvetica', 'normal');
+    const dob = data.dateOfBirth || '______________';
+    this.doc.text(dob, rightColumn + 15, fieldY);
+    
+    // Second line: DATE/TIME and CASE NUMBER
+    fieldY += 12;
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('DATE/TIME:', leftColumn, fieldY);
+    this.doc.setFont('helvetica', 'normal');
+    const examDate = data.examDate || '____________________';
+    this.doc.text(examDate, leftColumn + 30, fieldY);
+    
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('CASE NUMBER:', rightColumn, fieldY);
+    this.doc.setFont('helvetica', 'normal');
+    const caseNumber = data.caseNumber || '____________________';
+    this.doc.text(caseNumber, rightColumn + 35, fieldY);
     
     this.currentY += boxHeight + 15;
   }
 
   /**
-   * Add CE Exam disclaimer text
+   * Add CE Exam disclaimer text with exact format
    */
   private addDisclaimer(): void {
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'normal');
     
-    const disclaimer = 'This examination is being performed at the request of the Florida Division of Disability ' +
-      'Determination for disability evaluation purposes only. The examination findings contained herein are ' +
-      'based solely on the examination performed on the date indicated and do not constitute a comprehensive ' +
+    const disclaimer = 'This examination was performed for the sole purpose of providing information to the State of Florida Department of Health ' +
+      'regarding the claimant\'s application for Social Security Disability benefits. The examination findings contained herein are ' +
+      'based solely on the examination performed on the date indicated above and do not constitute a comprehensive ' +
       'medical evaluation. This report is not intended to be used for treatment purposes or to establish ' +
-      'a physician-patient relationship.';
+      'a physician-patient relationship. The examiner has no prior knowledge of the claimant\'s medical history ' +
+      'other than information provided in the referral documentation.';
     
     const splitDisclaimer = this.doc.splitTextToSize(disclaimer, this.pageWidth - (this.margin * 2));
     this.doc.text(splitDisclaimer, this.margin, this.currentY);
-    this.currentY += splitDisclaimer.length * this.lineHeight + 15;
+    this.currentY += splitDisclaimer.length * this.lineHeight + 20;
   }
 
   /**
@@ -413,188 +458,251 @@ export class PDFGeneratorService {
   /**
    * Add CE formatted table with headers and rows
    */
-  private addCETable(headers: string[], rows: string[][]): void {
-    const columnWidth = (this.pageWidth - (this.margin * 2)) / headers.length;
-    const rowHeight = 8;
-    
-    this.checkPageBreak((rows.length + 2) * rowHeight);
-    
-    // Table headers with bold formatting
-    this.doc.setFontSize(10);
-    this.doc.setFont('helvetica', 'bold');
-    
-    headers.forEach((header, index) => {
-      const x = this.margin + (index * columnWidth);
-      this.doc.text(header, x + 2, this.currentY + 5);
-      this.doc.rect(x, this.currentY, columnWidth, rowHeight);
-    });
-    
-    this.currentY += rowHeight;
-    
-    // Table rows with normal formatting
-    this.doc.setFont('helvetica', 'normal');
-    rows.forEach(row => {
-      row.forEach((cell, index) => {
-        const x = this.margin + (index * columnWidth);
-        const cellText = this.doc.splitTextToSize(cell || '', columnWidth - 4);
-        this.doc.text(cellText, x + 2, this.currentY + 5);
-        this.doc.rect(x, this.currentY, columnWidth, rowHeight);
-      });
-      this.currentY += rowHeight;
-    });
-    
-    this.currentY += 10;
-  }
-
   /**
-   * Add range of motion section with CE table format
+   * Add range of motion section with exact CE Exam table format
    */
   private addRangeOfMotionSection(data: any): void {
     this.addCESection('Range of Motion');
     
-    if (data.effortOnExam) {
-      this.addSubsection('Effort on Examination', data.effortOnExam);
+    // CERVICAL SPINE table
+    if (data?.cervicalSpine) {
+      this.addCervicalSpineTable(data.cervicalSpine);
     }
     
-    if (data.cervicalSpine) {
-      this.addROMTable('CERVICAL SPINE', data.cervicalSpine, [
-        { key: 'forwardFlexion', label: 'Forward Flexion', normal: '0-60°' },
-        { key: 'extension', label: 'Extension', normal: '0-60°' },
-        { key: 'lateralFlexionRight', label: 'Lateral Flexion R', normal: '0-45°' },
-        { key: 'lateralFlexionLeft', label: 'Lateral Flexion L', normal: '0-45°' },
-        { key: 'rotationRight', label: 'Rotation R', normal: '0-80°' },
-        { key: 'rotationLeft', label: 'Rotation L', normal: '0-80°' }
+    // LUMBAR SPINE table
+    if (data?.lumbarSpine) {
+      this.addLumbarSpineTable(data.lumbarSpine);
+    }
+    
+    // SHOULDER table (bilateral)
+    if (data?.shoulders) {
+      this.addBilateralJointTable('SHOULDER', data.shoulders, [
+        'Flexion',
+        'Extension', 
+        'Abduction',
+        'Adduction',
+        'Internal Rotation',
+        'External Rotation'
       ]);
     }
     
-    if (data.lumbarSpine) {
-      this.addROMTable('LUMBAR SPINE', data.lumbarSpine, [
-        { key: 'forwardFlexion', label: 'Forward Flexion', normal: '0-90°' },
-        { key: 'extension', label: 'Extension', normal: '0-25°' },
-        { key: 'lateralFlexionRight', label: 'Lateral Flexion R', normal: '0-25°' },
-        { key: 'lateralFlexionLeft', label: 'Lateral Flexion L', normal: '0-25°' }
+    // ELBOW table (bilateral)
+    if (data?.elbows) {
+      this.addBilateralJointTable('ELBOW', data.elbows, [
+        'Flexion',
+        'Pronation',
+        'Supination'
       ]);
     }
     
-    if (data.shoulders) {
-      this.addBilateralROMTable('SHOULDERS', data.shoulders, [
-        { key: 'flexion', label: 'Flexion', normal: '0-180°' },
-        { key: 'extension', label: 'Extension', normal: '0-60°' },
-        { key: 'abduction', label: 'Abduction', normal: '0-180°' },
-        { key: 'adduction', label: 'Adduction', normal: '0-50°' },
-        { key: 'internalRotation', label: 'Internal Rotation', normal: '0-90°' },
-        { key: 'externalRotation', label: 'External Rotation', normal: '0-90°' }
+    // WRIST table (bilateral)
+    if (data?.wrists) {
+      this.addBilateralJointTable('WRIST', data.wrists, [
+        'Flexion',
+        'Extension',
+        'Ulnar Deviation',
+        'Radial Deviation'
       ]);
     }
     
-    if (data.elbows) {
-      this.addBilateralROMTable('ELBOWS', data.elbows, [
-        { key: 'flexion', label: 'Flexion', normal: '0-150°' },
-        { key: 'pronation', label: 'Pronation', normal: '0-80°' },
-        { key: 'supination', label: 'Supination', normal: '0-80°' }
+    // HIP table (bilateral)
+    if (data?.hips) {
+      this.addBilateralJointTable('HIP', data.hips, [
+        'Flexion',
+        'Extension',
+        'Abduction',
+        'Adduction',
+        'Internal Rotation',
+        'External Rotation'
       ]);
     }
     
-    if (data.wrists) {
-      this.addBilateralROMTable('WRISTS', data.wrists, [
-        { key: 'flexion', label: 'Flexion', normal: '0-80°' },
-        { key: 'extension', label: 'Extension', normal: '0-70°' },
-        { key: 'ulnarDeviation', label: 'Ulnar Deviation', normal: '0-30°' },
-        { key: 'radialDeviation', label: 'Radial Deviation', normal: '0-20°' }
+    // KNEE table (bilateral)
+    if (data?.knees) {
+      this.addBilateralJointTable('KNEE', data.knees, [
+        'Flexion',
+        'Extension'
       ]);
     }
     
-    if (data.hands) {
-      this.addBilateralROMTable('HANDS', data.hands, [
-        { key: 'fingerFlexion', label: 'Finger Flexion', normal: '0-90°' },
-        { key: 'thumbOpposition', label: 'Thumb Opposition', normal: '0-100°' }
+    // ANKLE table (bilateral)
+    if (data?.ankles) {
+      this.addBilateralJointTable('ANKLE', data.ankles, [
+        'Dorsiflexion',
+        'Plantarflexion',
+        'Inversion',
+        'Eversion'
       ]);
     }
     
-    if (data.hips) {
-      this.addBilateralROMTable('HIPS', data.hips, [
-        { key: 'flexion', label: 'Flexion', normal: '0-120°' },
-        { key: 'extension', label: 'Extension', normal: '0-30°' },
-        { key: 'abduction', label: 'Abduction', normal: '0-45°' },
-        { key: 'adduction', label: 'Adduction', normal: '0-30°' },
-        { key: 'internalRotation', label: 'Internal Rotation', normal: '0-45°' },
-        { key: 'externalRotation', label: 'External Rotation', normal: '0-45°' }
-      ]);
-    }
-    
-    if (data.knees) {
-      this.addBilateralROMTable('KNEES', data.knees, [
-        { key: 'flexion', label: 'Flexion', normal: '0-135°' },
-        { key: 'extension', label: 'Extension', normal: '0°' }
-      ]);
-    }
-    
-    if (data.ankles) {
-      this.addBilateralROMTable('ANKLES', data.ankles, [
-        { key: 'dorsiflexion', label: 'Dorsiflexion', normal: '0-20°' },
-        { key: 'plantarflexion', label: 'Plantarflexion', normal: '0-50°' },
-        { key: 'inversion', label: 'Inversion', normal: '0-35°' },
-        { key: 'eversion', label: 'Eversion', normal: '0-15°' }
-      ]);
-    }
+    // Add EFFORT ON EXAM at the end
+    this.currentY += 10;
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text('EFFORT ON EXAM: GOOD _X_ FAIR ___ POOR ___', this.margin, this.currentY);
+    this.currentY += 15;
   }
 
   /**
-   * Add ROM table for single joints (like spine)
+   * Add CERVICAL SPINE table with exact CE format
    */
-  private addROMTable(title: string, data: any, movements: Array<{key: string, label: string, normal: string}>): void {
+  private addCervicalSpineTable(data: any): void {
+    this.checkPageBreak(60);
+    
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${title}:`, this.margin, this.currentY);
+    this.doc.text('CERVICAL SPINE', this.margin, this.currentY);
     this.currentY += 10;
     
-    const headers = ['Movement', 'Measured ROM', 'Normal Range'];
-    const rows: string[][] = [];
+    // Table dimensions
+    const tableY = this.currentY;
+    const tableWidth = this.pageWidth - (this.margin * 2);
+    const colWidth = tableWidth / 2;
+    const rowHeight = 12;
     
-    movements.forEach(movement => {
-      if (data[movement.key] !== undefined) {
-        rows.push([
-          movement.label,
-          `${data[movement.key]}°`,
-          movement.normal
-        ]);
-      }
-    });
+    // Table border
+    this.doc.setLineWidth(0.5);
+    this.doc.rect(this.margin, tableY, tableWidth, rowHeight * 4);
     
-    if (rows.length > 0) {
-      this.addCETable(headers, rows);
+    // Vertical line to separate columns
+    this.doc.line(this.margin + colWidth, tableY, this.margin + colWidth, tableY + (rowHeight * 4));
+    
+    // Horizontal lines for rows
+    for (let i = 1; i < 4; i++) {
+      this.doc.line(this.margin, tableY + (rowHeight * i), this.margin + tableWidth, tableY + (rowHeight * i));
     }
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Row 1: Forward Flexion
+    const flexion = data?.flexion?.active || data?.forwardFlexion || '';
+    this.doc.text('Forward Flexion (0-60):', this.margin + 2, tableY + 8);
+    this.doc.text(`${flexion}`, this.margin + colWidth + 2, tableY + 8);
+    
+    // Row 2: Extension
+    const extension = data?.extension?.active || '';
+    this.doc.text('Extension (0-60):', this.margin + 2, tableY + rowHeight + 8);
+    this.doc.text(`${extension}`, this.margin + colWidth + 2, tableY + rowHeight + 8);
+    
+    // Row 3: Lateral Flexion
+    const latFlexR = data?.lateralFlexionRight?.active || data?.rightLateralFlexion || '';
+    const latFlexL = data?.lateralFlexionLeft?.active || data?.leftLateralFlexion || '';
+    this.doc.text('Lateral Flexion (0-45):', this.margin + 2, tableY + (rowHeight * 2) + 8);
+    this.doc.text(`R=${latFlexR} L=${latFlexL}`, this.margin + colWidth + 2, tableY + (rowHeight * 2) + 8);
+    
+    // Row 4: Rotation
+    const rotR = data?.rotationRight?.active || data?.rightRotation || '';
+    const rotL = data?.rotationLeft?.active || data?.leftRotation || '';
+    this.doc.text('Rotation (0-80):', this.margin + 2, tableY + (rowHeight * 3) + 8);
+    this.doc.text(`R=${rotR} L=${rotL}`, this.margin + colWidth + 2, tableY + (rowHeight * 3) + 8);
+    
+    this.currentY = tableY + (rowHeight * 4) + 15;
   }
 
   /**
-   * Add ROM table for bilateral joints
+   * Add LUMBAR SPINE table with exact CE format
    */
-  private addBilateralROMTable(title: string, data: any, movements: Array<{key: string, label: string, normal: string}>): void {
+  private addLumbarSpineTable(data: any): void {
+    this.checkPageBreak(50);
+    
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text(`${title}:`, this.margin, this.currentY);
+    this.doc.text('LUMBAR SPINE', this.margin, this.currentY);
     this.currentY += 10;
     
-    const headers = ['Movement', 'Right', 'Left', 'Normal Range'];
-    const rows: string[][] = [];
+    // Table dimensions
+    const tableY = this.currentY;
+    const tableWidth = this.pageWidth - (this.margin * 2);
+    const colWidth = tableWidth / 2;
+    const rowHeight = 12;
     
-    movements.forEach(movement => {
-      const leftValue = data.left?.[movement.key];
-      const rightValue = data.right?.[movement.key];
+    // Table border
+    this.doc.setLineWidth(0.5);
+    this.doc.rect(this.margin, tableY, tableWidth, rowHeight * 3);
+    
+    // Vertical line to separate columns
+    this.doc.line(this.margin + colWidth, tableY, this.margin + colWidth, tableY + (rowHeight * 3));
+    
+    // Horizontal lines for rows
+    for (let i = 1; i < 3; i++) {
+      this.doc.line(this.margin, tableY + (rowHeight * i), this.margin + tableWidth, tableY + (rowHeight * i));
+    }
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Row 1: Forward Flexion
+    const flexion = data?.flexion?.active || data?.forwardFlexion || '';
+    this.doc.text('Forward Flexion (0-90):', this.margin + 2, tableY + 8);
+    this.doc.text(`${flexion}`, this.margin + colWidth + 2, tableY + 8);
+    
+    // Row 2: Extension
+    const extension = data?.extension?.active || '';
+    this.doc.text('Extension (0-25):', this.margin + 2, tableY + rowHeight + 8);
+    this.doc.text(`${extension}`, this.margin + colWidth + 2, tableY + rowHeight + 8);
+    
+    // Row 3: Lateral Flexion
+    const latFlexR = data?.lateralFlexionRight?.active || data?.rightLateralFlexion || '';
+    const latFlexL = data?.lateralFlexionLeft?.active || data?.leftLateralFlexion || '';
+    this.doc.text('Lateral Flexion (0-25):', this.margin + 2, tableY + (rowHeight * 2) + 8);
+    this.doc.text(`R=${latFlexR} L=${latFlexL}`, this.margin + colWidth + 2, tableY + (rowHeight * 2) + 8);
+    
+    this.currentY = tableY + (rowHeight * 3) + 15;
+  }
+
+  /**
+   * Add bilateral joint table with exact CE format (Movement | R=[value] | L=[value])
+   */
+  private addBilateralJointTable(jointName: string, data: any, movements: string[]): void {
+    this.checkPageBreak(20 + (movements.length * 12));
+    
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text(jointName, this.margin, this.currentY);
+    this.currentY += 10;
+    
+    // Table dimensions
+    const tableY = this.currentY;
+    const tableWidth = this.pageWidth - (this.margin * 2);
+    const col1Width = tableWidth * 0.5; // Movement column
+    const col2Width = tableWidth * 0.25; // Right column
+    const rowHeight = 12;
+    
+    // Table border
+    this.doc.setLineWidth(0.5);
+    this.doc.rect(this.margin, tableY, tableWidth, rowHeight * movements.length);
+    
+    // Vertical lines for columns
+    this.doc.line(this.margin + col1Width, tableY, this.margin + col1Width, tableY + (rowHeight * movements.length));
+    this.doc.line(this.margin + col1Width + col2Width, tableY, this.margin + col1Width + col2Width, tableY + (rowHeight * movements.length));
+    
+    // Horizontal lines for rows
+    for (let i = 1; i < movements.length; i++) {
+      this.doc.line(this.margin, tableY + (rowHeight * i), this.margin + tableWidth, tableY + (rowHeight * i));
+    }
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Add movement data
+    movements.forEach((movement, index) => {
+      const rowY = tableY + (rowHeight * index) + 8;
+      const movementKey = movement.toLowerCase().replace(/\s+/g, '');
       
-      if (leftValue !== undefined || rightValue !== undefined) {
-        rows.push([
-          movement.label,
-          rightValue !== undefined ? `${rightValue}°` : 'N/A',
-          leftValue !== undefined ? `${leftValue}°` : 'N/A',
-          movement.normal
-        ]);
-      }
+      // Movement name
+      this.doc.text(movement, this.margin + 2, rowY);
+      
+      // Right value
+      const rightValue = data?.right?.[movementKey]?.active || data?.right?.[movementKey] || '';
+      this.doc.text(`R=${rightValue}`, this.margin + col1Width + 2, rowY);
+      
+      // Left value
+      const leftValue = data?.left?.[movementKey]?.active || data?.left?.[movementKey] || '';
+      this.doc.text(`L=${leftValue}`, this.margin + col1Width + col2Width + 2, rowY);
     });
     
-    if (rows.length > 0) {
-      this.addCETable(headers, rows);
-    }
+    this.currentY = tableY + (rowHeight * movements.length) + 15;
   }
 
   /**
@@ -603,20 +711,87 @@ export class PDFGeneratorService {
   private addGaitStationSection(data: any): void {
     this.addCESection('Gait and Station');
     
-    if (data.gait) {
-      this.addSubsection('Gait', 
-        `Pattern: ${data.gait.pattern || 'Not documented'}\n` +
-        `Speed: ${data.gait.speed || 'Not documented'}\n` +
-        `Assistive Device: ${data.gait.assistiveDevice || 'None'}`
-      );
+    // Degrees of Difficulty in Performance section
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('Degrees of Difficulty in Performance:', this.margin, this.currentY);
+    this.currentY += 12;
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    const performanceItems = [
+      {
+        text: 'Getting on and off examination table:',
+        value: data?.performance?.examinationTable || 'able to perform with no difficulty'
+      },
+      {
+        text: 'Walking on Heels:',
+        value: data?.performance?.walkingOnHeels || 'able to perform'
+      },
+      {
+        text: 'Walking on Toes:',
+        value: data?.performance?.walkingOnToes || 'able to perform'
+      },
+      {
+        text: 'Squatting and rising:',
+        value: data?.performance?.squattingRising || 'able to perform'
+      },
+      {
+        text: 'Finger to Nose:',
+        value: data?.performance?.fingerToNose || 'intact'
+      },
+      {
+        text: 'Straight leg raise test:',
+        value: data?.performance?.straightLegRaise || 'Negative'
+      }
+    ];
+    
+    performanceItems.forEach(item => {
+      this.checkPageBreak(this.lineHeight);
+      this.doc.text(`${item.text} ${item.value}.`, this.margin, this.currentY);
+      this.currentY += this.lineHeight + 2;
+    });
+    
+    this.currentY += 10;
+    
+    // ASSISTIVE DEVICE section
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('ASSISTIVE DEVICE:', this.margin, this.currentY);
+    this.currentY += 12;
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Gait and Station description
+    const gaitDescription = data?.gait?.description || 'Normal gait and normal station';
+    this.doc.text(`Gait and Station: ${gaitDescription}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
+    
+    // Assistive device type
+    const deviceType = data?.assistiveDevice?.type || 'does not use any';
+    this.doc.text(`What type of assistive device is used: ${deviceType}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
+    
+    // Medical conditions
+    const medicalConditions = data?.assistiveDevice?.medicalConditions || 'N/A';
+    this.doc.text(`Medical conditions used for: ${medicalConditions}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
+    
+    // Necessity questions
+    if (data?.assistiveDevice?.necessity) {
+      this.doc.text('Questions about necessity and circumstances:', this.margin, this.currentY);
+      this.currentY += this.lineHeight + 2;
+      this.doc.text(`${data.assistiveDevice.necessity}`, this.margin + 10, this.currentY);
+      this.currentY += this.lineHeight + 4;
     }
     
-    if (data.station) {
-      this.addSubsection('Station', 
-        `Description: ${data.station.description || 'Not documented'}\n` +
-        `Balance: ${data.station.balance || 'Not documented'}`
-      );
-    }
+    // Patient cooperation
+    const cooperation = data?.patientCooperation !== undefined ? 
+      (data.patientCooperation ? 'Yes' : 'No') : 'Yes';
+    this.doc.text(`Was patient fully cooperative: ${cooperation}.`, this.margin, this.currentY);
+    this.currentY += 15;
   }
 
   /**
@@ -625,105 +800,135 @@ export class PDFGeneratorService {
   private addAssessmentSection(data: any): void {
     this.addCESection('Assessment');
     
-    if (data.diagnosisAssessment) {
-      this.addSubsection('Diagnosis/Assessment', data.diagnosisAssessment);
-    }
-    
-    if (data.medicalSourceStatement) {
-      this.doc.setFontSize(11);
-      this.doc.setFont('helvetica', 'bold');
-      this.doc.text('MEDICAL SOURCE STATEMENT', this.margin, this.currentY);
-      this.currentY += 12;
-      
-      if (data.medicalSourceStatement.abilities) {
-        // Add underlined ABILITIES header
-        this.doc.setFont('helvetica', 'bold');
-        const abilitiesText = 'ABILITIES:';
-        this.doc.text(abilitiesText, this.margin, this.currentY);
-        const abilitiesWidth = this.doc.getTextWidth(abilitiesText);
-        this.doc.line(this.margin, this.currentY + 1, this.margin + abilitiesWidth, this.currentY + 1);
-        this.currentY += 10;
-        
-        this.doc.setFont('helvetica', 'normal');
-        const splitAbilities = this.doc.splitTextToSize(data.medicalSourceStatement.abilities, this.pageWidth - (this.margin * 2));
-        this.checkPageBreak(splitAbilities.length * this.lineHeight);
-        this.doc.text(splitAbilities, this.margin, this.currentY);
-        this.currentY += splitAbilities.length * this.lineHeight + 8;
-      }
-      
-      if (data.medicalSourceStatement.understandingMemoryConcentration) {
-        this.addSubsection('Understanding, Memory, and Concentration', data.medicalSourceStatement.understandingMemoryConcentration);
-      }
-      
-      if (data.medicalSourceStatement.limitations) {
-        // Add underlined LIMITATIONS header
-        this.doc.setFont('helvetica', 'bold');
-        const limitationsText = 'LIMITATIONS:';
-        this.doc.text(limitationsText, this.margin, this.currentY);
-        const limitationsWidth = this.doc.getTextWidth(limitationsText);
-        this.doc.line(this.margin, this.currentY + 1, this.margin + limitationsWidth, this.currentY + 1);
-        this.currentY += 10;
-        
-        this.doc.setFont('helvetica', 'normal');
-        const splitLimitations = this.doc.splitTextToSize(data.medicalSourceStatement.limitations, this.pageWidth - (this.margin * 2));
-        this.checkPageBreak(splitLimitations.length * this.lineHeight);
-        this.doc.text(splitLimitations, this.margin, this.currentY);
-        this.currentY += splitLimitations.length * this.lineHeight + 8;
-      }
-    }
-    
-    if (data.recommendations) {
-      this.addSubsection('Recommendations', data.recommendations);
-    }
-    
-    if (data.imagingReviewed) {
-      this.addSubsection('Imaging Reviewed', data.imagingReviewed);
-    }
-    
-    if (data.medicalRecordsReviewStatement) {
-      this.addSubsection('Statement Re Review of Medical Records', data.medicalRecordsReviewStatement);
-    }
-    
-    if (data.examinerInfo) {
-      this.addExaminerInfo(data.examinerInfo);
-    }
-  }
-
-  /**
-   * Add examiner information with signature line
-   */
-  private addExaminerInfo(examinerInfo: any): void {
-    this.checkPageBreak(50);
-    
+    // 1. DIAGNOSIS/ASSESSMENT with bullet points
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('EXAMINER INFORMATION:', this.margin, this.currentY);
+    this.doc.text('DIAGNOSIS/ASSESSMENT:', this.margin, this.currentY);
+    this.currentY += 12;
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    if (data?.diagnosisAssessment) {
+      // Convert to bullet points if not already formatted
+      const diagnoses = Array.isArray(data.diagnosisAssessment) 
+        ? data.diagnosisAssessment 
+        : data.diagnosisAssessment.split('\n').filter((line: string) => line.trim());
+      
+      diagnoses.forEach((diagnosis: string) => {
+        this.checkPageBreak(this.lineHeight);
+        const bulletText = diagnosis.trim().startsWith('•') ? diagnosis.trim() : `• ${diagnosis.trim()}`;
+        this.doc.text(bulletText, this.margin, this.currentY);
+        this.currentY += this.lineHeight + 2;
+      });
+    } else {
+      this.doc.text('• To be determined based on examination findings', this.margin, this.currentY);
+      this.currentY += this.lineHeight + 2;
+    }
+    
+    this.currentY += 10;
+    
+    // 2. MEDICAL SOURCE STATEMENT (underlined)
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'bold');
+    const medicalSourceText = 'MEDICAL SOURCE STATEMENT';
+    this.doc.text(medicalSourceText, this.margin, this.currentY);
+    const medicalSourceWidth = this.doc.getTextWidth(medicalSourceText);
+    this.doc.line(this.margin, this.currentY + 1, this.margin + medicalSourceWidth, this.currentY + 1);
+    this.currentY += 8;
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text('(functional abilities and specific restrictions):', this.margin, this.currentY);
+    this.currentY += 15;
+    
+    // Abilities section
+    this.doc.setFont('helvetica', 'bold');
+    const abilitiesText = 'Abilities:';
+    this.doc.text(abilitiesText, this.margin, this.currentY);
+    const abilitiesWidth = this.doc.getTextWidth(abilitiesText);
+    this.doc.line(this.margin, this.currentY + 1, this.margin + abilitiesWidth, this.currentY + 1);
     this.currentY += 12;
     
     this.doc.setFont('helvetica', 'normal');
+    const abilitiesIntro = 'Based on the physical examination conducted today, the clinical findings are as follows:';
+    this.doc.text(abilitiesIntro, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
     
-    if (examinerInfo.name) {
-      this.doc.text(`Examiner: ${examinerInfo.name}`, this.margin, this.currentY);
-      this.currentY += this.lineHeight + 2;
-    }
+    const claimantAbilities = data?.medicalSourceStatement?.abilities || 
+      'Claimant is able to stand, walk, sit, lift, carry, push, pull, reach, handle, finger, and feel within normal limits.';
+    const splitAbilities = this.doc.splitTextToSize(`Claimant is able to ${claimantAbilities}`, this.pageWidth - (this.margin * 2));
+    this.checkPageBreak(splitAbilities.length * this.lineHeight);
+    this.doc.text(splitAbilities, this.margin, this.currentY);
+    this.currentY += splitAbilities.length * this.lineHeight + 8;
     
-    if (examinerInfo.facility) {
-      this.doc.text(`Facility: ${examinerInfo.facility}`, this.margin, this.currentY);
-      this.currentY += this.lineHeight + 2;
-    }
+    // Understanding, memory, sustained concentration (italic)
+    this.doc.setFont('helvetica', 'italic');
+    const mentalStatus = data?.medicalSourceStatement?.understandingMemoryConcentration || 'Normal';
+    this.doc.text(`Understanding, memory, sustained concentration: ${mentalStatus}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 8;
     
-    if (examinerInfo.date) {
-      this.doc.text(`Date: ${examinerInfo.date}`, this.margin, this.currentY);
-      this.currentY += this.lineHeight + 8;
-    }
+    // Limitations section
+    this.doc.setFont('helvetica', 'bold');
+    const limitationsText = 'Limitations:';
+    this.doc.text(limitationsText, this.margin, this.currentY);
+    const limitationsWidth = this.doc.getTextWidth(limitationsText);
+    this.doc.line(this.margin, this.currentY + 1, this.margin + limitationsWidth, this.currentY + 1);
+    this.currentY += 12;
     
-    // Add signature line
-    this.currentY += 15;
-    this.doc.line(this.margin, this.currentY, this.margin + 150, this.currentY);
-    this.currentY += 8;
+    this.doc.setFont('helvetica', 'normal');
+    const limitations = data?.medicalSourceStatement?.limitations || 'No significant limitations noted based on today\'s examination.';
+    const splitLimitations = this.doc.splitTextToSize(limitations, this.pageWidth - (this.margin * 2));
+    this.checkPageBreak(splitLimitations.length * this.lineHeight);
+    this.doc.text(splitLimitations, this.margin, this.currentY);
+    this.currentY += splitLimitations.length * this.lineHeight + 15;
+    
+    // 3. RECOMMENDATIONS
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('RECOMMENDATIONS:', this.margin, this.currentY);
+    this.currentY += 12;
+    
     this.doc.setFontSize(10);
-    this.doc.text('Examiner Signature', this.margin, this.currentY);
-    this.currentY += 15;
+    this.doc.setFont('helvetica', 'normal');
+    const recommendations = data?.recommendations || 
+      'Continue current treatment plan. Follow up with primary care physician as needed. Return to work/activities as tolerated.';
+    const splitRecommendations = this.doc.splitTextToSize(recommendations, this.pageWidth - (this.margin * 2));
+    this.checkPageBreak(splitRecommendations.length * this.lineHeight);
+    this.doc.text(splitRecommendations, this.margin, this.currentY);
+    this.currentY += splitRecommendations.length * this.lineHeight + 20;
+    
+    // 4. Examiner info and date at bottom
+    this.addExaminerSignature(data?.examinerInfo);
+  }
+
+  /**
+   * Add examiner signature block at bottom of assessment
+   */
+  private addExaminerSignature(examinerInfo: any): void {
+    this.checkPageBreak(40);
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    
+    // Examiner name
+    const examinerName = examinerInfo?.name || 'Dr. FNAME LNAME';
+    this.doc.text(`Examiner: ${examinerName}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
+    
+    // Clinic name
+    const clinicName = examinerInfo?.clinic || 'EZMEDTECH Health & Wellness Center';
+    this.doc.text(`${clinicName}.`, this.margin, this.currentY);
+    this.currentY += this.lineHeight + 4;
+    
+    // Date
+    const examDate = examinerInfo?.date || new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long', 
+      day: 'numeric'
+    });
+    this.doc.text(`Date: ${examDate}.`, this.margin, this.currentY);
+    this.currentY += 20;
   }
 
   /**
@@ -735,15 +940,26 @@ export class PDFGeneratorService {
     this.doc.text('NEUROMUSCULAR STRENGTH:', this.margin, this.currentY);
     this.currentY += 12;
     
+    // Add scale explanation
+    this.doc.setFontSize(9);
+    this.doc.setFont('helvetica', 'italic');
+    this.doc.text('Scale: 0 = No visible or palpable contraction, 1 = Visible or palpable contraction,', this.margin, this.currentY);
+    this.currentY += 8;
+    this.doc.text('2 = Active ROM, gravity eliminated, 3 = Active ROM against gravity,', this.margin, this.currentY);
+    this.currentY += 8;
+    this.doc.text('4 = Active ROM against gravity, some resistance, 5 = Active ROM against gravity, maximum resistance', this.margin, this.currentY);
+    this.currentY += 12;
+    
+    this.doc.setFontSize(10);
     this.doc.setFont('helvetica', 'normal');
     
     const strengthData = [
-      `Right Upper Extremity: ${data.rightUpperExtremity !== undefined ? data.rightUpperExtremity + '/5' : 'Not tested'}`,
-      `Left Upper Extremity: ${data.leftUpperExtremity !== undefined ? data.leftUpperExtremity + '/5' : 'Not tested'}`,
-      `Right Lower Extremity: ${data.rightLowerExtremity !== undefined ? data.rightLowerExtremity + '/5' : 'Not tested'}`,
-      `Left Lower Extremity: ${data.leftLowerExtremity !== undefined ? data.leftLowerExtremity + '/5' : 'Not tested'}`,
-      `Right Grip: ${data.rightGrip !== undefined ? data.rightGrip + '/5' : 'Not tested'}`,
-      `Left Grip: ${data.leftGrip !== undefined ? data.leftGrip + '/5' : 'Not tested'}`
+      `Right upper extremity: ${data.rightUpperExtremity !== undefined ? data.rightUpperExtremity + '/5' : '5/5'}`,
+      `Left upper extremity: ${data.leftUpperExtremity !== undefined ? data.leftUpperExtremity + '/5' : '5/5'}`,
+      `Right lower extremity: ${data.rightLowerExtremity !== undefined ? data.rightLowerExtremity + '/5' : '5/5'}`,
+      `Left lower extremity: ${data.leftLowerExtremity !== undefined ? data.leftLowerExtremity + '/5' : '5/5'}`,
+      `Right grip strength: ${data.rightGrip !== undefined ? data.rightGrip + '/5' : '5/5'}`,
+      `Left grip strength: ${data.leftGrip !== undefined ? data.leftGrip + '/5' : '5/5'}`
     ];
     
     strengthData.forEach(item => {
@@ -769,33 +985,63 @@ export class PDFGeneratorService {
     this.doc.text('FINE & GROSS MANIPULATIVE SKILLS:', this.margin, this.currentY);
     this.currentY += 12;
     
-    const skills = [
-      { name: 'Buttoning', data: data.buttoning },
-      { name: 'Zipping', data: data.zipping },
-      { name: 'Picking up a Coin', data: data.pickingUpCoin },
-      { name: 'Tying Shoelaces', data: data.tyingShoelaces }
-    ];
+    // Add descriptive text
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text('Claimant is able to pinch, grasp and manipulate small and large objects with both hands.', this.margin, this.currentY);
+    this.currentY += 15;
+    
+    // Create table for ratings
+    this.checkPageBreak(60);
+    
+    const tableY = this.currentY;
+    const tableWidth = this.pageWidth - (this.margin * 2);
+    const col1Width = tableWidth * 0.5; // Task column
+    const col2Width = tableWidth * 0.25; // Left column
+    const rowHeight = 12;
+    
+    const tasks = ['Buttoning', 'Zipping', 'Picking up coin', 'Tying shoelaces'];
+    
+    // Table border
+    this.doc.setLineWidth(0.5);
+    this.doc.rect(this.margin, tableY, tableWidth, rowHeight * (tasks.length + 1));
+    
+    // Header row
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('Task', this.margin + 2, tableY + 8);
+    this.doc.text('LEFT', this.margin + col1Width + 2, tableY + 8);
+    this.doc.text('RIGHT', this.margin + col1Width + col2Width + 2, tableY + 8);
+    
+    // Vertical lines for columns
+    this.doc.line(this.margin + col1Width, tableY, this.margin + col1Width, tableY + (rowHeight * (tasks.length + 1)));
+    this.doc.line(this.margin + col1Width + col2Width, tableY, this.margin + col1Width + col2Width, tableY + (rowHeight * (tasks.length + 1)));
+    
+    // Horizontal lines for rows
+    for (let i = 1; i <= tasks.length; i++) {
+      this.doc.line(this.margin, tableY + (rowHeight * i), this.margin + tableWidth, tableY + (rowHeight * i));
+    }
     
     this.doc.setFont('helvetica', 'normal');
     
-    skills.forEach(skill => {
-      if (skill.data) {
-        this.doc.setFont('helvetica', 'bold');
-        this.doc.text(`${skill.name}:`, this.margin, this.currentY);
-        this.currentY += this.lineHeight + 2;
-        
-        this.doc.setFont('helvetica', 'normal');
-        const leftScore = skill.data.left !== undefined ? skill.data.left + '/5' : 'Not tested';
-        const rightScore = skill.data.right !== undefined ? skill.data.right + '/5' : 'Not tested';
-        
-        this.doc.text(`  Left: ${leftScore}`, this.margin + 10, this.currentY);
-        this.currentY += this.lineHeight + 1;
-        this.doc.text(`  Right: ${rightScore}`, this.margin + 10, this.currentY);
-        this.currentY += this.lineHeight + 3;
-      }
+    // Add task data
+    tasks.forEach((task, index) => {
+      const rowY = tableY + (rowHeight * (index + 1)) + 8;
+      const taskKey = task.toLowerCase().replace(/\s+/g, '');
+      
+      // Task name
+      this.doc.text(task, this.margin + 2, rowY);
+      
+      // Left rating
+      const leftRating = data?.[taskKey]?.left !== undefined ? `${data[taskKey].left}/5` : 'N/A';
+      this.doc.text(leftRating, this.margin + col1Width + 2, rowY);
+      
+      // Right rating
+      const rightRating = data?.[taskKey]?.right !== undefined ? `${data[taskKey].right}/5` : 'N/A';
+      this.doc.text(rightRating, this.margin + col1Width + col2Width + 2, rowY);
     });
     
-    this.currentY += 5;
+    this.currentY = tableY + (rowHeight * (tasks.length + 1)) + 15;
   }
 
   /**
@@ -804,35 +1050,59 @@ export class PDFGeneratorService {
   private addReflexesSection(data: any): void {
     this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('DEEP TENDON REFLEXES:', this.margin, this.currentY);
+    this.doc.text('REFLEXES:', this.margin, this.currentY);
     this.currentY += 12;
     
-    const reflexes = [
-      { name: 'Biceps', data: data.biceps },
-      { name: 'Triceps', data: data.triceps },
-      { name: 'Knee (Patellar)', data: data.knee },
-      { name: 'Achilles', data: data.achilles }
-    ];
+    // Create table for reflexes
+    this.checkPageBreak(60);
+    
+    const tableY = this.currentY;
+    const tableWidth = this.pageWidth - (this.margin * 2);
+    const col1Width = tableWidth * 0.5; // Reflex name column
+    const col2Width = tableWidth * 0.25; // Right column
+    const rowHeight = 12;
+    
+    const reflexes = ['Biceps', 'Triceps', 'Knee', 'Achilles'];
+    
+    // Table border
+    this.doc.setLineWidth(0.5);
+    this.doc.rect(this.margin, tableY, tableWidth, rowHeight * (reflexes.length + 1));
+    
+    // Header row
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('', this.margin + 2, tableY + 8); // Blank header for reflex names
+    this.doc.text('Right', this.margin + col1Width + 2, tableY + 8);
+    this.doc.text('Left', this.margin + col1Width + col2Width + 2, tableY + 8);
+    
+    // Vertical lines for columns
+    this.doc.line(this.margin + col1Width, tableY, this.margin + col1Width, tableY + (rowHeight * (reflexes.length + 1)));
+    this.doc.line(this.margin + col1Width + col2Width, tableY, this.margin + col1Width + col2Width, tableY + (rowHeight * (reflexes.length + 1)));
+    
+    // Horizontal lines for rows
+    for (let i = 1; i <= reflexes.length; i++) {
+      this.doc.line(this.margin, tableY + (rowHeight * i), this.margin + tableWidth, tableY + (rowHeight * i));
+    }
     
     this.doc.setFont('helvetica', 'normal');
     
-    reflexes.forEach(reflex => {
-      if (reflex.data) {
-        this.doc.setFont('helvetica', 'bold');
-        this.doc.text(`${reflex.name}:`, this.margin, this.currentY);
-        this.currentY += this.lineHeight + 2;
-        
-        this.doc.setFont('helvetica', 'normal');
-        const leftReflex = reflex.data.left || 'Not tested';
-        const rightReflex = reflex.data.right || 'Not tested';
-        
-        this.doc.text(`  Left: ${leftReflex}`, this.margin + 10, this.currentY);
-        this.currentY += this.lineHeight + 1;
-        this.doc.text(`  Right: ${rightReflex}`, this.margin + 10, this.currentY);
-        this.currentY += this.lineHeight + 3;
-      }
+    // Add reflex data
+    reflexes.forEach((reflex, index) => {
+      const rowY = tableY + (rowHeight * (index + 1)) + 8;
+      const reflexKey = reflex.toLowerCase();
+      
+      // Reflex name
+      this.doc.text(reflex, this.margin + 2, rowY);
+      
+      // Right reflex
+      const rightReflex = data?.[reflexKey]?.right || '2+';
+      this.doc.text(rightReflex, this.margin + col1Width + 2, rowY);
+      
+      // Left reflex
+      const leftReflex = data?.[reflexKey]?.left || '2+';
+      this.doc.text(leftReflex, this.margin + col1Width + col2Width + 2, rowY);
     });
     
-    this.currentY += 5;
+    this.currentY = tableY + (rowHeight * (reflexes.length + 1)) + 15;
   }
 }
