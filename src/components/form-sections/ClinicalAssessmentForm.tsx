@@ -37,7 +37,7 @@ export function ClinicalAssessmentForm() {
               type="text"
               value={(data as any).primaryDiagnosis || ''}
               onChange={(e) => updateField('primaryDiagnosis', e.target.value)}
-              placeholder="Enter primary diagnosis"
+              placeholder="e.g., Lumbar disc herniation L4-L5 with radiculopathy"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
@@ -50,7 +50,7 @@ export function ClinicalAssessmentForm() {
             <textarea
               value={(data as any).secondaryDiagnoses || ''}
               onChange={(e) => updateField('secondaryDiagnoses', e.target.value)}
-              placeholder="List any secondary diagnoses or contributing factors"
+              placeholder="e.g., Chronic pain syndrome, muscle spasm, decreased functional mobility secondary to primary diagnosis"
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
             />
@@ -63,7 +63,7 @@ export function ClinicalAssessmentForm() {
             <textarea
               value={(data as any).clinicalImpression || ''}
               onChange={(e) => updateField('clinicalImpression', e.target.value)}
-              placeholder="Describe your overall clinical impression of the patient's condition"
+              placeholder="e.g., The patient presents with a 2-year history of chronic low back pain with left lower extremity radiculopathy. Physical examination reveals decreased lumbar range of motion, positive straight leg raise test on the left, and diminished strength in L5 distribution. The patient demonstrates functional limitations in prolonged sitting, standing, and walking. Based on clinical findings and history, the patient would benefit from a comprehensive rehabilitation program..."
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               required
@@ -87,7 +87,7 @@ export function ClinicalAssessmentForm() {
             <textarea
               value={(data as any).shortTermGoals || ''}
               onChange={(e) => updateField('shortTermGoals', e.target.value)}
-              placeholder="List specific short-term treatment goals (2-4 weeks)"
+              placeholder="e.g., 1. Reduce pain levels from 7/10 to 4/10 within 2 weeks. 2. Improve lumbar flexion ROM by 15 degrees. 3. Increase sitting tolerance to 30 minutes without significant pain exacerbation."
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               required
@@ -101,7 +101,7 @@ export function ClinicalAssessmentForm() {
             <textarea
               value={(data as any).longTermGoals || ''}
               onChange={(e) => updateField('longTermGoals', e.target.value)}
-              placeholder="List long-term treatment goals and expected outcomes"
+              placeholder="e.g., 1. Return to work activities with minimal to no pain within 8-12 weeks. 2. Achieve full functional mobility for activities of daily living. 3. Establish independent home exercise program for long-term management. 4. Prevent re-injury through proper body mechanics education."
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               required
@@ -115,7 +115,7 @@ export function ClinicalAssessmentForm() {
             <textarea
               value={(data as any).treatmentInterventions || ''}
               onChange={(e) => updateField('treatmentInterventions', e.target.value)}
-              placeholder="Describe specific treatment interventions and techniques to be used"
+              placeholder="e.g., Manual therapy techniques including joint mobilization L4-L5, soft tissue mobilization to lumbar paraspinals, therapeutic exercises focusing on core strengthening and lumbar stabilization, postural education, ergonomic training, modalities as appropriate (heat/cold therapy), progressive activity program..."
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
               required

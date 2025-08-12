@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
+import { SaveProgressIndicator } from './SaveProgressIndicator';
 import { 
   CheckCircle, 
   Lock, 
@@ -204,9 +205,9 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:static lg:shadow-none`}>
+      <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         {/* Sidebar header */}
         <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <div className="flex items-center justify-between">
@@ -279,7 +280,7 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="lg:ml-80">
+      <div className="lg:ml-80 min-h-screen">
         {/* Top navigation bar */}
         <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
           <div className="px-4 lg:px-8 py-4">
@@ -421,6 +422,9 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
           </div>
         </div>
       </div>
+      
+      {/* Save Progress Indicator */}
+      <SaveProgressIndicator />
     </div>
   );
 }

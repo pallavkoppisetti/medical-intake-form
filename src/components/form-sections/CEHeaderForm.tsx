@@ -24,10 +24,10 @@ export function CEHeaderForm() {
       </div>
 
       {/* Disclaimer */}
-      <Card className="bg-gray-50 border-l-4 border-blue-600">
+      <Card className="bg-blue-50 border-l-4 border-blue-500">
         <CardContent className="pt-4">
           <div className="text-sm text-gray-700 leading-relaxed">
-            <p className="font-semibold mb-2">IMPORTANT NOTICE:</p>
+            <p className="font-semibold mb-2 text-blue-800">IMPORTANT NOTICE:</p>
             <p>
               This examination was performed for the sole purpose of providing information to the 
               State of Florida Department of Health, Division of Disability Determinations, to assist 
@@ -50,7 +50,7 @@ export function CEHeaderForm() {
                 label="Claimant's Name"
                 value={headerData?.claimantName || ''}
                 onChange={(value) => handleChange('claimantName', value)}
-                placeholder="Last, First Middle"
+                placeholder="e.g., Smith, John Michael"
                 required
                 className="font-semibold"
               />
@@ -78,7 +78,7 @@ export function CEHeaderForm() {
                 label="Case Number"
                 value={headerData?.caseNumber || ''}
                 onChange={(value) => handleChange('caseNumber', value)}
-                placeholder="DDS Case Number"
+                placeholder="e.g., FL2024-123456-789"
                 required
                 className="font-mono"
               />
@@ -91,13 +91,13 @@ export function CEHeaderForm() {
               label="Chief Complaint"
               value={headerData?.chiefComplaint || ''}
               onChange={(value) => handleChange('chiefComplaint', value)}
-              placeholder="Describe the primary complaint or reason for this consultative examination as provided by DDS..."
+              placeholder="e.g., Back pain with radiation to left leg, limiting ability to stand, walk, and lift. Unable to work due to chronic pain and mobility limitations..."
               rows={6}
               required
               className="w-full"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Please provide the chief complaint as indicated in the referral from the Division of Disability Determinations.
+              Document the primary complaint as indicated in the DDS referral, including functional limitations and work-related restrictions.
             </p>
           </div>
         </CardContent>

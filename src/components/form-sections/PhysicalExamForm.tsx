@@ -1,8 +1,9 @@
 import { useMultiStepForm } from '../../contexts/MultiStepFormContext';
 import { FormInput } from '../ui/FormInput';
 import { FormTextarea } from '../ui/FormTextarea';
+import { FormSelect } from '../ui/FormSelect';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Stethoscope, Eye, Activity } from 'lucide-react';
+import { Stethoscope, Eye, Activity, Zap, Hand, Brain } from 'lucide-react';
 
 export function PhysicalExamForm() {
   const { getCurrentStepData, updateSection } = useMultiStepForm();
@@ -24,6 +25,28 @@ export function PhysicalExamForm() {
     const updatedBP = { ...bloodPressure, [type]: parseInt(value) || 0 };
     const updatedVitalSigns = { ...vitalSigns, bloodPressure: updatedBP };
     updateSection('physicalExam', { ...physicalExamData, vitalSigns: updatedVitalSigns });
+  };
+
+  const handleStrengthChange = (field: string, value: string) => {
+    const neuromuscularStrength = physicalExamData?.neuromuscularStrength || {};
+    const updatedStrength = { ...neuromuscularStrength, [field]: parseInt(value) || 0 };
+    updateSection('physicalExam', { ...physicalExamData, neuromuscularStrength: updatedStrength });
+  };
+
+  const handleManipulativeSkillChange = (category: string, side: string, value: string) => {
+    const skills = physicalExamData?.fineGrossManipulativeSkills || {};
+    const categoryData = skills[category as keyof typeof skills] || {};
+    const updatedCategory = { ...categoryData, [side]: parseInt(value) || 0 };
+    const updatedSkills = { ...skills, [category]: updatedCategory };
+    updateSection('physicalExam', { ...physicalExamData, fineGrossManipulativeSkills: updatedSkills });
+  };
+
+  const handleReflexChange = (reflex: string, side: string, value: string) => {
+    const reflexes = physicalExamData?.reflexes || {};
+    const reflexData = reflexes[reflex as keyof typeof reflexes] || {};
+    const updatedReflex = { ...reflexData, [side]: value };
+    const updatedReflexes = { ...reflexes, [reflex]: updatedReflex };
+    updateSection('physicalExam', { ...physicalExamData, reflexes: updatedReflexes });
   };
 
   return (
@@ -335,6 +358,347 @@ export function PhysicalExamForm() {
             placeholder="Appropriate mood and affect. Thought processes logical and goal-directed. No evidence of delusions or hallucinations. Insight and judgment intact."
             rows={3}
           />
+        </CardContent>
+      </Card>
+
+      {/* Neuromuscular Strength Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-yellow-500" />
+            Neuromuscular Strength (0-5 Scale)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <FormInput
+              label="Right Upper Extremity"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.rightUpperExtremity?.toString() || ''}
+              onChange={(value) => handleStrengthChange('rightUpperExtremity', value)}
+              placeholder="0-5"
+            />
+
+            <FormInput
+              label="Left Upper Extremity"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.leftUpperExtremity?.toString() || ''}
+              onChange={(value) => handleStrengthChange('leftUpperExtremity', value)}
+              placeholder="0-5"
+            />
+
+            <FormInput
+              label="Right Lower Extremity"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.rightLowerExtremity?.toString() || ''}
+              onChange={(value) => handleStrengthChange('rightLowerExtremity', value)}
+              placeholder="0-5"
+            />
+
+            <FormInput
+              label="Left Lower Extremity"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.leftLowerExtremity?.toString() || ''}
+              onChange={(value) => handleStrengthChange('leftLowerExtremity', value)}
+              placeholder="0-5"
+            />
+
+            <FormInput
+              label="Right Grip"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.rightGrip?.toString() || ''}
+              onChange={(value) => handleStrengthChange('rightGrip', value)}
+              placeholder="0-5"
+            />
+
+            <FormInput
+              label="Left Grip"
+              type="number"
+              min="0"
+              max="5"
+              value={physicalExamData?.neuromuscularStrength?.leftGrip?.toString() || ''}
+              onChange={(value) => handleStrengthChange('leftGrip', value)}
+              placeholder="0-5"
+            />
+          </div>
+
+          <div className="mt-4">
+            <FormTextarea
+              label="Dexterity Assessment"
+              value={physicalExamData?.neuromuscularStrength?.dexterityAssessment || ''}
+              onChange={(value) => handleStrengthChange('dexterityAssessment', value)}
+              placeholder="Describe fine motor coordination, finger-to-nose testing, rapid alternating movements, etc."
+              rows={3}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Fine & Gross Manipulative Skills Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Hand className="w-5 h-5 text-blue-500" />
+            Fine & Gross Manipulative Skills (0-5 Scale)
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Buttoning */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Buttoning</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Left Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.buttoning?.left?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('buttoning', 'left', value)}
+                  placeholder="0-5"
+                />
+                <FormInput
+                  label="Right Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.buttoning?.right?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('buttoning', 'right', value)}
+                  placeholder="0-5"
+                />
+              </div>
+            </div>
+
+            {/* Zipping */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Zipping</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Left Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.zipping?.left?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('zipping', 'left', value)}
+                  placeholder="0-5"
+                />
+                <FormInput
+                  label="Right Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.zipping?.right?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('zipping', 'right', value)}
+                  placeholder="0-5"
+                />
+              </div>
+            </div>
+
+            {/* Picking up a coin */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Picking up a Coin</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Left Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.pickingUpCoin?.left?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('pickingUpCoin', 'left', value)}
+                  placeholder="0-5"
+                />
+                <FormInput
+                  label="Right Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.pickingUpCoin?.right?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('pickingUpCoin', 'right', value)}
+                  placeholder="0-5"
+                />
+              </div>
+            </div>
+
+            {/* Tying shoelaces */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Tying Shoelaces</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormInput
+                  label="Left Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.tyingShoelaces?.left?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('tyingShoelaces', 'left', value)}
+                  placeholder="0-5"
+                />
+                <FormInput
+                  label="Right Hand"
+                  type="number"
+                  min="0"
+                  max="5"
+                  value={physicalExamData?.fineGrossManipulativeSkills?.tyingShoelaces?.right?.toString() || ''}
+                  onChange={(value) => handleManipulativeSkillChange('tyingShoelaces', 'right', value)}
+                  placeholder="0-5"
+                />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Reflexes Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="w-5 h-5 text-purple-500" />
+            Deep Tendon Reflexes
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Biceps */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Biceps</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormSelect
+                  label="Right"
+                  value={physicalExamData?.reflexes?.biceps?.right || ''}
+                  onChange={(value) => handleReflexChange('biceps', 'right', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+                <FormSelect
+                  label="Left"
+                  value={physicalExamData?.reflexes?.biceps?.left || ''}
+                  onChange={(value) => handleReflexChange('biceps', 'left', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Triceps */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Triceps</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormSelect
+                  label="Right"
+                  value={physicalExamData?.reflexes?.triceps?.right || ''}
+                  onChange={(value) => handleReflexChange('triceps', 'right', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+                <FormSelect
+                  label="Left"
+                  value={physicalExamData?.reflexes?.triceps?.left || ''}
+                  onChange={(value) => handleReflexChange('triceps', 'left', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Knee */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Knee (Patellar)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormSelect
+                  label="Right"
+                  value={physicalExamData?.reflexes?.knee?.right || ''}
+                  onChange={(value) => handleReflexChange('knee', 'right', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+                <FormSelect
+                  label="Left"
+                  value={physicalExamData?.reflexes?.knee?.left || ''}
+                  onChange={(value) => handleReflexChange('knee', 'left', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Achilles */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Achilles</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormSelect
+                  label="Right"
+                  value={physicalExamData?.reflexes?.achilles?.right || ''}
+                  onChange={(value) => handleReflexChange('achilles', 'right', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+                <FormSelect
+                  label="Left"
+                  value={physicalExamData?.reflexes?.achilles?.left || ''}
+                  onChange={(value) => handleReflexChange('achilles', 'left', value)}
+                  options={[
+                    { value: '', label: 'Select rating' },
+                    { value: '0', label: '0 - Absent' },
+                    { value: '1+', label: '1+ - Hypoactive' },
+                    { value: '2+', label: '2+ - Normal' },
+                    { value: '3+', label: '3+ - Hyperactive' },
+                    { value: '4+', label: '4+ - Hyperactive with clonus' }
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

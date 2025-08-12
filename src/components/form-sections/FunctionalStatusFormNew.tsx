@@ -34,14 +34,14 @@ export function FunctionalStatusFormNew() {
               label="Sitting - Worst Day"
               value={functionalData?.sittingWorstDay || ''}
               onChange={(value) => handleChange('sittingWorstDay', value)}
-              placeholder="Duration or limitations"
+              placeholder="e.g., 15-30 minutes before pain increases"
             />
             
             <FormInput
               label="Sitting - Best Day"
               value={functionalData?.sittingBestDay || ''}
               onChange={(value) => handleChange('sittingBestDay', value)}
-              placeholder="Duration or limitations"
+              placeholder="e.g., up to 1 hour with position changes"
             />
           </div>
           
@@ -50,14 +50,14 @@ export function FunctionalStatusFormNew() {
               label="Standing - Worst Day"
               value={functionalData?.standingWorstDay || ''}
               onChange={(value) => handleChange('standingWorstDay', value)}
-              placeholder="Duration or limitations"
+              placeholder="e.g., 5-10 minutes before needing to sit"
             />
             
             <FormInput
               label="Standing - Best Day"
               value={functionalData?.standingBestDay || ''}
               onChange={(value) => handleChange('standingBestDay', value)}
-              placeholder="Duration or limitations"
+              placeholder="e.g., 20-30 minutes with frequent position changes"
             />
           </div>
           
@@ -66,14 +66,14 @@ export function FunctionalStatusFormNew() {
               label="Walking - Worst Day"
               value={functionalData?.walkingWorstDay || ''}
               onChange={(value) => handleChange('walkingWorstDay', value)}
-              placeholder="Distance or limitations"
+              placeholder="e.g., 1-2 blocks before needing to rest"
             />
             
             <FormInput
               label="Walking - Best Day"
               value={functionalData?.walkingBestDay || ''}
               onChange={(value) => handleChange('walkingBestDay', value)}
-              placeholder="Distance or limitations"
+              placeholder="e.g., 4-5 blocks with rest breaks"
             />
           </div>
           
@@ -81,7 +81,7 @@ export function FunctionalStatusFormNew() {
             label="Cooking/Meal Preparation"
             value={functionalData?.cookingMealPrep || ''}
             onChange={(value) => handleChange('cookingMealPrep', value)}
-            placeholder="Abilities and limitations"
+            placeholder="e.g., simple meals only, unable to stand for extended cooking"
           />
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,14 +89,14 @@ export function FunctionalStatusFormNew() {
               label="Grocery Shopping - Worst Day"
               value={functionalData?.groceryShoppingWorstDay || ''}
               onChange={(value) => handleChange('groceryShoppingWorstDay', value)}
-              placeholder="Abilities and limitations"
+              placeholder="e.g., unable to shop, requires assistance"
             />
             
             <FormInput
               label="Grocery Shopping - Best Day"
               value={functionalData?.groceryShoppingBestDay || ''}
               onChange={(value) => handleChange('groceryShoppingBestDay', value)}
-              placeholder="Abilities and limitations"
+              placeholder="e.g., quick trips only, uses cart for support"
             />
           </div>
           
@@ -105,14 +105,14 @@ export function FunctionalStatusFormNew() {
               label="Driving - Worst Day"
               value={functionalData?.drivingWorstDay || ''}
               onChange={(value) => handleChange('drivingWorstDay', value)}
-              placeholder="Abilities and limitations"
+              placeholder="e.g., local trips only, limited to 15 minutes"
             />
             
             <FormInput
               label="Driving - Best Day"
               value={functionalData?.drivingBestDay || ''}
               onChange={(value) => handleChange('drivingBestDay', value)}
-              placeholder="Abilities and limitations"
+              placeholder="e.g., able to drive up to 30 minutes with breaks"
             />
           </div>
           
@@ -120,21 +120,21 @@ export function FunctionalStatusFormNew() {
             label="Bathing/Showering"
             value={functionalData?.bathingShowering || ''}
             onChange={(value) => handleChange('bathingShowering', value)}
-            placeholder="Abilities and limitations"
+            placeholder="e.g., requires shower chair, assistance with washing hair"
           />
           
           <FormInput
             label="Dressing"
             value={functionalData?.dressing || ''}
             onChange={(value) => handleChange('dressing', value)}
-            placeholder="Abilities and limitations"
+            placeholder="e.g., requires assistance with socks/shoes, uses adaptive equipment"
           />
           
           <FormInput
             label="Personal Finances"
             value={functionalData?.personalFinances || ''}
             onChange={(value) => handleChange('personalFinances', value)}
-            placeholder="Abilities and limitations"
+            placeholder="e.g., able to manage basic finances, requires help with complex tasks"
           />
         </CardContent>
       </Card>

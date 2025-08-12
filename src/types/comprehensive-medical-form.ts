@@ -109,179 +109,191 @@ export interface PhysicalExam {
   musculoskeletal?: string;
   neurological?: string;
   psychiatry?: string;
+  neuromuscularStrength?: NeuroMuscularStrength;
+  fineGrossManipulativeSkills?: FineGrossManipulativeSkills;
+  reflexes?: Reflexes;
+}
+
+export interface NeuroMuscularStrength {
+  rightUpperExtremity?: number; // 0-5 scale
+  leftUpperExtremity?: number;
+  rightLowerExtremity?: number;
+  leftLowerExtremity?: number;
+  rightGrip?: number;
+  leftGrip?: number;
+  dexterityAssessment?: string;
+}
+
+export interface FineGrossManipulativeSkills {
+  buttoning?: {
+    left?: number; // 0-5 scale
+    right?: number;
+  };
+  zipping?: {
+    left?: number;
+    right?: number;
+  };
+  pickingUpCoin?: {
+    left?: number;
+    right?: number;
+  };
+  tyingShoelaces?: {
+    left?: number;
+    right?: number;
+  };
+}
+
+export interface Reflexes {
+  biceps?: {
+    right?: '0' | '1+' | '2+' | '3+' | '4+';
+    left?: '0' | '1+' | '2+' | '3+' | '4+';
+  };
+  triceps?: {
+    right?: '0' | '1+' | '2+' | '3+' | '4+';
+    left?: '0' | '1+' | '2+' | '3+' | '4+';
+  };
+  knee?: {
+    right?: '0' | '1+' | '2+' | '3+' | '4+';
+    left?: '0' | '1+' | '2+' | '3+' | '4+';
+  };
+  achilles?: {
+    right?: '0' | '1+' | '2+' | '3+' | '4+';
+    left?: '0' | '1+' | '2+' | '3+' | '4+';
+  };
 }
 
 // =======================
 // RANGE OF MOTION SECTION
 // =======================
 
-export interface RangeOfMotionMeasurement {
-  flexion: number;
-  extension: number;
-  leftLateralFlexion?: number;
-  rightLateralFlexion?: number;
-  leftRotation?: number;
-  rightRotation?: number;
-}
-
 export interface RangeOfMotion {
   effortOnExam?: 'Good' | 'Fair' | 'Poor';
+  
+  // Cervical Spine (exact CE Exam measurements)
   cervicalSpine?: {
-    flexion: number;
-    extension: number;
-    leftLateralFlexion: number;
-    rightLateralFlexion: number;
-    leftRotation: number;
-    rightRotation: number;
+    forwardFlexion: number;      // 0-60
+    extension: number;           // 0-60
+    lateralFlexionRight: number; // 0-45
+    lateralFlexionLeft: number;  // 0-45
+    rotationRight: number;       // 0-80
+    rotationLeft: number;        // 0-80
   };
+  
+  // Lumbar Spine (exact CE Exam measurements)
   lumbarSpine?: {
-    flexion: number;
-    extension: number;
-    leftLateralFlexion: number;
-    rightLateralFlexion: number;
-    leftRotation?: number;
-    rightRotation?: number;
+    forwardFlexion: number;      // 0-90
+    extension: number;           // 0-25
+    lateralFlexionRight: number; // 0-25
+    lateralFlexionLeft: number;  // 0-25
   };
+  
+  // Shoulders (bilateral measurements)
   shoulders?: {
     left: {
-      flexion: number;
-      extension: number;
-      abduction: number;
-      adduction: number;
-      internalRotation: number;
-      externalRotation: number;
+      flexion: number;           // 0-180
+      extension: number;         // 0-60
+      abduction: number;         // 0-180
+      adduction: number;         // 0-50
+      internalRotation: number;  // 0-90
+      externalRotation: number;  // 0-90
     };
     right: {
-      flexion: number;
-      extension: number;
-      abduction: number;
-      adduction: number;
-      internalRotation: number;
-      externalRotation: number;
+      flexion: number;           // 0-180
+      extension: number;         // 0-60
+      abduction: number;         // 0-180
+      adduction: number;         // 0-50
+      internalRotation: number;  // 0-90
+      externalRotation: number;  // 0-90
     };
   };
+  
+  // Elbows (bilateral measurements)
   elbows?: {
     left: {
-      flexion: number;
-      pronation?: number;
-      supination?: number;
+      flexion: number;           // 0-150
+      pronation: number;         // 0-80
+      supination: number;        // 0-80
     };
     right: {
-      flexion: number;
-      pronation?: number;
-      supination?: number;
+      flexion: number;           // 0-150
+      pronation: number;         // 0-80
+      supination: number;        // 0-80
     };
   };
+  
+  // Wrists (bilateral measurements)
   wrists?: {
     left: {
-      dorsiflexion: number;
-      palmarFlexion: number;
-      ulnarDeviation: number;
-      radialDeviation: number;
+      flexion: number;           // 0-80
+      extension: number;         // 0-70
+      ulnarDeviation: number;    // 0-30
+      radialDeviation: number;   // 0-20
     };
     right: {
-      dorsiflexion: number;
-      palmarFlexion: number;
-      ulnarDeviation: number;
-      radialDeviation: number;
+      flexion: number;           // 0-80
+      extension: number;         // 0-70
+      ulnarDeviation: number;    // 0-30
+      radialDeviation: number;   // 0-20
     };
   };
+  
+  // Hands (simplified for CE Exam)
   hands?: {
     left: {
-      thumb?: {
-        mcpFlexion: number;
-        ipFlexion: number;
-        opposition: number;
-      };
-      index?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      middle?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      ring?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      little?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
+      fingerFlexion: number;     // 0-90
+      thumbOpposition: number;   // 0-100
     };
     right: {
-      thumb?: {
-        mcpFlexion: number;
-        ipFlexion: number;
-        opposition: number;
-      };
-      index?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      middle?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      ring?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      little?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
+      fingerFlexion: number;     // 0-90
+      thumbOpposition: number;   // 0-100
     };
   };
+  
+  // Hips (bilateral measurements)
   hips?: {
     left: {
-      flexion: number;
-      extension: number;
-      abduction: number;
-      adduction: number;
-      internalRotation: number;
-      externalRotation: number;
+      flexion: number;           // 0-120
+      extension: number;         // 0-30
+      abduction: number;         // 0-45
+      adduction: number;         // 0-30
+      internalRotation: number;  // 0-45
+      externalRotation: number;  // 0-45
     };
     right: {
-      flexion: number;
-      extension: number;
-      abduction: number;
-      adduction: number;
-      internalRotation: number;
-      externalRotation: number;
+      flexion: number;           // 0-120
+      extension: number;         // 0-30
+      abduction: number;         // 0-45
+      adduction: number;         // 0-30
+      internalRotation: number;  // 0-45
+      externalRotation: number;  // 0-45
     };
   };
+  
+  // Knees (bilateral measurements)
   knees?: {
     left: {
-      flexion: number;
-      extension: number;
+      flexion: number;           // 0-135
+      extension: number;         // 0-0 (normal)
     };
     right: {
-      flexion: number;
-      extension: number;
+      flexion: number;           // 0-135
+      extension: number;         // 0-0 (normal)
     };
   };
+  
+  // Ankles (bilateral measurements)
   ankles?: {
     left: {
-      dorsiflexion: number;
-      plantarflexion: number;
-      inversion: number;
-      eversion: number;
+      dorsiflexion: number;      // 0-20
+      plantarflexion: number;    // 0-50
+      inversion: number;         // 0-35
+      eversion: number;          // 0-15
     };
     right: {
-      dorsiflexion: number;
-      plantarflexion: number;
-      inversion: number;
-      eversion: number;
+      dorsiflexion: number;      // 0-20
+      plantarflexion: number;    // 0-50
+      inversion: number;         // 0-35
+      eversion: number;          // 0-15
     };
   };
 }

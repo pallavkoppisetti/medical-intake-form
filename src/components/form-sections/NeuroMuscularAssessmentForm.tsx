@@ -340,7 +340,7 @@ export function NeuroMuscularAssessmentForm() {
             <textarea
               value={(data as any).lightTouch || ''}
               onChange={(e) => updateField('lightTouch', e.target.value)}
-              placeholder="Describe light touch sensation findings"
+              placeholder="e.g., Light touch sensation intact to bilateral upper extremities. Decreased sensation noted in L5 dermatome distribution on left lower extremity. Patient reports numbness and tingling in left lateral leg and dorsal foot."
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
             />
@@ -353,7 +353,7 @@ export function NeuroMuscularAssessmentForm() {
             <textarea
               value={(data as any).sharpDull || ''}
               onChange={(e) => updateField('sharpDull', e.target.value)}
-              placeholder="Describe sharp/dull discrimination findings"
+              placeholder="e.g., Sharp/dull discrimination intact bilaterally in upper extremities. Impaired sharp/dull discrimination in left L5 dermatome distribution. Patient demonstrates difficulty distinguishing sharp from dull stimuli in affected area."
               rows={2}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
             />
@@ -366,7 +366,7 @@ export function NeuroMuscularAssessmentForm() {
             <textarea
               value={(data as any).additionalNotes || ''}
               onChange={(e) => updateField('additionalNotes', e.target.value)}
-              placeholder="Any additional neurological findings or observations"
+              placeholder="e.g., Patient demonstrates positive straight leg raise test on left at 45 degrees with reproduction of radicular symptoms. No signs of upper motor neuron involvement. Coordination testing reveals mild difficulty with heel-to-shin on left. Balance testing shows mild impairment in single-leg stance on left secondary to pain."
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
             />

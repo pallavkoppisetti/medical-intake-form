@@ -19,14 +19,13 @@ build/
 .env.production.local
 
 # Editor directories and files
-.vscode/settings.json
-.vscode/launch.json
-.vscode/extensions.json
+.vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+.github/
 
 # OS generated files
 .DS_Store

@@ -9,28 +9,45 @@
 
 ### Setup
 ```bash
-git clone https://github.com/[username]/medical-intake-form.git
+git clone https://github.com/pallavkoppisetti/medical-intake-form.git
 cd medical-intake-form
 npm install
 npm run dev
 ```
 
+### Development Server
+- **URL**: http://localhost:5173
+- **Hot Reload**: Automatic code updates
+- **TypeScript**: Full type checking enabled
+- **ESLint**: Code quality enforcement
+
 ## 📁 Project Architecture
 
 ### Key Directories
 - `src/components/` - All React components
-- `src/components/form-sections/` - Individual form pages
-- `src/components/ui/` - Reusable UI components
-- `src/contexts/` - React context providers
-- `src/types/` - TypeScript definitions
-- `src/hooks/` - Custom React hooks
-- `docs/` - Documentation files
+- `src/components/form-sections/` - Individual CE Exam form sections
+- `src/components/ui/` - shadcn/ui components and custom UI elements
+- `src/contexts/` - React context providers for state management
+- `src/types/` - TypeScript definitions for medical forms
+- `src/hooks/` - Custom React hooks for form management
+- `src/services/` - Business logic services (PDF generation)
+- `src/lib/` - Utility libraries and helpers
+- `src/utils/` - Utility functions for validation and PDF handling
+- `docs/` - Comprehensive documentation files
 
 ### State Management
-- **Global State**: React Context with useReducer
-- **Form Data**: Centralized in `MultiStepFormContext`
-- **Persistence**: Auto-save to localStorage
-- **Validation**: Real-time with section-level tracking
+- **Global State**: React Context with useReducer for complex form state
+- **Form Data**: Centralized in `MultiStepFormContext` with auto-save
+- **Persistence**: Automatic localStorage with visual indicators
+- **Validation**: Real-time validation with section-level progress tracking
+- **Navigation**: Smart navigation with prerequisites and completion checking
+
+### Component Architecture
+- **FormLayout**: Main responsive layout with sidebar navigation
+- **MultiStepFormController**: Central form management and step rendering
+- **FormReviewAndGenerate**: PDF preview and generation with test tools
+- **SaveProgressIndicator**: Floating auto-save status indicator
+- **Form Sections**: Individual CE-compliant medical assessment components
 
 ## 🔧 Development Workflow
 
@@ -40,14 +57,19 @@ npm run dev
 2. **Create the form component** in `src/components/form-sections/`
 3. **Add to FormSteps** in `src/contexts/MultiStepFormContext.tsx`
 4. **Register in controller** in `src/components/MultiStepFormController.tsx`
-5. **Add validation logic** in `src/hooks/useFormValidation.ts`
+5. **Add validation logic** in form component and context
+6. **Update PDF generation** in `src/services/PDFGeneratorService.ts`
+7. **Add helper text and examples** following existing patterns
 
 ### Example: Adding a New Section
 
 ```typescript
-// 1. Add to types
+// 1. Add to types (src/types/comprehensive-medical-form.ts)
 export interface NewSection {
   field1: string;
+  field2: number;
+  field3?: string; // Optional field
+}
   field2: number;
   // ... other fields
 }

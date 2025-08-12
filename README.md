@@ -1,109 +1,126 @@
 # Medical Intake Form Application
 
-A comprehensive React TypeScript application for creating and managing medical intake forms with professional PDF generation, designed specifically for Florida CE Exam compliance.
+A comprehensive React TypeScript application for creating and managing medical intake forms with professional PDF generation, designed specifically for Florida Division of Disability Determination consultative examinations (CE Exam compliance).
 
 ## 🏥 Overview
 
-This application provides a multi-step medical intake form designed for healthcare professionals conducting Florida Division of Disability Determination consultative examinations. It features a modern, responsive interface with comprehensive form sections and professional PDF export capabilities.
+This application provides a multi-step medical intake form designed for healthcare professionals conducting Florida Division of Disability Determination consultative examinations. It features a modern, responsive interface with comprehensive form sections, professional PDF export capabilities, and development testing tools.
 
-## ✨ Features
+## ✨ Key Features
 
 ### 🎨 Professional Healthcare UI
 - Modern, clean design with healthcare-focused blue color scheme
 - Responsive layout optimized for desktop, tablet, and mobile
-- Professional medical interface with intuitive navigation
+- Professional medical interface with intuitive sidebar navigation
 - Accessibility-first design with ARIA labels and keyboard navigation
+- Real-time auto-save with visual indicators
+- Floating save progress indicator with status updates
 
 ### 📋 Comprehensive Form Sections (Florida CE Exam Compliant)
-1. **Header Information** - Claimant demographics and case details
-2. **History** - Medical history and present illness documentation
-3. **Functional Status** - Activities of daily living and mobility assessment
-4. **Medical Information** - Current medications, allergies, and medical history
-5. **Physical Examination** - Systematic physical assessment with vital signs
-6. **Range of Motion** - Joint mobility assessment with active/passive measurements
-7. **Gait & Station** - Walking pattern and balance evaluation
-8. **Assessment** - Clinical diagnosis, medical source statement, and recommendations
-9. **Review & Generate PDF** - Print-preview layout with PDF export functionality
+1. **Header Information** - Claimant demographics, case details, and chief complaint
+2. **History** - Detailed medical history, present illness, and comprehensive review of systems
+3. **Functional Status** - Activities of daily living and functional capacity assessment
+4. **Medical Information** - Current medications, allergies, surgical history, and family history
+5. **Physical Examination** - Systematic physical assessment with complete vital signs
+6. **Range of Motion** - Joint mobility assessment with active/passive measurements and tables
+7. **Gait & Station** - Walking pattern, balance evaluation, and coordination testing
+8. **Assessment** - Clinical diagnosis, medical source statement, and professional recommendations
+9. **Review & Generate PDF** - Print-preview layout with professional PDF export functionality
 
 ### 🔧 Advanced Functionality
-- **Multi-step Navigation** - Smart navigation with section validation
-- **Real-time Validation** - Comprehensive form validation with error highlighting
-- **Auto-save** - Automatic form data persistence using localStorage
-- **Progress Tracking** - Visual progress indicators and completion status
-- **PDF Generation** - Professional PDF export matching CE Exam format
-- **Print Preview** - Review all form data before PDF generation
-- **Missing Field Detection** - Highlights incomplete required fields
-- **Toast Notifications** - User feedback for actions and validation
-- **Responsive Design** - Mobile-first approach with touch-friendly controls
-- **TypeScript** - Full type safety with comprehensive interfaces
+- **Multi-step Navigation** - Smart sidebar navigation with section validation and progress tracking
+- **Real-time Validation** - Comprehensive form validation with error highlighting and completion indicators
+- **Auto-save System** - Automatic form data persistence using localStorage with visual feedback
+- **Progress Tracking** - Visual progress indicators, completion status, and section-by-section validation
+- **Professional PDF Generation** - PDF export matching exact Florida CE Exam format requirements
+- **Print Preview Mode** - Review all form data in professional CE format before PDF generation
+- **Missing Field Detection** - Highlights incomplete required fields with navigation to edit sections
+- **Toast Notifications** - User feedback for actions, validation, and system status
+- **Responsive Design** - Mobile-first approach with touch-friendly controls and adaptive layouts
+- **TypeScript** - Full type safety with comprehensive interfaces and strict validation
+- **Development Test Tools** - Built-in sample data generator for format verification (dev mode only)
 
-### � PDF Export Features
-- **CE Exam Format Compliance** - Matches Florida Division of Disability Determination format
-- **Professional Layout** - Official header, disclaimer, and structured sections
-- **Smart Filename Generation** - `CE_Exam_[PatientName]_[Date].pdf` format
-- **Form Validation** - Ensures minimum data requirements before export
-- **Multi-page Support** - Automatic page breaks and page numbering
-- **Table Formatting** - Professional tables for range of motion data
-- **Section Organization** - All sections properly formatted and labeled
+### 📄 Professional PDF Export Features
+- **CE Exam Format Compliance** - Matches Florida Division of Disability Determination official format
+- **Professional Layout** - Official header, disclaimer, structured sections, and proper formatting
+- **Smart Filename Generation** - `CE_Exam_[PatientName]_[ExamDate].pdf` format with date formatting
+- **Form Validation** - Ensures minimum data requirements (50%+ completion) before export
+- **Multi-page Support** - Automatic page breaks, proper content flow, and professional page numbering
+- **Table Formatting** - Professional tables for range of motion data with proper borders and spacing
+- **Section Organization** - All sections properly formatted, labeled, and structured per CE requirements
+- **Two-pass Generation** - Advanced PDF generation with accurate page counting and numbering
 
-## �🚀 Tech Stack
+### 🧪 Development Tools (Development Mode Only)
+- **Test with Sample Data** - One-click population of realistic medical examination data
+- **Automatic PDF Generation** - Instant PDF creation after data population for format verification
+- **Sample Patient Data** - Comprehensive test case (Jane Doe, DOB: 01/15/1980, Case: DDS-2024-12345)
+- **Development Notice** - Clear indication of test features with usage instructions
+- **Format Verification** - Easy verification that PDF output matches CE Exam requirements exactly
 
-- **Frontend Framework**: React 18 with TypeScript
-- **Build Tool**: Vite for fast development and building
-- **Styling**: Tailwind CSS v4 for utility-first styling
-- **UI Components**: shadcn/ui for consistent design system
-- **Form Management**: React Hook Form with Zod validation
-- **State Management**: React Context with useReducer
-- **PDF Generation**: jsPDF for professional document creation
-- **Icons**: Lucide React for modern iconography
-- **Notifications**: Sonner for toast messages
+## 🚀 Tech Stack
+
+- **Frontend Framework**: React 18 with TypeScript for strict type safety
+- **Build Tool**: Vite for fast development and optimized production builds
+- **Styling**: Tailwind CSS v4 for utility-first styling and responsive design
+- **UI Components**: shadcn/ui component library for consistent design system
+- **State Management**: React Context with useReducer for complex form state
+- **PDF Generation**: jsPDF for professional document creation with exact formatting
+- **Icons**: Lucide React for modern, consistent iconography
+- **Notifications**: Sonner for professional toast messages and user feedback
+- **Form Helpers**: Professional helper text, placeholders, and realistic examples
 - **Additional Libraries**:
-  - date-fns for date handling
+  - date-fns for date handling and formatting
   - clsx and tailwind-merge for conditional styling
-  - html2canvas for document capture
+  - html2canvas for document capture capabilities
 
 ## 📁 Project Structure
 
 ```
 src/
 ├── components/
-│   ├── form-sections/   # Individual form section components
-│   │   ├── CEHeaderForm.tsx
-│   │   ├── HistoryFormNew.tsx
-│   │   ├── FunctionalStatusFormNew.tsx
-│   │   ├── MedicalInfoForm.tsx
-│   │   ├── PhysicalExamForm.tsx
-│   │   ├── RangeOfMotionForm.tsx
-│   │   ├── GaitStationForm.tsx
-│   │   └── AssessmentForm.tsx
-│   ├── ui/              # Base UI components
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── form.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   ├── badge.tsx
-│   │   └── [other-ui-components].tsx
-│   ├── FormLayout.tsx   # Main layout component
-│   ├── MultiStepFormController.tsx # Main form controller
-│   ├── FormReviewAndGenerate.tsx # PDF review and export
-│   ├── PDFExportButton.tsx # PDF export button component
-│   └── ProgressBar.tsx  # Progress tracking components
-├── contexts/            # React contexts for state management
-│   └── MultiStepFormContext.tsx
-├── hooks/               # Custom React hooks
-│   ├── useFormManager.ts
-│   └── useFormValidation.ts
-├── lib/                 # Utility libraries
-│   ├── form-storage.ts
-│   └── utils.ts
-├── services/            # Business logic services
-│   └── PDFGeneratorService.ts # PDF generation service
-├── types/               # TypeScript type definitions
-│   └── comprehensive-medical-form.ts
-├── utils/               # Utility functions
-│   └── pdfUtils.ts      # PDF-related utilities
-└── styles/              # Global styles and CSS
+│   ├── form-sections/           # Individual form section components
+│   │   ├── CEHeaderForm.tsx            # Header information with disclaimer
+│   │   ├── HistoryFormNew.tsx          # Medical history with detailed examples
+│   │   ├── FunctionalStatusFormNew.tsx # Functional capacity assessment
+│   │   ├── MedicalInfoForm.tsx         # Medications, allergies, history
+│   │   ├── PhysicalExamForm.tsx        # Physical examination with vitals
+│   │   ├── RangeOfMotionForm_new.tsx   # Joint mobility with tables
+│   │   ├── GaitStationForm.tsx         # Gait and balance assessment
+│   │   ├── AssessmentForm.tsx          # Clinical assessment and diagnosis
+│   │   ├── NeuroMuscularAssessmentForm.tsx # Neurological testing
+│   │   └── ClinicalAssessmentForm.tsx  # Professional recommendations
+│   ├── ui/                      # Base UI components (shadcn/ui)
+│   │   ├── button.tsx, card.tsx, form.tsx, input.tsx, label.tsx
+│   │   ├── badge.tsx, FormInput.tsx, FormTextarea.tsx, FormSelect.tsx
+│   │   └── FormCheckbox.tsx
+│   ├── FormLayout.tsx           # Main responsive layout with sidebar
+│   ├── MultiStepFormController.tsx # Main form controller and navigation
+│   ├── FormReviewAndGenerate.tsx # PDF review with print preview styling
+│   ├── SaveProgressIndicator.tsx # Floating auto-save indicator
+│   ├── ProgressBar.tsx          # Progress tracking components
+│   └── PDFExportButton.tsx      # PDF export functionality
+├── contexts/                    # React contexts for state management
+│   └── MultiStepFormContext.tsx # Main form state and navigation
+├── hooks/                       # Custom React hooks
+│   ├── useFormManager.ts        # Form data management
+│   └── useFormValidation.ts     # Validation logic
+├── lib/                         # Utility libraries
+│   ├── form-storage.ts          # localStorage persistence
+│   ├── utils.ts                 # Common utilities
+│   ├── date-utils.ts            # Date formatting utilities
+│   └── validation.ts            # Form validation helpers
+├── services/                    # Business logic services
+│   └── PDFGeneratorService.ts   # Professional PDF generation
+├── types/                       # TypeScript type definitions
+│   ├── comprehensive-medical-form.ts # Complete form type definitions
+│   ├── florida-ce-exam-form.ts      # CE-specific types
+│   └── medical-form.ts              # Base medical form types
+├── utils/                       # Utility functions
+│   ├── pdfUtils.ts              # PDF generation utilities
+│   ├── date-utils.ts            # Date handling
+│   ├── form-storage.ts          # Data persistence
+│   └── validation.ts            # Validation functions
+└── styles/                      # Global styles and CSS
 ```
 
 ## 🛠️ Installation & Setup
@@ -111,12 +128,13 @@ src/
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
+- Git
 
 ### Installation Steps
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/[username]/medical-intake-form.git
+   git clone https://github.com/pallavkoppisetti/medical-intake-form.git
    cd medical-intake-form
    ```
 
@@ -129,199 +147,296 @@ src/
    ```bash
    npm run dev
    ```
+   The application will be available at `http://localhost:5173`
 
 4. **Build for production**
    ```bash
    npm run build
    ```
 
+5. **Preview production build**
+   ```bash
+   npm run preview
+   ```
+
 ## 📱 Usage
 
-### Development
+### Development Commands
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
+npm run dev          # Start development server with hot reload
+npm run build        # Build for production with optimization
+npm run preview      # Preview production build locally
+npm run lint         # Run ESLint for code quality
 ```
 
-### Key Components
+### Key Features Usage
 
-#### FormLayout
-The main layout component providing the professional medical interface:
-- Responsive sidebar navigation
-- Progress tracking
-- Section status indicators
-- Auto-save functionality
+#### Navigation
+- Use the sidebar to navigate between form sections
+- Progress indicators show completion status for each section
+- Required sections are marked with red asterisks
+- Sections unlock as prerequisites are completed
 
-#### MultiStepFormController
-Manages the multi-step form flow:
-- Section navigation logic
-- Form validation coordination
-- Data persistence
-- Progress calculation
-- PDF export integration
+#### Auto-save
+- Form data is automatically saved to localStorage
+- Floating indicator shows save status in real-time
+- Data persists across browser sessions
+- Manual save option available in sidebar
 
-#### FormReviewAndGenerate
-Comprehensive review and PDF generation component:
-- Print-preview style layout matching CE Exam format
-- Section-by-section data display with validation status
-- Missing field highlighting in red
-- Edit buttons for quick navigation back to sections
-- Floating action bar with PDF generation and download
-- Success notifications and loading states
+#### PDF Generation
+1. Complete form sections (minimum 50% completion required)
+2. Navigate to "Review & Generate PDF" section
+3. Review all data in print-preview format
+4. Click "Download PDF" to generate professional CE Exam report
+5. PDF automatically downloads with proper filename format
 
-#### PDFGeneratorService
-Professional PDF generation service:
-- Florida CE Exam format compliance
-- Official header and disclaimer
-- Structured section layout with proper formatting
-- Table generation for range of motion data
-- Multi-page support with page numbering
-- Smart page breaks and content flow
-
-#### Form Sections
-Individual components for each medical assessment area:
-- Type-safe data handling
-- Real-time validation
-- Professional medical layouts
-- Accessibility compliance
-- CE Exam format compliance
+#### Development Testing (Development Mode Only)
+1. Navigate to "Review & Generate PDF" section
+2. Look for orange "Test with Sample Data" button
+3. Click to populate all sections with realistic medical data
+4. PDF automatically generates for format verification
+5. Use this to verify CE Exam compliance without manual data entry
 
 ## 🎯 Form Sections Detail
 
 ### Implemented Sections
 
-#### 1. Basic Information
-- Patient demographics
-- Contact information
-- Emergency contacts
-- Insurance details
+#### 1. Header Information
+- Claimant name, DOB, case number, exam date
+- Chief complaint with professional examples
+- Official disclaimer text with proper formatting
+- Required field validation
 
-#### 2. Medical History
-- Past medical history
-- Current medications
-- Allergies and reactions
-- Family medical history
+#### 2. History (Comprehensive)
+- History of present illness with detailed examples
+- Review of systems (positive/negative findings)
+- Past medical and surgical history
+- Current medications with dosages and frequencies
+- Allergies in NKDA format
+- Social history (smoking, alcohol, occupation)
+- Family history with relevant conditions
 
 #### 3. Functional Status
-- Activities of Daily Living (ADL)
-- Instrumental ADL
-- Mobility assessment
-- Pain evaluation
+- Dominant hand preference
+- Activity tolerances (sitting, standing, walking)
+- Best day vs. worst day comparisons
+- Activities of daily living assessment
+- Functional capacity descriptions
+- Mobility and independence evaluation
 
-#### 4. Vital Signs
-- Blood pressure, heart rate, temperature
-- Respiratory rate and oxygen saturation
-- Height, weight, and BMI
-- Additional measurements
+#### 4. Medical Information
+- Current medications list
+- Known allergies and reactions
+- Surgical history timeline
+- Family medical history
+- Social history factors
 
 #### 5. Physical Examination
-- General appearance
+- Complete vital signs (BP, HR, temp, height, weight)
+- Visual acuity testing
 - System-by-system examination
-- Cardiovascular, respiratory, musculoskeletal
+- General appearance and presentation
+- Cardiovascular, pulmonary, musculoskeletal findings
 - Neurological assessment
 
-#### 6. Neuromuscular Assessment
-- Manual muscle testing
-- Deep tendon reflexes
-- Sensory assessment
-- Coordination testing
+#### 6. Range of Motion
+- Cervical spine measurements (flexion, extension, rotation)
+- Lumbar spine mobility assessment
+- Bilateral shoulder range of motion
+- Active and passive measurements
+- Professional table formatting in PDF
 
-#### 7. Clinical Assessment
+#### 7. Gait & Station
+- Gait pattern analysis
+- Balance and coordination testing
+- Stance and posture evaluation
+- Mobility aid usage
+- Functional mobility assessment
+
+#### 8. Assessment
 - Primary and secondary diagnoses
-- Clinical impressions
-- Treatment goals and interventions
-- Provider information
+- Clinical impressions with detailed examples
+- Functional limitations assessment
+- Work-related restrictions
+- Treatment recommendations
+- Medical records review statement
+- Examiner credentials and licensing
 
-## � PDF Generation Workflow
+## 📄 PDF Generation Workflow
 
-### How to Generate PDF Reports
+### Complete Workflow
 
-1. **Complete Form Sections**
+1. **Form Completion**
    - Fill out required form sections (minimum 50% completion)
-   - Each section validates in real-time
-   - Missing required fields are highlighted
+   - Each section validates in real-time with immediate feedback
+   - Missing required fields are highlighted in red
+   - Progress tracking shows completion percentage
 
-2. **Navigate to Review Step**
-   - Use navigation or complete all previous steps
-   - Review step shows print-preview layout
-   - All data displayed in CE Exam format
+2. **Review Section**
+   - Navigate to "Review & Generate PDF" section
+   - Review step shows professional print-preview layout
+   - All data displayed in exact CE Exam format
+   - Section-by-section validation status with edit buttons
 
-3. **Review and Validate**
-   - Check completion status for each section
-   - Missing fields highlighted in red
-   - Use section edit buttons to make corrections
+3. **Validation Check**
+   - Missing fields highlighted in red with clear indicators
+   - Edit buttons provide quick navigation back to sections
+   - Completion percentage must reach 50% minimum
+   - All required fields must be completed
 
-4. **Generate PDF**
-   - Click "Generate PDF" to create document
+4. **PDF Generation**
+   - Click "Generate PDF" to create professional document
    - Loading spinner shows generation progress
+   - Two-pass generation ensures accurate page numbering
    - Success notification confirms completion
 
-5. **Download PDF**
-   - Click "Download PDF" for file download
-   - Filename format: `CE_Exam_[PatientName]_[Date].pdf`
-   - Professional format matching Florida CE requirements
+5. **Download**
+   - Click "Download PDF" for automatic file download
+   - Filename format: `CE_Exam_[PatientName]_[ExamDate].pdf`
+   - Professional format matching Florida CE requirements exactly
+   - Multi-page support with proper headers and page numbers
 
-### PDF Features
+### PDF Features Detail
 - **Official Format**: Matches Florida Division of Disability Determination requirements
 - **Professional Layout**: Official header, disclaimer, and structured sections
-- **Complete Data**: All form sections included with proper formatting
-- **Table Support**: Range of motion data in professional tables
-- **Multi-page**: Automatic page breaks and numbering
-- **Validation**: Ensures data completeness before generation
+- **Complete Data Integration**: All form sections included with proper formatting
+- **Table Support**: Range of motion data in professional tables with borders
+- **Multi-page**: Automatic page breaks and professional page numbering
+- **Validation**: Ensures data completeness and format compliance
 
-## �🔒 Data Management
+## 🔒 Data Management
 
 ### Local Storage
-- Automatic form data persistence
-- Progress tracking across sessions
-- User preference storage
+- Automatic form data persistence across sessions
+- Progress tracking and section completion status
+- User preference storage for UI settings
+- Draft data recovery after browser refresh
 
 ### Validation System
-- Real-time field validation
-- Section-level completion checking
-- Comprehensive error reporting
-- Type-safe validation rules
+- Real-time field validation with immediate feedback
+- Section-level completion checking with progress indicators
+- Comprehensive error reporting with specific field guidance
+- Type-safe validation rules with TypeScript interfaces
+
+### Security Considerations
+- Client-side only storage (no server transmission)
+- Local data encryption considerations for production use
+- HIPAA compliance considerations for clinical deployment
+- Data clearing options for shared computers
 
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary**: Blue tones for medical professionalism
-- **Success**: Green for completed sections
-- **Warning**: Orange for attention items
-- **Error**: Red for validation errors
-- **Neutral**: Gray scale for backgrounds and text
+- **Primary Blue**: #2563eb (medical professionalism)
+- **Success Green**: #16a34a (completed sections)
+- **Warning Orange**: #ea580c (attention items)
+- **Error Red**: #dc2626 (validation errors)
+- **Neutral Grays**: #f8fafc to #1e293b (backgrounds and text)
 
 ### Typography
-- Clean, readable fonts
-- Proper hierarchy with headings
-- Accessible contrast ratios
-- Professional medical appearance
+- Clean, readable fonts optimized for medical forms
+- Proper hierarchy with consistent heading sizes
+- Accessible contrast ratios (WCAG AA compliant)
+- Professional medical appearance with proper spacing
 
-## 🚧 Roadmap
+### Component Design
+- Consistent spacing using Tailwind CSS grid system
+- Professional card layouts with subtle shadows
+- Interactive elements with hover and focus states
+- Mobile-responsive design with touch-friendly controls
 
-### Near Term
-- [ ] Complete remaining form sections (Range of Motion, Gait & Station)
-- [ ] PDF export functionality
-- [ ] Print-friendly views
-- [ ] Enhanced validation rules
+## 🧪 Development & Testing
 
-### Future Enhancements
-- [ ] Multi-language support
-- [ ] Dark mode theme
-- [ ] Offline functionality
-- [ ] Integration with EMR systems
-- [ ] Advanced reporting features
-- [ ] User authentication system
+### Development Tools
+- **Hot Reload**: Instant feedback during development
+- **TypeScript**: Full type safety with comprehensive interfaces
+- **ESLint**: Code quality and consistency enforcement
+- **Tailwind CSS**: Utility-first styling with design system
+
+### Testing Features
+- **Sample Data Generator**: Realistic medical examination data
+- **PDF Format Verification**: Instant format compliance checking
+- **Development Mode Indicators**: Clear separation of test features
+- **Comprehensive Test Cases**: Complete patient scenarios for validation
+
+### Code Quality
+- TypeScript strict mode enabled
+- Comprehensive type definitions for all medical form data
+- ESLint configuration for React and TypeScript best practices
+- Consistent code formatting and organization
+
+## 🚧 Roadmap & Future Enhancements
+
+### Completed Features ✅
+- ✅ Complete multi-step form with all CE sections
+- ✅ Professional PDF generation with exact CE format
+- ✅ Real-time validation and progress tracking
+- ✅ Auto-save functionality with visual indicators
+- ✅ Responsive design for all device sizes
+- ✅ Development testing tools for format verification
+- ✅ Professional helper text and examples throughout
+- ✅ Print preview mode with CE-compliant formatting
+
+### Near Term Roadmap 🔄
+- [ ] Enhanced accessibility features (WCAG 2.1 AA compliance)
+- [ ] Advanced form validation with medical logic
+- [ ] Export to additional formats (Word, Excel)
+- [ ] Form templates for different examination types
+- [ ] Improved mobile user experience
+
+### Future Enhancements 🚀
+- [ ] Multi-language support (Spanish, French)
+- [ ] Dark mode theme option
+- [ ] Offline functionality with service workers
+- [ ] Integration with EMR/EHR systems
+- [ ] Advanced reporting and analytics
+- [ ] User authentication and role management
+- [ ] Cloud storage integration options
+- [ ] Digital signature capabilities
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### How to Contribute
+
+1. **Fork the repository**
+   ```bash
+   git fork https://github.com/pallavkoppisetti/medical-intake-form.git
+   ```
+
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+
+3. **Make your changes**
+   - Follow existing code patterns and TypeScript conventions
+   - Add appropriate validation for new form fields
+   - Ensure responsive design for new components
+   - Add comprehensive helper text and examples
+
+4. **Test your changes**
+   - Test all form sections and navigation
+   - Verify PDF generation with new features
+   - Check responsive design on multiple screen sizes
+   - Validate accessibility with screen readers
+
+5. **Commit and push**
+   ```bash
+   git commit -m 'Add amazing feature with detailed description'
+   git push origin feature/amazing-feature
+   ```
+
+6. **Open a Pull Request**
+   - Provide detailed description of changes
+   - Include screenshots for UI changes
+   - Reference any related issues
+
+### Development Guidelines
+- Maintain type safety with comprehensive TypeScript definitions
+- Follow existing design patterns and component structure
+- Ensure all new features are accessible and responsive
+- Add appropriate validation and error handling
+- Include realistic helper text and examples for medical fields
 
 ## 📄 License
 
@@ -329,147 +444,39 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍⚕️ Medical Disclaimer
 
-This software is for educational and demonstration purposes only. It is not intended for actual medical use without proper validation, testing, and compliance with healthcare regulations (HIPAA, etc.). Always consult with healthcare professionals and legal experts before using in a clinical environment.
+This software is for educational and demonstration purposes only. It is not intended for actual medical use without proper validation, testing, and compliance with healthcare regulations (HIPAA, HITECH, etc.). 
 
-## 📞 Support
+**Important Considerations for Clinical Use:**
+- Validate all generated PDFs against official CE Exam requirements
+- Ensure compliance with local healthcare data protection regulations
+- Implement proper security measures for patient data
+- Conduct thorough testing in controlled environments
+- Obtain legal and medical professional review before clinical deployment
 
-For questions, suggestions, or issues:
-- Open an issue on GitHub
-- Contact the maintainers
-- Check the documentation in the `/docs` folder
+Always consult with healthcare professionals, legal experts, and compliance officers before using in a clinical environment.
 
-## 🙏 Acknowledgments
+## 📞 Support & Contact
 
-- Built with modern React and TypeScript practices
-- UI components inspired by medical software best practices
+### Getting Help
+- **Issues**: Report bugs or request features via GitHub Issues
+- **Documentation**: Check the `/docs` folder for detailed guides
+- **Development**: Contact maintainers for development questions
+
+### Repository Information
+- **Repository**: https://github.com/pallavkoppisetti/medical-intake-form
+- **Main Branch**: `main`
+- **Development**: Active development with regular updates
+- **License**: MIT License (see LICENSE file)
+
+### Acknowledgments
+- Built with modern React and TypeScript best practices
+- UI components based on shadcn/ui design system
+- Medical workflow insights from healthcare professionals
 - Accessibility guidelines following WCAG standards
-- Healthcare workflow insights from medical professionals
-- **Type Safety**: Full TypeScript support with comprehensive type definitions
-- **Accessibility**: Built with accessibility best practices and ARIA compliance
-- **Modern UI Components**: Using shadcn/ui component library for consistent design
+- PDF generation optimized for professional medical documentation
 
-## Tech Stack
+---
 
-- **React 18** - Modern React with hooks and functional components
-- **TypeScript** - Type safety and enhanced developer experience
-- **Vite** - Fast build tool and development server
-- **Tailwind CSS** - Utility-first CSS framework
-- **shadcn/ui** - High-quality, accessible UI components
-- **Lucide React** - Beautiful, customizable icons
-
-## Project Structure
-
-```
-src/
-├── components/           # Reusable UI components
-│   ├── ui/              # shadcn/ui components
-│   └── PersonalInfoForm.tsx
-├── pages/               # Page-level components
-│   └── MedicalIntakePage.tsx
-├── types/               # TypeScript type definitions
-│   └── medical-form.ts
-├── utils/               # Utility functions
-│   ├── validation.ts    # Form validation helpers
-│   └── form-storage.ts  # LocalStorage management
-├── styles/              # Custom styles
-└── App.tsx             # Main application component
-```
-
-## Form Sections
-
-### Implemented
-- ✅ **Personal Information**: Name, contact details, address, demographics
-- ✅ **Progress Tracking**: Visual step indicator and navigation
-- ✅ **Review & Submit**: Form summary and submission
-
-### To Be Implemented
-- 🔄 **Insurance Information**: Provider details, policy numbers
-- 🔄 **Medical History**: Allergies, medications, past procedures
-- 🔄 **Current Visit**: Chief complaint, symptoms, pain assessment
-- 🔄 **Emergency Contact**: Emergency contact information
-
-## Getting Started
-
-### Prerequisites
-- Node.js (version 16 or higher)
-- npm or yarn package manager
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd medical-intake-form
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm run dev
-```
-
-4. Open your browser and navigate to `http://localhost:5173`
-
-### Building for Production
-
-```bash
-npm run build
-```
-
-The built files will be in the `dist` directory.
-
-### Linting
-
-```bash
-npm run lint
-```
-
-## Development Guidelines
-
-### Adding New Form Sections
-
-1. Define types in `src/types/medical-form.ts`
-2. Create form component following the pattern in `PersonalInfoForm.tsx`
-3. Add validation logic using utilities from `src/utils/validation.ts`
-4. Integrate the new section into `MedicalIntakePage.tsx`
-
-### Styling Guidelines
-
-- Use Tailwind CSS utility classes for styling
-- Follow the existing design patterns and spacing
-- Ensure responsive design with mobile-first approach
-- Use shadcn/ui components for consistency
-
-### Type Safety
-
-- All form data should use the defined TypeScript interfaces
-- Add proper type annotations for new functions and components
-- Use the existing validation utilities for form inputs
-
-## Data Management
-
-The application uses localStorage to automatically save form progress:
-
-- **Auto-save**: Form data is saved on every change
-- **Resume**: Users can close and reopen the form without losing progress
-- **Clear**: Option to clear saved draft data
-
-## Contributing
-
-1. Follow the existing code patterns and conventions
-2. Ensure all new components are properly typed
-3. Add appropriate validation for new form fields
-4. Test responsive design on multiple screen sizes
-5. Maintain accessibility standards
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For questions or support, please contact the development team or create an issue in the project repository.
+**Version**: 2.0.0  
+**Last Updated**: August 12, 2025  
+**Compatibility**: React 18+, Node.js 18+, Modern Browsers
