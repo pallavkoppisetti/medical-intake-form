@@ -1,8 +1,12 @@
 {
   "name": "medical-intake-form",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "description": "Professional medical intake form application with Florida CE Exam compliance and comprehensive PDF generation",
+  "keywords": ["medical", "form", "healthcare", "pdf", "florida", "ce-exam", "typescript", "react"],
+  "author": "Pallav Koppisetti",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

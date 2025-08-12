@@ -73,7 +73,22 @@ This application provides a multi-step medical intake form designed for healthca
   - clsx and tailwind-merge for conditional styling
   - html2canvas for document capture capabilities
 
-## 📁 Project Structure
+## � Documentation
+
+### Available Documentation
+- **[Development Guide](docs/DEVELOPMENT.md)** - Setup, architecture, and development workflow
+- **[Form Layout Documentation](docs/FormLayout.md)** - Component structure and layout system
+- **[Multi-Step Form Controller](docs/MultiStepFormController.md)** - Navigation and state management
+- **[Change Log](docs/CHANGELOG.md)** - Complete version history and release notes
+
+### Quick Links
+- [Installation & Setup](#️-installation--setup)
+- [Usage Instructions](#-usage)
+- [PDF Generation Workflow](#-pdf-generation-workflow)
+- [Development Testing Tools](#-development-tools-development-mode-only)
+- [Contributing Guidelines](#-contributing)
+
+## �📁 Project Structure
 
 ```
 src/
@@ -460,6 +475,10 @@ Always consult with healthcare professionals, legal experts, and compliance offi
 ### Getting Help
 - **Issues**: Report bugs or request features via GitHub Issues
 - **Documentation**: Check the `/docs` folder for detailed guides
+  - [Development Guide](docs/DEVELOPMENT.md) - Setup and development workflow
+  - [Form Layout Documentation](docs/FormLayout.md) - Component structure
+  - [Multi-Step Form Controller](docs/MultiStepFormController.md) - Navigation system
+  - [Change Log](docs/CHANGELOG.md) - Version history and release notes
 - **Development**: Contact maintainers for development questions
 
 ### Repository Information
