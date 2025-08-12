@@ -1,11 +1,5 @@
 import { useCallback } from 'react';
-import {
-  personalInfoSchema,
-  medicalHistorySchema,
-  visitInfoSchema,
-  validateFormSection
-} from '../lib/validation';
-import type { CompleteMedicalIntakeForm } from '../types/comprehensive-medical-form';
+import type { FloridaCEExamForm } from '../types/comprehensive-medical-form';
 
 export interface ValidationError {
   field: string;
@@ -18,199 +12,134 @@ export interface ValidationResult {
 }
 
 export function useFormValidation() {
-  // Validate individual sections
-  const validateSection = useCallback((
-    sectionName: keyof CompleteMedicalIntakeForm,
-    sectionData: any
-  ) => {
+  const getRequiredFieldsForSection = useCallback((sectionName: keyof FloridaCEExamForm) => {
+    // This is a simplified representation. In a real app, this might be derived from Zod schemas.
     switch (sectionName) {
-      case 'basicInfo':
-        return validateFormSection(personalInfoSchema, sectionData);
+      case 'header':
+        return ['claimantName', 'dateOfBirth', 'examDate'];
       case 'history':
-        return validateFormSection(medicalHistorySchema, sectionData);
-      case 'clinicalAssessment':
-        // Use visitInfoSchema for current visit information within clinical assessment
-        if (sectionData.chiefComplaint) {
-          return validateFormSection(visitInfoSchema, {
-            chiefComplaint: sectionData.chiefComplaint,
-            symptomsStartDate: sectionData.symptomsStartDate || '',
-            painLevel: sectionData.painLevel || 0,
-          });
-        }
-        return { success: true };
+        return ['chiefComplaint', 'pastMedicalHistory'];
+      case 'functionalStatus':
+        return ['physicalDemandsOfJob', 'activitiesOfDailyLiving'];
+      case 'medicalInfo':
+        return ['currentMedications', 'allergies'];
+      case 'physicalExam':
+        return ['generalAppearance', 'vitalSigns'];
+      case 'rangeOfMotion':
+        return ['cervicalSpine', 'thoracicSpine', 'lumbarSpine'];
+      case 'gaitStation':
+        return ['gait', 'station'];
+      case 'assessment':
+        return ['diagnosis', 'prognosis'];
       default:
-        // For sections without specific schemas, perform basic validation
-        return { success: true };
+        return [];
     }
   }, []);
 
-  // Validate the complete form
-  const validateCompleteForm = useCallback((formData: Partial<CompleteMedicalIntakeForm>) => {
-    const errors: ValidationError[] = [];
-    const sections = Object.keys(formData) as (keyof CompleteMedicalIntakeForm)[];
+  const validateSection = useCallback((
+    sectionName: keyof FloridaCEExamForm,
+    sectionData: any
+  ): ValidationResult => {
+    if (!sectionData) {
+      return { success: false, errors: [{ field: 'section', message: 'Section data is missing.' }] };
+    }
+
+    // Placeholder for more complex validation logic (e.g., using Zod)
+    // For now, we'll do a simple check for a few fields in the 'header'
+    if (sectionName === 'header') {
+      const errors: ValidationError[] = [];
+      if (!sectionData.claimantName) {
+        errors.push({ field: 'claimantName', message: 'Claimant Name is required.' });
+      }
+      if (!sectionData.dateOfBirth) {
+        errors.push({ field: 'dateOfBirth', message: 'Date of Birth is required.' });
+      }
+      if (!sectionData.examDate) {
+        errors.push({ field: 'examDate', message: 'Exam Date is required.' });
+      }
+      if (errors.length > 0) {
+        return { success: false, errors };
+      }
+    }
+    
+    return { success: true };
+  }, []);
+
+  const validateCompleteForm = useCallback((formData: Partial<FloridaCEExamForm>) => {
+    const allErrors: ValidationError[] = [];
+    const sections = Object.keys(formData) as (keyof FloridaCEExamForm)[];
 
     sections.forEach(sectionName => {
       const sectionData = formData[sectionName];
       if (sectionData) {
         const result = validateSection(sectionName, sectionData);
         if (!result.success && result.errors) {
-          // Convert Record<string, string> to ValidationError[]
-          Object.entries(result.errors).forEach(([field, message]) => {
-            errors.push({ field, message });
-          });
+          allErrors.push(...result.errors);
         }
       }
     });
 
     return {
-      success: errors.length === 0,
-      errors: errors.length > 0 ? errors : undefined
+      success: allErrors.length === 0,
+      errors: allErrors.length > 0 ? allErrors : undefined
     };
   }, [validateSection]);
 
-  // Get required fields for a specific section
-  const getRequiredFieldsForSection = useCallback((sectionName: keyof CompleteMedicalIntakeForm) => {
-    switch (sectionName) {
-      case 'basicInfo':
-        return [
-          'firstName',
-          'lastName',
-          'dateOfBirth',
-          'gender',
-          'address.street',
-          'address.city',
-          'address.state',
-          'address.zipCode',
-          'phone',
-          'email'
-        ];
-      case 'history':
-        return [
-          'currentMedications',
-          'allergies'
-        ];
-      case 'functionalStatus':
-        return [
-          'activitiesOfDailyLiving.bathing',
-          'mobility.walkingDistance'
-        ];
-      case 'vitalSigns':
-        return [
-          'bloodPressure.systolic',
-          'bloodPressure.diastolic',
-          'heartRate.rate'
-        ];
-      case 'physicalExam':
-        return [
-          'generalAppearance.consciousness'
-        ];
-      case 'neuroMuscularAssessment':
-        return [
-          'motorFunction.strength.upperExtremities.leftShoulder'
-        ];
-      case 'rangeOfMotion':
-        return [
-          'cervicalSpine.flexion.active'
-        ];
-      case 'gaitAndStation':
-        return [
-          'gaitPattern.cadence'
-        ];
-      case 'clinicalAssessment':
-        return [
-          'chiefComplaint',
-          'primaryDiagnosis.description'
-        ];
-      default:
-        return [];
-    }
-  }, []);
-
-  // Check if a section is complete based on required fields
-  const isSectionComplete = useCallback((
-    sectionName: keyof CompleteMedicalIntakeForm,
+  const getSectionErrors = useCallback((
+    sectionName: keyof FloridaCEExamForm,
     sectionData: any
-  ) => {
+  ): ValidationError[] => {
+    const result = validateSection(sectionName, sectionData);
+    return result.errors || [];
+  }, [validateSection]);
+
+  const isSectionComplete = useCallback((
+    sectionName: keyof FloridaCEExamForm,
+    sectionData: any
+  ): boolean => {
     const requiredFields = getRequiredFieldsForSection(sectionName);
-    return requiredFields.every((fieldPath: string) => {
-      const value = getNestedValue(sectionData, fieldPath);
+    if (requiredFields.length === 0) return true; // No required fields means complete
+
+    return requiredFields.every(field => {
+      // Basic check for non-empty value. This could be more sophisticated.
+      const value = field.split('.').reduce((o, i) => o?.[i], sectionData);
       return value !== undefined && value !== null && value !== '';
     });
   }, [getRequiredFieldsForSection]);
 
-  // Get completion percentage for a section
   const getSectionCompletionPercentage = useCallback((
-    sectionName: keyof CompleteMedicalIntakeForm,
+    sectionName: keyof FloridaCEExamForm,
     sectionData: any
-  ) => {
+  ): number => {
     const requiredFields = getRequiredFieldsForSection(sectionName);
     if (requiredFields.length === 0) return 100;
 
-    const completedFields = requiredFields.filter((fieldPath: string) => {
-      const value = getNestedValue(sectionData, fieldPath);
+    const filledFields = requiredFields.filter(field => {
+      const value = field.split('.').reduce((o, i) => o?.[i], sectionData);
       return value !== undefined && value !== null && value !== '';
-    });
+    }).length;
 
-    return Math.round((completedFields.length / requiredFields.length) * 100);
+    return (filledFields / requiredFields.length) * 100;
   }, [getRequiredFieldsForSection]);
 
-  // Get overall form completion percentage
-  const getFormCompletionPercentage = useCallback((formData: Partial<CompleteMedicalIntakeForm>) => {
-    const allSections: (keyof CompleteMedicalIntakeForm)[] = [
-      'basicInfo',
-      'history',
-      'functionalStatus',
-      'vitalSigns',
-      'physicalExam',
-      'neuroMuscularAssessment',
-      'rangeOfMotion',
-      'gaitAndStation',
-      'clinicalAssessment'
-    ];
-
-    const totalPercentage = allSections.reduce((sum, sectionName) => {
+  const getFormCompletionPercentage = useCallback((formData: Partial<FloridaCEExamForm>) => {
+    const totalPercentage = Object.keys(formData).reduce((acc, sectionId) => {
+      const sectionName = sectionId as keyof FloridaCEExamForm;
       const sectionData = formData[sectionName];
-      return sum + getSectionCompletionPercentage(sectionName, sectionData);
+      return acc + getSectionCompletionPercentage(sectionName, sectionData);
     }, 0);
-
-    return Math.round(totalPercentage / allSections.length);
+    
+    const sectionCount = Object.keys(formData).length;
+    return sectionCount > 0 ? totalPercentage / sectionCount : 0;
   }, [getSectionCompletionPercentage]);
 
-  // Validate a specific field
-  const validateField = useCallback((
-    sectionName: keyof CompleteMedicalIntakeForm,
-    sectionData: any
-  ) => {
-    return validateSection(sectionName, sectionData);
-  }, [validateSection]);
-
-  // Get validation errors for a specific section
-  const getSectionErrors = useCallback((
-    sectionName: keyof CompleteMedicalIntakeForm,
-    sectionData: any
-  ) => {
-    const result = validateSection(sectionName, sectionData);
-    if (!result.success && result.errors) {
-      return Object.entries(result.errors).map(([field, message]) => ({ field, message }));
-    }
-    return [];
-  }, [validateSection]);
-
-  return {
-    validateSection,
-    validateCompleteForm,
-    validateField,
+  return { 
+    validateSection, 
+    validateCompleteForm, 
+    getRequiredFieldsForSection,
+    getSectionErrors,
     isSectionComplete,
     getSectionCompletionPercentage,
-    getFormCompletionPercentage,
-    getSectionErrors,
-    getRequiredFieldsForSection
+    getFormCompletionPercentage
   };
-}
-
-// Helper function to get nested object values
-function getNestedValue(obj: any, path: string): any {
-  return path.split('.').reduce((current, key) => {
-    return current && current[key] !== undefined ? current[key] : undefined;
-  }, obj);
 }

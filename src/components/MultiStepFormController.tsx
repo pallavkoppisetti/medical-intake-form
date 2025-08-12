@@ -1,13 +1,15 @@
 import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
 import { ProgressBar, CompactProgressBar, StepCounter } from './ProgressBar';
-import { BasicInfoForm } from './form-sections/BasicInfoForm';
-import { HistoryForm } from './form-sections/HistoryForm';
-import { FunctionalStatusForm } from './form-sections/FunctionalStatusForm';
-import { VitalSignsForm } from './form-sections/VitalSignsForm';
+import { CEHeaderForm } from './form-sections/CEHeaderForm';
+import { HistoryFormNew } from './form-sections/HistoryFormNew';
+import { FunctionalStatusFormNew } from './form-sections/FunctionalStatusFormNew';
+import { MedicalInfoForm } from './form-sections/MedicalInfoForm';
 import { PhysicalExamForm } from './form-sections/PhysicalExamForm';
-import { NeuroMuscularAssessmentForm } from './form-sections/NeuroMuscularAssessmentForm';
-import { ClinicalAssessmentForm } from './form-sections/ClinicalAssessmentForm';
-import type { CompleteMedicalIntakeForm } from '../types/comprehensive-medical-form';
+import { RangeOfMotionForm } from './form-sections/RangeOfMotionForm';
+import { GaitStationForm } from './form-sections/GaitStationForm';
+import { AssessmentForm } from './form-sections/AssessmentForm';
+import { FormReviewAndGenerate } from './FormReviewAndGenerate';
+import { PDFExportButton } from './PDFExportButton';
 import { Save, RotateCcw, Send, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
@@ -31,12 +33,10 @@ export function MultiStepFormController({
     nextStep,
     previousStep,
     goToStep,
-    updateSection,
     saveForm,
     resetForm,
     submitForm,
     getCurrentStep,
-    getCurrentStepData,
     getStepValidation,
   } = useMultiStepForm();
 
@@ -44,12 +44,7 @@ export function MultiStepFormController({
   const [showJsonPreview, setShowJsonPreview] = useState(false);
 
   const currentStep = getCurrentStep();
-  const currentStepData = getCurrentStepData();
   const currentValidation = getStepValidation(currentStep.id);
-
-  const handleSectionUpdate = (data: any) => {
-    updateSection(currentStep.id, data);
-  };
 
   const handleSave = async () => {
     const success = await saveForm();
@@ -82,50 +77,32 @@ export function MultiStepFormController({
   const renderCurrentForm = () => {
     // Type-safe rendering based on the current step
     switch (state.currentStep) {
-      case 0:
-        return (
-          <BasicInfoForm
-            data={currentStepData as Partial<CompleteMedicalIntakeForm['basicInfo']>}
-            onUpdate={handleSectionUpdate}
-            onNext={nextStep}
-            onPrevious={state.currentStep > 0 ? previousStep : undefined}
-          />
-        );
+      case 0: // Header
+        return <CEHeaderForm />;
 
-      case 1:
-        return (
-          <HistoryForm
-            data={currentStepData as CompleteMedicalIntakeForm['history']}
-            onChange={handleSectionUpdate}
-            onNext={nextStep}
-            onPrevious={previousStep}
-          />
-        );
+      case 1: // History
+        return <HistoryFormNew />;
 
-      case 2:
-        return (
-          <FunctionalStatusForm />
-        );
+      case 2: // Functional Status
+        return <FunctionalStatusFormNew />;
 
-      case 3:
-        return (
-          <VitalSignsForm />
-        );
+      case 3: // Medical Info
+        return <MedicalInfoForm />;
 
-      case 4:
-        return (
-          <PhysicalExamForm />
-        );
+      case 4: // Physical Exam
+        return <PhysicalExamForm />;
 
-      case 5:
-        return (
-          <NeuroMuscularAssessmentForm />
-        );
+      case 5: // Range of Motion
+        return <RangeOfMotionForm />;
 
-      case 8:
-        return (
-          <ClinicalAssessmentForm />
-        );
+      case 6: // Gait & Station
+        return <GaitStationForm />;
+
+      case 7: // Assessment
+        return <AssessmentForm />;
+
+      case 8: // Review & Generate PDF
+        return <FormReviewAndGenerate />;
 
       default:
         // Placeholder for unimplemented sections
@@ -197,7 +174,10 @@ export function MultiStepFormController({
 
         {/* Section summaries */}
         {FORM_STEPS.map((step, index) => {
-          const sectionData = state.formData[step.id];
+          // Skip review step in section summaries
+          if (step.id === 'review') return null;
+          
+          const sectionData = state.formData[step.id as keyof typeof state.formData];
           const validation = getStepValidation(step.id);
           const hasData = sectionData && Object.keys(sectionData).length > 0;
 
@@ -235,26 +215,51 @@ export function MultiStepFormController({
                 </div>
               </div>
               
-              {/* Basic data preview - you can customize this per section */}
+              {/* Basic data preview - customized for Florida CE Exam Form */}
               <div className="text-sm text-gray-600">
-                {step.id === 'basicInfo' && sectionData && (
+                {step.id === 'header' && sectionData && (
                   <div className="grid grid-cols-2 gap-2">
-                    {(sectionData as any).firstName && (
-                      <div><strong>Name:</strong> {(sectionData as any).firstName} {(sectionData as any).lastName}</div>
+                    {(sectionData as any).claimantName && (
+                      <div><strong>Claimant:</strong> {(sectionData as any).claimantName}</div>
                     )}
-                    {(sectionData as any).email && (
-                      <div><strong>Email:</strong> {(sectionData as any).email}</div>
-                    )}
-                    {(sectionData as any).phone && (
-                      <div><strong>Phone:</strong> {(sectionData as any).phone}</div>
+                    {(sectionData as any).caseNumber && (
+                      <div><strong>Case #:</strong> {(sectionData as any).caseNumber}</div>
                     )}
                     {(sectionData as any).dateOfBirth && (
                       <div><strong>DOB:</strong> {(sectionData as any).dateOfBirth}</div>
+                    )}
+                    {(sectionData as any).examDate && (
+                      <div><strong>Exam Date:</strong> {(sectionData as any).examDate}</div>
                     )}
                   </div>
                 )}
                 
                 {step.id === 'history' && sectionData && (
+                  <div className="space-y-1">
+                    {(sectionData as any).age && (
+                      <div><strong>Age:</strong> {(sectionData as any).age}</div>
+                    )}
+                    {(sectionData as any).gender && (
+                      <div><strong>Gender:</strong> {(sectionData as any).gender}</div>
+                    )}
+                    {(sectionData as any).historyOfPresentIllness && (
+                      <div><strong>History:</strong> {(sectionData as any).historyOfPresentIllness.substring(0, 100)}...</div>
+                    )}
+                  </div>
+                )}
+
+                {step.id === 'functionalStatus' && sectionData && (
+                  <div className="space-y-1">
+                    {(sectionData as any).dominantHand && (
+                      <div><strong>Dominant Hand:</strong> {(sectionData as any).dominantHand}</div>
+                    )}
+                    {(sectionData as any).sittingWorstDay && (
+                      <div><strong>Sitting (worst):</strong> {(sectionData as any).sittingWorstDay}</div>
+                    )}
+                  </div>
+                )}
+
+                {step.id === 'medicalInfo' && sectionData && (
                   <div className="space-y-1">
                     {(sectionData as any).currentMedications?.length > 0 && (
                       <div><strong>Medications:</strong> {(sectionData as any).currentMedications.length} listed</div>
@@ -264,9 +269,17 @@ export function MultiStepFormController({
                     )}
                   </div>
                 )}
+
+                {step.id === 'assessment' && sectionData && (
+                  <div className="space-y-1">
+                    {(sectionData as any).diagnosis?.primary && (
+                      <div><strong>Primary Diagnosis:</strong> {(sectionData as any).diagnosis.primary}</div>
+                    )}
+                  </div>
+                )}
                 
                 {/* For other sections, show a generic summary */}
-                {!['basicInfo', 'history'].includes(step.id) && (
+                {!['header', 'history', 'functionalStatus', 'medicalInfo', 'assessment'].includes(step.id) && (
                   <div>
                     {Object.keys(sectionData).length} field(s) completed
                   </div>
@@ -361,6 +374,12 @@ export function MultiStepFormController({
                 )}
               </button>
             )}
+            
+            <PDFExportButton 
+              variant="outline"
+              size="default"
+              disabled={state.overallProgress < 50}
+            />
             
             <button
               onClick={handleSubmit}

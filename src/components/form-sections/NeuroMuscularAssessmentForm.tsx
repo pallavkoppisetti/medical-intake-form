@@ -3,10 +3,10 @@ import { Brain, Zap } from 'lucide-react';
 
 export function NeuroMuscularAssessmentForm() {
   const { state, updateSection } = useMultiStepForm();
-  const data = state.formData.neuroMuscularAssessment || {};
+  const data = state.formData.physicalExam || {};
 
   const updateField = (field: string, value: any) => {
-    updateSection('neuroMuscularAssessment', { ...data, [field]: value });
+    updateSection('physicalExam', { ...data, [field]: value });
   };
 
   const strengthOptions = [

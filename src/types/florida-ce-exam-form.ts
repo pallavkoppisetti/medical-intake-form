@@ -69,26 +69,11 @@ export interface VitalSigns {
     diastolic: number;
   };
   heartRate: number;
-  respiratoryRate?: number;
+  respiratoryRate: number;
   temperature: number;
   weight: number;
   height: number;
   bmi?: number;
-  oxygenSaturation?: string;
-  visualAcuity?: {
-    right: {
-      uncorrected: string;
-      corrected: string;
-    };
-    left: {
-      uncorrected: string;
-      corrected: string;
-    };
-  };
-  handGripStrength?: {
-    right: string;
-    left: string;
-  };
 }
 
 // =======================
@@ -97,18 +82,55 @@ export interface VitalSigns {
 
 export interface PhysicalExam {
   vitalSigns: VitalSigns;
-  general?: string;
-  eyes?: string;
-  earsNoseThroat?: string;
-  headNeck?: string;
-  respiratory?: string;
-  cardiovascular?: string;
-  abdomen?: string;
-  back?: string;
-  skin?: string;
-  musculoskeletal?: string;
-  neurological?: string;
-  psychiatry?: string;
+  general: {
+    appearance: string;
+    alertness: string;
+    cooperation: string;
+  };
+  heent: {
+    head: string;
+    eyes: string;
+    ears: string;
+    nose: string;
+    throat: string;
+  };
+  cardiovascular: {
+    heartSounds: string;
+    murmurs: string;
+    rhythm: string;
+    pulses: string;
+  };
+  respiratory: {
+    breathSounds: string;
+    effort: string;
+    symmetry: string;
+  };
+  abdomen: {
+    inspection: string;
+    palpation: string;
+    bowelSounds: string;
+  };
+  musculoskeletal: {
+    inspection: string;
+    palpation: string;
+    stability: string;
+    deformities: string;
+  };
+  neurological: {
+    mentalStatus: string;
+    cranialNerves: string;
+    motorExam: string;
+    sensoryExam: string;
+    reflexes: string;
+    coordination: string;
+    gait: string;
+  };
+  skin: {
+    color: string;
+    texture: string;
+    lesions: string;
+    scars: string;
+  };
 }
 
 // =======================
@@ -125,8 +147,7 @@ export interface RangeOfMotionMeasurement {
 }
 
 export interface RangeOfMotion {
-  effortOnExam?: 'Good' | 'Fair' | 'Poor';
-  cervicalSpine?: {
+  cervicalSpine: {
     flexion: number;
     extension: number;
     leftLateralFlexion: number;
@@ -134,15 +155,15 @@ export interface RangeOfMotion {
     leftRotation: number;
     rightRotation: number;
   };
-  lumbarSpine?: {
+  lumbarSpine: {
     flexion: number;
     extension: number;
     leftLateralFlexion: number;
     rightLateralFlexion: number;
-    leftRotation?: number;
-    rightRotation?: number;
+    leftRotation: number;
+    rightRotation: number;
   };
-  shoulders?: {
+  shoulders: {
     left: {
       flexion: number;
       extension: number;
@@ -160,89 +181,45 @@ export interface RangeOfMotion {
       externalRotation: number;
     };
   };
-  elbows?: {
+  elbows: {
     left: {
       flexion: number;
-      pronation?: number;
-      supination?: number;
+      extension: number;
     };
     right: {
       flexion: number;
-      pronation?: number;
-      supination?: number;
+      extension: number;
     };
   };
-  wrists?: {
+  wrists: {
     left: {
-      dorsiflexion: number;
-      palmarFlexion: number;
+      flexion: number;
+      extension: number;
       ulnarDeviation: number;
       radialDeviation: number;
     };
     right: {
-      dorsiflexion: number;
-      palmarFlexion: number;
+      flexion: number;
+      extension: number;
       ulnarDeviation: number;
       radialDeviation: number;
     };
   };
-  hands?: {
+  hands: {
     left: {
-      thumb?: {
-        mcpFlexion: number;
-        ipFlexion: number;
-        opposition: number;
-      };
-      index?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      middle?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      ring?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      little?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
+      makeAFist: boolean;
+      fingerFlexion: number;
+      fingerExtension: number;
+      thumbOpposition: boolean;
     };
     right: {
-      thumb?: {
-        mcpFlexion: number;
-        ipFlexion: number;
-        opposition: number;
-      };
-      index?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      middle?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      ring?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
-      little?: {
-        mcpFlexion: number;
-        pipFlexion: number;
-        dipFlexion: number;
-      };
+      makeAFist: boolean;
+      fingerFlexion: number;
+      fingerExtension: number;
+      thumbOpposition: boolean;
     };
   };
-  hips?: {
+  hips: {
     left: {
       flexion: number;
       extension: number;
@@ -260,7 +237,7 @@ export interface RangeOfMotion {
       externalRotation: number;
     };
   };
-  knees?: {
+  knees: {
     left: {
       flexion: number;
       extension: number;
@@ -270,7 +247,7 @@ export interface RangeOfMotion {
       extension: number;
     };
   };
-  ankles?: {
+  ankles: {
     left: {
       dorsiflexion: number;
       plantarflexion: number;
@@ -284,35 +261,6 @@ export interface RangeOfMotion {
       eversion: number;
     };
   };
-}
-
-// =======================
-// GAIT AND STATION SECTION
-// =======================
-
-export interface GaitStationPerformanceTests {
-  gettingOnOffTable?: 'able' | 'unable';
-  walkingOnHeels?: 'able' | 'unable';
-  walkingOnToes?: 'able' | 'unable';
-  squattingAndRising?: 'able' | 'unable';
-  fingerToNose?: 'able' | 'unable';
-  straightLegRaise?: 'positive' | 'negative';
-}
-
-export interface AssistiveDevice {
-  gaitAssessment?: string;
-  deviceType?: string;
-  medicalConditions?: string;
-  usageContext?: string[];
-  medicalNecessity?: 'yes' | 'no';
-  circumstancesOfUse?: string;
-  patientCooperation?: 'yes' | 'no';
-}
-
-export interface GaitStation {
-  performanceTests?: GaitStationPerformanceTests;
-  assistiveDevice?: AssistiveDevice;
-  additionalNotes?: string;
 }
 
 // =======================
@@ -320,30 +268,22 @@ export interface GaitStation {
 // =======================
 
 export interface Assessment {
-  // Diagnosis/Assessment section
-  diagnosisAssessment: string[];
-  
-  // Medical Source Statement
+  diagnosis: {
+    primary: string;
+    secondary?: string[];
+  };
   medicalSourceStatement: {
     abilities: string;
-    understandingMemoryConcentration: string;
     limitations: string;
   };
-  
-  // Recommendations
   recommendations: string;
-  
-  // Imaging Reviewed
-  imagingReviewed: string;
-  
-  // Statement Re Review of Medical Records
-  medicalRecordsReviewStatement: string;
-  
-  // Examiner Information
-  examinerInfo: {
-    name: string;
-    facility: string;
-    date: string;
+  imagingReviewed: {
+    reviewed: boolean;
+    findings?: string;
+  };
+  medicalRecordsReview: {
+    reviewed: boolean;
+    statement: string;
   };
 }
 
@@ -358,7 +298,6 @@ export interface FloridaCEExamForm {
   medicalInfo: MedicalInfo;
   physicalExam: PhysicalExam;
   rangeOfMotion: RangeOfMotion;
-  gaitStation: GaitStation;
   assessment: Assessment;
 }
 
@@ -389,9 +328,8 @@ export enum FormSteps {
   MEDICAL_INFO = 3,
   PHYSICAL_EXAM = 4,
   RANGE_OF_MOTION = 5,
-  GAIT_STATION = 6,
-  ASSESSMENT = 7,
-  REVIEW = 8
+  ASSESSMENT = 6,
+  REVIEW = 7
 }
 
 export const FORM_STEP_LABELS = {
@@ -401,40 +339,8 @@ export const FORM_STEP_LABELS = {
   [FormSteps.MEDICAL_INFO]: 'Medical Information',
   [FormSteps.PHYSICAL_EXAM]: 'Physical Examination',
   [FormSteps.RANGE_OF_MOTION]: 'Range of Motion',
-  [FormSteps.GAIT_STATION]: 'Gait & Station',
   [FormSteps.ASSESSMENT]: 'Assessment',
   [FormSteps.REVIEW]: 'Review & Submit'
 };
-
-// =======================
-// BACKWARD COMPATIBILITY ALIASES
-// =======================
-
-export type CompleteMedicalIntakeForm = FloridaCEExamForm;
-
-export interface BasicInfo {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  gender: string;
-  contactInfo: {
-    phone: string;
-    email: string;
-    address: string;
-  };
-}
-
-export interface Medication {
-  name: string;
-  dosage: string;
-  frequency: string;
-  prescribedBy: string;
-}
-
-export interface Allergy {
-  allergen: string;
-  reaction: string;
-  severity: 'Mild' | 'Moderate' | 'Severe';
-}
 
 export default FloridaCEExamForm;

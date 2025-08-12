@@ -3,10 +3,10 @@ import { Stethoscope, Heart, Activity } from 'lucide-react';
 
 export function VitalSignsForm() {
   const { state, updateSection } = useMultiStepForm();
-  const data = state.formData.vitalSigns || {};
+  const data = state.formData.physicalExam || {};
 
   const updateField = (field: string, value: any) => {
-    updateSection('vitalSigns', { ...data, [field]: value });
+    updateSection('physicalExam', { ...data, [field]: value });
   };
 
   return (

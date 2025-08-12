@@ -1,19 +1,19 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
-import type { CompleteMedicalIntakeForm } from '../types/comprehensive-medical-form';
+import type { FloridaCEExamForm } from '../types/comprehensive-medical-form';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { saveFormData as saveToStorage, loadFormData as loadFromStorage } from '../lib/form-storage';
 
-// Define form steps configuration
+// Define form steps configuration matching Florida CE Exam Form
 export const FORM_STEPS = [
-  { id: 'basicInfo', title: 'Basic Information', required: true },
-  { id: 'history', title: 'Medical History', required: true },
-  { id: 'functionalStatus', title: 'Functional Status', required: false },
-  { id: 'vitalSigns', title: 'Vital Signs', required: true },
-  { id: 'physicalExam', title: 'Physical Exam', required: false },
-  { id: 'neuroMuscularAssessment', title: 'Neuromuscular', required: false },
-  { id: 'rangeOfMotion', title: 'Range of Motion', required: false },
-  { id: 'gaitAndStation', title: 'Gait & Station', required: false },
-  { id: 'clinicalAssessment', title: 'Clinical Assessment', required: true },
+  { id: 'header', title: 'Header Information', required: true },
+  { id: 'history', title: 'History', required: true },
+  { id: 'functionalStatus', title: 'Functional Status', required: true },
+  { id: 'medicalInfo', title: 'Medical Information', required: true },
+  { id: 'physicalExam', title: 'Physical Examination', required: true },
+  { id: 'rangeOfMotion', title: 'Range of Motion', required: true },
+  { id: 'gaitStation', title: 'Gait & Station', required: true },
+  { id: 'assessment', title: 'Assessment', required: true },
+  { id: 'review', title: 'Review & Generate PDF', required: false },
 ] as const;
 
 export type FormStep = typeof FORM_STEPS[number];
@@ -35,7 +35,7 @@ export interface FormState {
   visitedSteps: Set<number>;
   
   // Data state
-  formData: Partial<CompleteMedicalIntakeForm>;
+  formData: Partial<FloridaCEExamForm>;
   
   // Validation state
   validationState: ValidationState;
@@ -62,7 +62,7 @@ export type FormAction =
   | { type: 'PREVIOUS_STEP' }
   | { type: 'GO_TO_STEP'; payload: number }
   | { type: 'UPDATE_SECTION'; payload: { sectionId: FormStepId; data: any } }
-  | { type: 'SET_FORM_DATA'; payload: Partial<CompleteMedicalIntakeForm> }
+  | { type: 'SET_FORM_DATA'; payload: Partial<FloridaCEExamForm> }
   | { type: 'UPDATE_VALIDATION'; payload: { sectionId: FormStepId; validation: ValidationState[string] } }
   | { type: 'MARK_SECTION_COMPLETE'; payload: FormStepId }
   | { type: 'MARK_SECTION_INCOMPLETE'; payload: FormStepId }
@@ -73,7 +73,7 @@ export type FormAction =
   | { type: 'SET_SUBMITTING'; payload: boolean }
   | { type: 'SET_SUBMIT_ATTEMPTED'; payload: boolean }
   | { type: 'RESET_FORM' }
-  | { type: 'LOAD_FORM_DATA'; payload: Partial<CompleteMedicalIntakeForm> };
+  | { type: 'LOAD_FORM_DATA'; payload: Partial<FloridaCEExamForm> };
 
 // Initial state
 const initialState: FormState = {
@@ -255,7 +255,7 @@ export interface MultiStepFormProviderProps {
   autoSave?: boolean;
   autoSaveInterval?: number;
   storageKey?: string;
-  onSubmit?: (formData: CompleteMedicalIntakeForm) => Promise<boolean>;
+  onSubmit?: (formData: FloridaCEExamForm) => Promise<boolean>;
   onStepChange?: (step: number) => void;
   onSectionComplete?: (sectionId: FormStepId) => void;
 }
@@ -361,11 +361,23 @@ export function MultiStepFormProvider({
 
   // Validation functions
   const validateSection = useCallback((sectionId: FormStepId) => {
-    const sectionData = state.formData[sectionId];
-    const validationResult = validateSectionData(sectionId, sectionData);
-    const isComplete = isSectionComplete(sectionId, sectionData);
-    const completionPercentage = getSectionCompletionPercentage(sectionId, sectionData);
-    const errors = getSectionErrors(sectionId, sectionData);
+    // Special handling for review step - it doesn't have form data
+    if (sectionId === 'review') {
+      const validation = {
+        isValid: true,
+        errors: [],
+        isComplete: true,
+        completionPercentage: 100,
+      };
+      dispatch({ type: 'UPDATE_VALIDATION', payload: { sectionId, validation } });
+      return;
+    }
+
+    const sectionData = state.formData[sectionId as keyof typeof state.formData];
+    const validationResult = validateSectionData(sectionId as keyof FloridaCEExamForm, sectionData);
+    const isComplete = isSectionComplete(sectionId as keyof FloridaCEExamForm, sectionData);
+    const completionPercentage = getSectionCompletionPercentage(sectionId as keyof FloridaCEExamForm, sectionData);
+    const errors = getSectionErrors(sectionId as keyof FloridaCEExamForm, sectionData);
 
     const validation = {
       isValid: validationResult.success,
@@ -449,7 +461,7 @@ export function MultiStepFormProvider({
 
       // Submit the form
       if (onSubmit) {
-        const success = await onSubmit(state.formData as CompleteMedicalIntakeForm);
+        const success = await onSubmit(state.formData as FloridaCEExamForm);
         dispatch({ type: 'SET_SUBMITTING', payload: false });
         return success;
       }
@@ -468,7 +480,11 @@ export function MultiStepFormProvider({
   
   const getCurrentStepData = useCallback(() => {
     const currentStepId = FORM_STEPS[state.currentStep].id;
-    return state.formData[currentStepId];
+    // Special handling for review step
+    if (currentStepId === 'review') {
+      return null;
+    }
+    return state.formData[currentStepId as keyof typeof state.formData];
   }, [state.currentStep, state.formData]);
 
   const isStepComplete = useCallback((step: number) => {

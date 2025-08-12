@@ -1,6 +1,7 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
 import { FormLayout } from './components/FormLayout';
+import { Toaster } from 'sonner';
 import './App.css'
 
 function App() {
@@ -39,6 +40,11 @@ function App() {
           autoSave={true}
         />
       </FormLayout>
+      <Toaster 
+        position="top-right"
+        richColors
+        closeButton
+      />
     </MultiStepFormProvider>
   );
 }

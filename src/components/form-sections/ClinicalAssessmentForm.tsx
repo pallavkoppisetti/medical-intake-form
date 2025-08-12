@@ -3,10 +3,10 @@ import { FileText, CheckCircle, AlertTriangle } from 'lucide-react';
 
 export function ClinicalAssessmentForm() {
   const { state, updateSection } = useMultiStepForm();
-  const data = state.formData.clinicalAssessment || {};
+  const data = state.formData.assessment || {};
 
   const updateField = (field: string, value: any) => {
-    updateSection('clinicalAssessment', { ...data, [field]: value });
+    updateSection('assessment', { ...data, [field]: value });
   };
 
   return (
