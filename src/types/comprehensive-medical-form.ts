@@ -357,6 +357,9 @@ export interface Assessment {
     facility: string;
     date: string;
   };
+  
+  // Digital Signature
+  examinerSignature?: string; // base64 data URL
 }
 
 // =======================

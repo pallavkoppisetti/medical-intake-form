@@ -4,11 +4,15 @@ import { FormTextarea } from '../ui/FormTextarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export function HistoryFormNew() {
-  const { getCurrentStepData, updateSection } = useMultiStepForm();
+  const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const historyData = getCurrentStepData();
 
   const handleChange = (field: string, value: string | number) => {
     updateSection('history', { ...historyData, [field]: value });
+  };
+
+  const handleImmediateChange = (field: string, value: string | number) => {
+    updateSectionImmediate('history', { ...historyData, [field]: value });
   };
 
   return (
@@ -22,6 +26,7 @@ export function HistoryFormNew() {
             label="Review of Systems"
             value={historyData?.reviewOfSystems || ''}
             onChange={(value) => handleChange('reviewOfSystems', value)}
+            onImmediateChange={(value) => handleImmediateChange('reviewOfSystems', value)}
             placeholder="e.g., Positive for low back pain, leg numbness, and difficulty with prolonged walking. Negative for fever, weight loss, bowel/bladder dysfunction, saddle anesthesia, or progressive neurological deficits. No recent changes in pain pattern or severity..."
             rows={6}
           />
@@ -30,6 +35,7 @@ export function HistoryFormNew() {
             label="Past Medical History"
             value={historyData?.pastMedicalHistory || ''}
             onChange={(value) => handleChange('pastMedicalHistory', value)}
+            onImmediateChange={(value) => handleImmediateChange('pastMedicalHistory', value)}
             placeholder="e.g., Significant for hypertension (controlled with medication), diabetes mellitus type 2 (diet controlled), and history of lumbar disc herniation L4-L5. No history of cancer, heart disease, or other significant medical conditions..."
             rows={6}
           />
@@ -38,6 +44,7 @@ export function HistoryFormNew() {
             label="Past Surgical History"
             value={historyData?.pastSurgicalHistory || ''}
             onChange={(value) => handleChange('pastSurgicalHistory', value)}
+            onImmediateChange={(value) => handleImmediateChange('pastSurgicalHistory', value)}
             placeholder="e.g., Lumbar microdiscectomy L4-L5 performed in 2022. Appendectomy in 1998. No other significant surgical procedures..."
             rows={4}
           />
@@ -80,14 +87,13 @@ export function HistoryFormNew() {
               type="number"
               value={historyData?.age || ''}
               onChange={(value) => handleChange('age', parseInt(value) || 0)}
-              placeholder="e.g., 45"
-              required
-            />
-            
-            <FormInput
+              onImmediateChange={(value) => handleImmediateChange('age', parseInt(value) || 0)}
+              placeholder="Enter age"
+            />            <FormInput
               label="Gender"
               value={historyData?.gender || ''}
               onChange={(value) => handleChange('gender', value)}
+              onImmediateChange={(value) => handleImmediateChange('gender', value)}
               placeholder="e.g., Male/Female"
               required
             />

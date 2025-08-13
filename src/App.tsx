@@ -1,6 +1,5 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
-import { FormLayout } from './components/FormLayout';
 import { Toaster } from 'sonner';
 import './App.css'
 
@@ -32,14 +31,12 @@ function App() {
       onStepChange={handleStepChange}
       onSectionComplete={handleSectionComplete}
     >
-      <FormLayout>
-        <MultiStepFormController
-          showProgressBar={false}
-          progressBarOrientation="horizontal"
-          enablePreview={true}
-          autoSave={true}
-        />
-      </FormLayout>
+      <MultiStepFormController
+        showProgressBar={true}
+        progressBarOrientation="horizontal"
+        enablePreview={true}
+        autoSave={true}
+      />
       <Toaster 
         position="top-right"
         richColors

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMultiStepForm } from '../contexts/MultiStepFormContext';
 import { PDFGeneratorService } from '../services/PDFGeneratorService';
+import { savePreviewAsPDF } from '../utils/printUtils';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -18,9 +19,11 @@ import {
   Move,
   RotateCcw,
   ClipboardList,
-  TestTube
+  TestTube,
+  Printer
 } from 'lucide-react';
 import { toast } from 'sonner';
+import PDFTemplatePreview from './PDFTemplatePreview';
 
 interface FormReviewAndGenerateProps {
   className?: string;
@@ -36,6 +39,13 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
   const { state, goToStep, updateSection, canNavigateToStep } = useMultiStepForm();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [generatedPdfBlob, setGeneratedPdfBlob] = useState<Blob | null>(null);
+
+  useEffect(() => {
+    // Invalidate the generated PDF when form data changes
+    setGeneratedPdfBlob(null);
+  }, [state.formData]);
 
   // Development mode check
   const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
@@ -345,16 +355,17 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
 
   const sectionValidation = validateSections();
 
-  // Generate PDF using the PDFGeneratorService
+  // Generate PDF using the PDFGeneratorService (legacy)
   const handleGeneratePDF = async () => {
     try {
       setIsGeneratingPDF(true);
       
       const pdfGenerator = new PDFGeneratorService();
       const pdfBlob = pdfGenerator.generatePDF(state.formData);
+      setGeneratedPdfBlob(pdfBlob);
       
       toast.success('PDF generated successfully!', {
-        description: 'Your CE Exam report has been generated.',
+        description: 'Your CE Exam report has been generated and is ready for download.',
         duration: 3000,
       });
       
@@ -371,17 +382,51 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
     }
   };
 
+  // New: Print-based PDF generation for perfect fidelity
+  const handlePrintPDF = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      const previewElement = document.getElementById('pdf-preview-content');
+      if (!previewElement) {
+        toast.error('PDF Preview not found', {
+          description: 'Please ensure the preview is visible before generating PDF.',
+          duration: 3000,
+        });
+        return;
+      }
+      
+      await savePreviewAsPDF(previewElement as HTMLElement, state.formData);
+      
+      toast.success('PDF ready for download!', {
+        description: 'Use your browser\'s print dialog to save as PDF for perfect fidelity.',
+        duration: 5000,
+      });
+      
+    } catch (error) {
+      console.error('Error printing PDF:', error);
+      toast.error('Failed to generate PDF', {
+        description: 'Please try again or contact support.',
+        duration: 5000,
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
   // Download PDF with formatted filename
   const handleDownloadPDF = async () => {
     try {
       setIsDownloading(true);
       
-      const pdfBlob = await handleGeneratePDF();
-      
-      // Create formatted filename
-      const patientName = state.formData.header?.claimantName || 'Unknown';
-      const examDate = state.formData.header?.examDate || new Date().toISOString().split('T')[0];
-      const filename = `CE_Exam_${patientName.replace(/\s+/g, '_')}_${examDate.replace(/-/g, '')}.pdf`;
+      const pdfBlob = generatedPdfBlob ?? await handleGeneratePDF();
+      if (!pdfBlob) {
+        toast.error('PDF not available to download.');
+        return;
+      }
+
+      const pdfGenerator = new PDFGeneratorService();
+      const filename = pdfGenerator.getPDFFilename(state.formData);
       
       // Download the file
       const url = URL.createObjectURL(pdfBlob);
@@ -668,6 +713,14 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
               )}
               
               <Button
+                onClick={() => setShowPdfPreview(!showPdfPreview)}
+                variant="outline"
+                size="sm"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                {showPdfPreview ? 'Hide Preview' : 'Show Live Preview'}
+              </Button>
+              <Button
                 onClick={handleGeneratePDF}
                 disabled={isGeneratingPDF || overallCompletion < 50}
                 variant="outline"
@@ -678,13 +731,28 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
                 ) : (
                   <FileText className="h-4 w-4 mr-2" />
                 )}
-                Generate PDF
+                Generate PDF (Legacy)
+              </Button>
+              
+              <Button
+                onClick={handlePrintPDF}
+                disabled={isGeneratingPDF || overallCompletion < 50}
+                variant="default"
+                size="sm"
+                title="Print PDF - Perfect fidelity to preview"
+              >
+                {isGeneratingPDF ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Printer className="h-4 w-4 mr-2" />
+                )}
+                Print as PDF
               </Button>
               
               <Button
                 onClick={handleDownloadPDF}
                 disabled={isDownloading || overallCompletion < 50}
-                variant="default"
+                variant="secondary"
                 size="sm"
               >
                 {isDownloading ? (
@@ -692,9 +760,24 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
                 ) : (
                   <Download className="h-4 w-4 mr-2" />
                 )}
-                Download PDF
+                Download PDF (Legacy)
               </Button>
             </div>
+
+            {/* PDF Live Preview */}
+            {showPdfPreview && (
+              <Card className="border-2 border-gray-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <FileText className="h-5 w-5" />
+                    Live PDF Preview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PDFTemplatePreview formData={state.formData} />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Form Sections */}
             <div className="space-y-6">

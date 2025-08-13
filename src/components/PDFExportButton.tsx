@@ -1,24 +1,27 @@
 import { useState } from 'react';
+import { createRoot } from 'react-dom/client';
 import { useMultiStepForm } from '../contexts/MultiStepFormContext';
 import { Button } from './ui/button';
 import { Download, FileText, AlertCircle } from 'lucide-react';
-import { generateAndDownloadPDF, validateFormDataForPDF } from '../utils/pdfUtils';
+import { validateFormDataForPDF } from '../utils/pdfUtils';
+import { savePreviewAsPDF } from '../utils/printUtils';
 import { Card, CardContent } from './ui/card';
+import PDFTemplatePreview from './PDFTemplatePreview';
 
 interface PDFExportButtonProps {
   variant?: 'default' | 'outline' | 'secondary';
   size?: 'sm' | 'default' | 'lg';
   showValidation?: boolean;
-  filename?: string;
   disabled?: boolean;
+  previewElementId?: string; // ID of the preview element to print
 }
 
 export function PDFExportButton({ 
   variant = 'default', 
   size = 'default', 
   showValidation = true,
-  filename = 'ce-exam-report.pdf',
-  disabled = false
+  disabled = false,
+  previewElementId = 'pdf-preview-content'
 }: PDFExportButtonProps) {
   const { state } = useMultiStepForm();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -41,15 +44,62 @@ export function PDFExportButton({
         }
       }
       
-      // Generate and download PDF
-      await generateAndDownloadPDF(state.formData, filename);
+      // Find the preview element, or create a temporary one
+      let previewElement = document.getElementById(previewElementId) || 
+                          document.querySelector('.pdf-preview-content') ||
+                          document.querySelector('[data-pdf-preview]');
+      
+      let isTemporaryElement = false;
+      
+      if (!previewElement) {
+        // Create a temporary hidden preview element
+        console.log('Preview element not found, creating temporary element...');
+        isTemporaryElement = true;
+        
+        // Create a temporary container
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm'; // A4 width
+        tempContainer.style.background = 'white';
+        tempContainer.id = 'temp-pdf-preview';
+        
+        // Import and render the PDF template
+        document.body.appendChild(tempContainer);
+        
+        // Create a React root and render the preview
+        const root = createRoot(tempContainer);
+        await new Promise<void>((resolve) => {
+          root.render(
+            <PDFTemplatePreview
+              formData={state.formData}
+              showSignaturePlaceholder={false}
+            />
+          );
+          // Give it a moment to render
+          setTimeout(resolve, 100);
+        });
+        
+        previewElement = tempContainer;
+      }
+      
+      try {
+        // Print the preview as PDF
+        await savePreviewAsPDF(previewElement as HTMLElement, state.formData);
+      } finally {
+        // Clean up temporary element if created
+        if (isTemporaryElement && previewElement) {
+          previewElement.remove();
+        }
+      }
       
       // Clear validation result on success
       setValidationResult(null);
       
     } catch (error) {
       console.error('PDF export error:', error);
-      // You could add a toast notification here
+      alert('Failed to generate PDF. Please try again.');
     } finally {
       setIsGenerating(false);
     }

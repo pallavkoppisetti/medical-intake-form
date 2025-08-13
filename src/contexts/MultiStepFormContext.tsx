@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import type { FloridaCEExamForm } from '../types/comprehensive-medical-form';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { saveFormData as saveToStorage, loadFormData as loadFromStorage } from '../lib/form-storage';
@@ -78,7 +78,7 @@ export type FormAction =
 // Initial state
 const initialState: FormState = {
   currentStep: 0,
-  visitedSteps: new Set([0]),
+  visitedSteps: new Set(), // Don't mark any steps as visited initially
   formData: {},
   validationState: {},
   overallProgress: 0,
@@ -135,6 +135,8 @@ function formReducer(state: FormState, action: FormAction): FormState {
           [action.payload.sectionId]: action.payload.data,
         },
         hasUnsavedChanges: true,
+        // Mark current step as visited when user starts entering data
+        visitedSteps: new Set([...state.visitedSteps, state.currentStep]),
       };
 
     case 'SET_FORM_DATA':
@@ -222,6 +224,7 @@ export interface MultiStepFormContextValue {
   
   // Data actions
   updateSection: (sectionId: FormStepId, data: any) => void;
+  updateSectionImmediate: (sectionId: FormStepId, data: any) => void;
   
   // Validation actions
   validateSection: (sectionId: FormStepId) => void;
@@ -313,6 +316,81 @@ export function MultiStepFormProvider({
     dispatch({ type: 'SET_OVERALL_PROGRESS', payload: progress });
   }, [state.formData, getFormCompletionPercentage]);
 
+  // Dynamic validation effect - validates sections as data changes
+  const validationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  useEffect(() => {
+    // Clear existing timeout
+    if (validationTimeoutRef.current) {
+      clearTimeout(validationTimeoutRef.current);
+    }
+
+    // Debounce validation to avoid excessive calls
+    validationTimeoutRef.current = setTimeout(() => {
+      // Validate all sections that have been visited or have data
+      FORM_STEPS.forEach(step => {
+        const sectionId = step.id;
+        const sectionData = state.formData[sectionId as keyof typeof state.formData];
+        const hasData = sectionData && Object.keys(sectionData).length > 0;
+        const isVisited = state.visitedSteps.has(FORM_STEPS.findIndex(s => s.id === sectionId));
+
+        // Validate if section has data or is visited (but not just current step without data)
+        if (hasData || (isVisited && (hasData || state.submitAttempted))) {
+          // Special handling for review step
+          if (sectionId === 'review') {
+            const validation = {
+              isValid: true,
+              errors: [],
+              isComplete: true,
+              completionPercentage: 100,
+            };
+            dispatch({ type: 'UPDATE_VALIDATION', payload: { sectionId, validation } });
+            return;
+          }
+
+          const actualSectionData = sectionData || {};
+          const validationResult = validateSectionData(sectionId as keyof FloridaCEExamForm, actualSectionData);
+          const isComplete = isSectionComplete(sectionId as keyof FloridaCEExamForm, actualSectionData);
+          const completionPercentage = getSectionCompletionPercentage(sectionId as keyof FloridaCEExamForm, actualSectionData);
+          const errors = getSectionErrors(sectionId as keyof FloridaCEExamForm, actualSectionData);
+
+          const validation = {
+            isValid: validationResult.success,
+            errors,
+            isComplete,
+            completionPercentage,
+          };
+
+          dispatch({ type: 'UPDATE_VALIDATION', payload: { sectionId, validation } });
+
+          // Update completion status
+          if (isComplete) {
+            dispatch({ type: 'MARK_SECTION_COMPLETE', payload: sectionId });
+            onSectionComplete?.(sectionId);
+          } else {
+            dispatch({ type: 'MARK_SECTION_INCOMPLETE', payload: sectionId });
+          }
+        }
+      });
+    }, 300); // 300ms debounce
+
+    // Cleanup timeout on unmount
+    return () => {
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current);
+      }
+    };
+  }, [
+    state.formData, 
+    state.visitedSteps, 
+    state.currentStep, 
+    validateSectionData, 
+    isSectionComplete, 
+    getSectionCompletionPercentage, 
+    getSectionErrors, 
+    onSectionComplete
+  ]);
+
   // Navigation functions with validation
   const nextStep = useCallback(() => {
     if (state.currentStep < FORM_STEPS.length - 1) {
@@ -353,6 +431,9 @@ export function MultiStepFormProvider({
   }, [state.currentStep, onStepChange]);
 
   const canNavigateToStep = useCallback((step: number) => {
+    // Can always go to the current step
+    if (step === state.currentStep) return true;
+    
     // Can always go to visited steps
     if (state.visitedSteps.has(step)) return true;
     
@@ -395,6 +476,12 @@ export function MultiStepFormProvider({
     
     // Validate the section after update
     setTimeout(() => validateSection(sectionId), 0);
+  }, []);
+
+  // Immediate update function for real-time preview (no validation or save triggers)
+  const updateSectionImmediate = useCallback((sectionId: FormStepId, data: any) => {
+    dispatch({ type: 'UPDATE_SECTION', payload: { sectionId, data } });
+    // No validation or auto-save triggers for immediate updates
   }, []);
 
   // Validation functions
@@ -545,6 +632,7 @@ export function MultiStepFormProvider({
     goToStep,
     canNavigateToStep,
     updateSection,
+    updateSectionImmediate,
     validateSection,
     validateAllSections,
     updateProgress,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useMultiStepForm } from '../../contexts/MultiStepFormContext';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -6,6 +6,7 @@ import { Label } from '../ui/label';
 import { FormTextarea } from '../ui/FormTextarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Plus, Minus } from 'lucide-react';
+import SignatureComponent from '../SignatureComponent';
 
 // Default templates and statements
 const DEFAULT_MEDICAL_RECORDS_STATEMENT = `I have reviewed the medical records provided. The records are consistent with the findings on examination. The medical records support the physical findings and functional limitations noted in this examination.`;
@@ -27,7 +28,7 @@ const COMMON_RECOMMENDATIONS = [
 ];
 
 export function AssessmentForm() {
-  const { getCurrentStepData, updateSection } = useMultiStepForm();
+  const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const assessmentData = getCurrentStepData() || {};
 
   const [formData, setFormData] = useState(() => ({
@@ -45,9 +46,10 @@ export function AssessmentForm() {
       facility: assessmentData.examinerInfo?.facility || '',
       date: assessmentData.examinerInfo?.date || new Date().toISOString().split('T')[0],
     },
+    examinerSignature: assessmentData.examinerSignature || '',
   }));
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = useCallback((field: string, value: any) => {
     const updatedData = { ...formData };
     const keys = field.split('.');
     
@@ -59,7 +61,9 @@ export function AssessmentForm() {
     
     setFormData(updatedData);
     updateSection('assessment', updatedData);
-  };
+    // Also update immediate for signature capture and preview
+    updateSectionImmediate('assessment', updatedData);
+  }, [formData, updateSection, updateSectionImmediate]);
 
   const addDiagnosisItem = () => {
     const newDiagnosis = [...formData.diagnosisAssessment, ''];
@@ -84,6 +88,17 @@ export function AssessmentForm() {
       `• ${template}`;
     handleChange('recommendations', newRecommendations);
   };
+
+  // Memoized signature change handler to prevent unnecessary re-renders
+  const handleSignatureChange = useCallback((signatureDataUrl: string) => {
+    // Use setFormData with function form to avoid dependency on formData
+    setFormData(prevData => {
+      const updatedData = { ...prevData, examinerSignature: signatureDataUrl };
+      updateSection('assessment', updatedData);
+      updateSectionImmediate('assessment', updatedData);
+      return updatedData;
+    });
+  }, [updateSection, updateSectionImmediate]);
 
   return (
     <div className="space-y-6">
@@ -275,6 +290,26 @@ export function AssessmentForm() {
               onChange={(e) => handleChange('examinerInfo.date', e.target.value)}
             />
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Digital Signature Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Examiner Digital Signature</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SignatureComponent
+            onSignatureChange={handleSignatureChange}
+            existingSignature={formData.examinerSignature}
+            label="Examiner Digital Signature"
+            required={true}
+            width={500}
+            height={150}
+          />
+          <p className="text-sm text-gray-600 mt-2">
+            Your digital signature is required to complete the medical examination form.
+          </p>
         </CardContent>
       </Card>
 

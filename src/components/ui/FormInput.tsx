@@ -10,6 +10,7 @@ export interface FormInputProps {
   className?: string;
   min?: string;
   max?: string;
+  onImmediateChange?: (value: string) => void;
 }
 
 export function FormInput({
@@ -24,7 +25,14 @@ export function FormInput({
   className = '',
   min,
   max,
+  onImmediateChange,
 }: FormInputProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    onChange(newValue); // existing validation/save logic
+    onImmediateChange?.(newValue); // immediate preview update
+  };
+
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="block text-sm font-medium text-gray-700">
@@ -34,7 +42,7 @@ export function FormInput({
       <input
         type={type}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         required={required}
         disabled={disabled}

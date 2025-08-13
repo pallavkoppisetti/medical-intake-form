@@ -8,6 +8,7 @@ export interface FormTextareaProps {
   error?: string;
   rows?: number;
   className?: string;
+  onImmediateChange?: (value: string) => void;
 }
 
 export function FormTextarea({
@@ -20,7 +21,14 @@ export function FormTextarea({
   error,
   rows = 3,
   className = '',
+  onImmediateChange,
 }: FormTextareaProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
+    onChange(newValue); // existing validation/save logic
+    onImmediateChange?.(newValue); // immediate preview update
+  };
+
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="block text-sm font-medium text-gray-700">
@@ -29,7 +37,7 @@ export function FormTextarea({
       </label>
       <textarea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         required={required}
         disabled={disabled}

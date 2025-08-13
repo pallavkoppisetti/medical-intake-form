@@ -4,11 +4,15 @@ import { FormTextarea } from '../ui/FormTextarea';
 import { Card, CardContent } from '../ui/card';
 
 export function CEHeaderForm() {
-  const { getCurrentStepData, updateSection } = useMultiStepForm();
+  const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const headerData = getCurrentStepData();
 
   const handleChange = (field: string, value: string) => {
     updateSection('header', { ...headerData, [field]: value });
+  };
+
+  const handleImmediateChange = (field: string, value: string) => {
+    updateSectionImmediate('header', { ...headerData, [field]: value });
   };
 
   return (
@@ -50,6 +54,7 @@ export function CEHeaderForm() {
                 label="Claimant's Name"
                 value={headerData?.claimantName || ''}
                 onChange={(value) => handleChange('claimantName', value)}
+                onImmediateChange={(value) => handleImmediateChange('claimantName', value)}
                 placeholder="e.g., Smith, John Michael"
                 required
                 className="font-semibold"
@@ -60,6 +65,7 @@ export function CEHeaderForm() {
                 type="date"
                 value={headerData?.dateOfBirth || ''}
                 onChange={(value) => handleChange('dateOfBirth', value)}
+                onImmediateChange={(value) => handleImmediateChange('dateOfBirth', value)}
                 required
               />
             </div>
@@ -71,6 +77,7 @@ export function CEHeaderForm() {
                 type="date"
                 value={headerData?.examDate || ''}
                 onChange={(value) => handleChange('examDate', value)}
+                onImmediateChange={(value) => handleImmediateChange('examDate', value)}
                 required
               />
               
@@ -78,6 +85,7 @@ export function CEHeaderForm() {
                 label="Case Number"
                 value={headerData?.caseNumber || ''}
                 onChange={(value) => handleChange('caseNumber', value)}
+                onImmediateChange={(value) => handleImmediateChange('caseNumber', value)}
                 placeholder="e.g., FL2024-123456-789"
                 required
                 className="font-mono"
@@ -91,6 +99,7 @@ export function CEHeaderForm() {
               label="Chief Complaint"
               value={headerData?.chiefComplaint || ''}
               onChange={(value) => handleChange('chiefComplaint', value)}
+              onImmediateChange={(value) => handleImmediateChange('chiefComplaint', value)}
               placeholder="e.g., Back pain with radiation to left leg, limiting ability to stand, walk, and lift. Unable to work due to chronic pain and mobility limitations..."
               rows={6}
               required

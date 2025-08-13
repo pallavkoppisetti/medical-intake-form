@@ -30,7 +30,11 @@ export function ProgressBar({
     const isCurrent = state.currentStep === stepIndex;
     const canNavigate = canNavigateToStep(stepIndex);
     const validation = getStepValidation(step.id);
-    const hasErrors = validation && validation.errors.length > 0;
+    
+    // Only show errors if the step has been visited and is not current (user has left it)
+    // OR if a submit has been attempted
+    const shouldShowErrors = (isVisited && !isCurrent) || state.submitAttempted;
+    const hasErrors = shouldShowErrors && validation && validation.errors.length > 0;
 
     return {
       isComplete,

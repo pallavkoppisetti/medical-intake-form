@@ -3,11 +3,15 @@ import { FormTextarea } from '../ui/FormTextarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export function MedicalInfoForm() {
-  const { getCurrentStepData, updateSection } = useMultiStepForm();
+  const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const medicalData = getCurrentStepData();
 
   const handleChange = (field: string, value: string | string[]) => {
     updateSection('medicalInfo', { ...medicalData, [field]: value });
+  };
+
+  const handleImmediateChange = (field: string, value: string | string[]) => {
+    updateSectionImmediate('medicalInfo', { ...medicalData, [field]: value });
   };
 
   const handleMedicationChange = (value: string) => {
@@ -15,9 +19,19 @@ export function MedicalInfoForm() {
     handleChange('currentMedications', medications);
   };
 
+  const handleMedicationImmediateChange = (value: string) => {
+    const medications = value.split('\n').filter(med => med.trim() !== '');
+    handleImmediateChange('currentMedications', medications);
+  };
+
   const handleAllergyChange = (value: string) => {
     const allergies = value.split('\n').filter(allergy => allergy.trim() !== '');
     handleChange('allergies', allergies);
+  };
+
+  const handleAllergyImmediateChange = (value: string) => {
+    const allergies = value.split('\n').filter(allergy => allergy.trim() !== '');
+    handleImmediateChange('allergies', allergies);
   };
 
   return (
@@ -31,6 +45,7 @@ export function MedicalInfoForm() {
             label="Current Medications"
             value={medicalData?.currentMedications?.join('\n') || ''}
             onChange={handleMedicationChange}
+            onImmediateChange={handleMedicationImmediateChange}
             placeholder="List current medications (one per line)..."
             rows={4}
           />
@@ -39,6 +54,7 @@ export function MedicalInfoForm() {
             label="Allergies"
             value={medicalData?.allergies?.join('\n') || ''}
             onChange={handleAllergyChange}
+            onImmediateChange={handleAllergyImmediateChange}
             placeholder="List known allergies (one per line)..."
             rows={3}
           />
@@ -47,6 +63,7 @@ export function MedicalInfoForm() {
             label="Surgical History"
             value={medicalData?.surgicalHistory || ''}
             onChange={(value) => handleChange('surgicalHistory', value)}
+            onImmediateChange={(value) => handleImmediateChange('surgicalHistory', value)}
             placeholder="Describe previous surgeries and procedures..."
             rows={4}
           />
@@ -55,6 +72,7 @@ export function MedicalInfoForm() {
             label="Family History"
             value={medicalData?.familyHistory || ''}
             onChange={(value) => handleChange('familyHistory', value)}
+            onImmediateChange={(value) => handleImmediateChange('familyHistory', value)}
             placeholder="Describe relevant family medical history..."
             rows={4}
           />

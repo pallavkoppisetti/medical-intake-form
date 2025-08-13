@@ -6,13 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Stethoscope, Eye, Activity, Zap, Hand, Brain } from 'lucide-react';
 
 export function PhysicalExamForm() {
-  const { getCurrentStepData, updateSection } = useMultiStepForm();
+  const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const physicalExamData = getCurrentStepData();
 
   const handleVitalSignChange = (field: string, value: string | number) => {
     const vitalSigns = physicalExamData?.vitalSigns || {};
     const updatedVitalSigns = { ...vitalSigns, [field]: value };
     updateSection('physicalExam', { ...physicalExamData, vitalSigns: updatedVitalSigns });
+  };
+
+  const handleVitalSignImmediateChange = (field: string, value: string | number) => {
+    const vitalSigns = physicalExamData?.vitalSigns || {};
+    const updatedVitalSigns = { ...vitalSigns, [field]: value };
+    updateSectionImmediate('physicalExam', { ...physicalExamData, vitalSigns: updatedVitalSigns });
   };
 
   const handleSystemChange = (system: string, value: string) => {
@@ -99,6 +105,7 @@ export function PhysicalExamForm() {
               label="Weight"
               value={physicalExamData?.vitalSigns?.weight || ''}
               onChange={(value) => handleVitalSignChange('weight', parseFloat(value) || 0)}
+              onImmediateChange={(value) => handleVitalSignImmediateChange('weight', parseFloat(value) || 0)}
               placeholder="150 lbs"
               type="number"
             />
@@ -133,6 +140,7 @@ export function PhysicalExamForm() {
               label="Temperature"
               value={physicalExamData?.vitalSigns?.temperature || ''}
               onChange={(value) => handleVitalSignChange('temperature', parseFloat(value) || 0)}
+              onImmediateChange={(value) => handleVitalSignImmediateChange('temperature', parseFloat(value) || 0)}
               placeholder="98.6°F"
               type="number"
             />
