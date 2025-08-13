@@ -20,6 +20,7 @@ npm run dev
 - **Hot Reload**: Automatic code updates
 - **TypeScript**: Full type checking enabled
 - **ESLint**: Code quality enforcement
+- **Test Features**: Development-only testing tools available
 
 ## 📁 Project Architecture
 
@@ -30,7 +31,7 @@ npm run dev
 - `src/contexts/` - React context providers for state management
 - `src/types/` - TypeScript definitions for medical forms
 - `src/hooks/` - Custom React hooks for form management
-- `src/services/` - Business logic services (PDF generation)
+- `src/services/` - Business logic services (PDF generation, CE Exam compliance)
 - `src/lib/` - Utility libraries and helpers
 - `src/utils/` - Utility functions for validation and PDF handling
 - `docs/` - Comprehensive documentation files
@@ -38,16 +39,35 @@ npm run dev
 ### State Management
 - **Global State**: React Context with useReducer for complex form state
 - **Form Data**: Centralized in `MultiStepFormContext` with auto-save
-- **Persistence**: Automatic localStorage with visual indicators
+- **Persistence**: Automatic localStorage with visual indicators (30-second intervals)
 - **Validation**: Real-time validation with section-level progress tracking
 - **Navigation**: Smart navigation with prerequisites and completion checking
 
 ### Component Architecture
-- **FormLayout**: Main responsive layout with sidebar navigation
+- **FormLayout**: Main responsive layout with sidebar navigation (fixed layout issues)
 - **MultiStepFormController**: Central form management and step rendering
-- **FormReviewAndGenerate**: PDF preview and generation with test tools
-- **SaveProgressIndicator**: Floating auto-save status indicator
+- **FormReviewAndGenerate**: PDF preview and generation with comprehensive test tools
+- **SaveProgressIndicator**: Floating auto-save status indicator with animations
 - **Form Sections**: Individual CE-compliant medical assessment components
+
+## 🏥 CE Exam Compliance Architecture
+
+### PDF Generation Service
+- **PDFGeneratorService**: Main class for CE Exam format PDF generation
+- **Exact Format Compliance**: Matches Florida Division of Disability Determination requirements
+- **Professional Layout**: Header, disclaimer, claimant info box, structured sections
+- **Table Generation**: Specialized methods for range of motion and assessment tables
+
+### Medical Assessment Components
+- **Neuromuscular Assessment**: Complete strength, manipulative skills, and reflexes
+- **Range of Motion**: Bilateral joint measurements with CE Exam table format
+- **Gait and Station**: Performance tests and assistive device assessment
+- **Assessment**: Diagnosis, medical source statement, recommendations with exact formatting
+
+### Form Data Structure
+- **Comprehensive Types**: Full TypeScript coverage for all medical assessments
+- **CE Exam Mapping**: Direct mapping from form fields to PDF output format
+- **Validation Rules**: Medical-specific validation and required field enforcement
 
 ## 🔧 Development Workflow
 
@@ -206,27 +226,76 @@ npm run test:coverage # Coverage report
 - Accessibility compliance
 - Medical accuracy (for healthcare features)
 
+## 🧪 Development Testing Tools
+
+### Test Data Generation (Development Mode Only)
+The application includes comprehensive testing tools available only in development mode:
+
+```tsx
+// Access via FormReviewAndGenerate component
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+// Features available in development:
+- Orange "Test with Sample Data" button
+- One-click population of realistic medical data
+- Automatic PDF generation for format verification
+- Complete CE Exam format testing
+```
+
+### Sample Data Coverage
+- **Patient Demographics**: Jane Doe, DOB: 01/15/1980, Case: DDS-2024-12345
+- **Complete Medical History**: 2-year chronic low back pain case
+- **All Assessment Types**: Neuromuscular, range of motion, gait station
+- **CE Exam Compliance**: All sections match exact format requirements
+- **Realistic Values**: Normal ranges (5/5 strength, 2+ reflexes, normal ROM)
+
+### Testing CE Exam Format
+1. **Load Test Data**: Click "Test with Sample Data" button
+2. **Generate PDF**: Automatic PDF creation and download
+3. **Verify Format**: Compare against CE Exam requirements
+4. **Check Sections**: All 8 sections populated with realistic data
+
 ## 🚢 Deployment
 
 ### Build Process
 ```bash
-npm run build        # Create production build
+npm run build        # Create optimized production build
 npm run preview      # Preview production build
+npm run dev          # Development server with test features
 ```
+
+### Production Optimizations
+- **Chunk Splitting**: Separate vendor chunks for better caching
+- **Tree Shaking**: Removes unused code automatically
+- **Minification**: ESBuild minification for optimal performance
+- **Asset Optimization**: Images and assets properly compressed
 
 ### Environment Variables
-Create `.env.local` for local development:
 ```env
-VITE_API_URL=http://localhost:3000
-VITE_APP_VERSION=1.0.0
+# Development (.env.development)
+VITE_APP_VERSION=2.0.0-dev
+VITE_APP_ENV=development
+VITE_ENABLE_TEST_DATA=true
+VITE_ENABLE_CONSOLE_LOGS=true
+
+# Production (.env.production)
+VITE_APP_VERSION=2.0.0
+VITE_APP_ENV=production
+VITE_ENABLE_TEST_DATA=false
+VITE_ENABLE_CONSOLE_LOGS=false
 ```
 
-### Production Considerations
-- Enable error reporting
-- Configure analytics
-- Set up monitoring
-- Implement proper logging
-- Consider HIPAA compliance for healthcare use
+### AWS Amplify Deployment
+1. **Build Configuration**: `amplify.yml` included for automatic deployment
+2. **Production Settings**: Optimized Vite config with chunk splitting
+3. **Environment Setup**: Production environment variables configured
+4. **Deployment Guide**: Complete step-by-step guide in `AWS_AMPLIFY_DEPLOYMENT_GUIDE.md`
+
+### Performance Monitoring
+- **Chunk Size Warnings**: Set to 600KB limit
+- **Build Analysis**: Manual chunk splitting for optimal loading
+- **Core Web Vitals**: Performance metrics tracking ready
+- **Bundle Size**: Optimized vendor chunks for better caching
 
 ## 📚 Additional Resources
 
@@ -235,9 +304,17 @@ VITE_APP_VERSION=1.0.0
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [Vite Guide](https://vitejs.dev/guide/)
+- [AWS Amplify Documentation](https://docs.amplify.aws/)
 
 ### Medical Form Standards
+- Florida Division of Disability Determination CE Exam requirements
 - HL7 FHIR for healthcare interoperability
 - ICD-10 for diagnostic coding
 - SNOMED CT for clinical terminology
 - HIPAA compliance guidelines
+
+### CE Exam Compliance Resources
+- **Format Requirements**: Exact Florida DDD CE Exam formatting standards
+- **Medical Terminology**: Professional medical language and abbreviations
+- **Assessment Standards**: Clinical examination documentation requirements
+- **PDF Layout**: Professional medical report formatting guidelines
