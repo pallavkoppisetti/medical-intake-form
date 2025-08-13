@@ -1,0 +1,265 @@
+{
+    "header": {
+        "claimantName": "",
+        "examDate": "",
+        "dateOfBirth": "",
+        "caseNumber": "",
+        "chiefComplaint": ""
+    },
+    "history": {
+        "reviewOfSystems": "",
+        "pastMedicalHistory": "",
+        "pastSurgicalHistory": "",
+        "medications": "",
+        "allergies": "",
+        "socialHistory": "",
+        "familyHistory": "",
+        "age": "",
+        "gender": ""
+    },
+    "functionalStatus": {
+        "dominantHand": "",
+        "sittingWorstDay": "",
+        "sittingBestDay": "",
+        "standingWorstDay": "",
+        "standingBestDay": "",
+        "walkingWorstDay": "",
+        "walkingBestDay": "",
+        "cookingMealPrep": "",
+        "groceryShoppingWorstDay": "",
+        "groceryShoppingBestDay": "",
+        "drivingWorstDay": "",
+        "drivingBestDay": "",
+        "bathingShowering": "",
+        "dressing": "",
+        "personalFinances": ""
+    },
+    "medicalInfo": {
+        "currentMedications": [
+            ""
+        ],
+        "allergies": [
+            ""
+        ],
+        "surgicalHistory": "",
+        "familyHistory": "",
+        "socialHistory": ""
+    },
+    "physicalExam": {
+        "vitalSigns": {
+            "bloodPressure": {
+                "systolic": "",
+                "diastolic": ""
+            },
+            "weight": "",
+            "heartRate": "",
+            "oxygenSaturation": "",
+            "height": "",
+            "temperature": "",
+            "handGripStrength": {
+                "right": "",
+                "left": ""
+            },
+            "visualAcuity": {
+                "right": {
+                    "uncorrected": "",
+                    "corrected": ""
+                },
+                "left": {
+                    "uncorrected": "",
+                    "corrected": ""
+                }
+            }
+        },
+        "general": "",
+        "eyes": "",
+        "earsNoseThroat": "",
+        "headNeck": "",
+        "respiratory": "",
+        "cardiovascular": "",
+        "abdomen": "",
+        "back": "",
+        "skin": "",
+        "musculoskeletal": "",
+        "neurological": "",
+        "psychiatry": "",
+        "neuromuscularStrength": {
+            "rightUpperExtremity": "",
+            "leftUpperExtremity": "",
+            "rightLowerExtremity": "",
+            "leftLowerExtremity": "",
+            "rightGrip": "",
+            "leftGrip": "",
+            "dexterityAssessment": ""
+        },
+        "fineGrossManipulativeSkills": {
+            "buttoning": {
+                "left": "",
+                "right": ""
+            },
+            "zipping": {
+                "left": "",
+                "right": ""
+            },
+            "pickingUpCoin": {
+                "left": "",
+                "right": ""
+            },
+            "tyingShoelaces": {
+                "left": "",
+                "right": ""
+            }
+        },
+        "reflexes": {
+            "biceps": {
+                "right": "",
+                "left": ""
+            },
+            "triceps": {
+                "right": "",
+                "left": ""
+            },
+            "knee": {
+                "right": "",
+                "left": ""
+            },
+            "achilles": {
+                "right": "",
+                "left": ""
+            }
+        }
+    },
+    "rangeOfMotion": {
+        "effortOnExam": "",
+        "cervicalSpine": {
+            "forwardFlexion": "",
+            "extension": "",
+            "lateralFlexionRight": "",
+            "rotationLeft": "",
+            "rotationRight": "",
+            "lateralFlexionLeft": ""
+        },
+        "lumbarSpine": {
+            "forwardFlexion": "",
+            "extension": "",
+            "lateralFlexionRight": "",
+            "lateralFlexionLeft": ""
+        },
+        "shoulders": {
+            "left": {
+                "flexion": "",
+                "extension": "",
+                "abduction": "",
+                "externalRotation": "",
+                "internalRotation": "",
+                "adduction": ""
+            },
+            "right": {
+                "flexion": "",
+                "extension": "",
+                "abduction": "",
+                "adduction": "",
+                "internalRotation": "",
+                "externalRotation": ""
+            }
+        },
+        "elbows": {
+            "left": {
+                "flexion": "",
+                "pronation": "",
+                "supination": ""
+            },
+            "right": {
+                "flexion": "",
+                "pronation": "",
+                "supination": ""
+            }
+        },
+        "wrists": {
+            "left": {
+                "flexion": "",
+                "extension": "",
+                "ulnarDeviation": "",
+                "radialDeviation": ""
+            },
+            "right": {
+                "flexion": "",
+                "extension": "",
+                "ulnarDeviation": "",
+                "radialDeviation": ""
+            }
+        },
+        "hands": {
+            "left": {
+                "fingerFlexion": "",
+                "thumbOpposition": ""
+            },
+            "right": {
+                "fingerFlexion": "",
+                "thumbOpposition": ""
+            }
+        },
+        "hips": {
+            "left": {
+                "flexion": "",
+                "extension": "",
+                "abduction": "",
+                "adduction": "",
+                "internalRotation": "",
+                "externalRotation": ""
+            },
+            "right": {
+                "flexion": "",
+                "extension": "",
+                "abduction": "",
+                "externalRotation": "",
+                "internalRotation": "",
+                "adduction": ""
+            }
+        },
+        "knees": {
+            "left": {
+                "flexion": "",
+                "extension": ""
+            },
+            "right": {
+                "flexion": "",
+                "extension": ""
+            }
+        },
+        "ankles": {
+            "left": {
+                "dorsiflexion": "",
+                "plantarflexion": "",
+                "inversion": "",
+                "eversion": ""
+            },
+            "right": {
+                "eversion": "",
+                "inversion": "",
+                "plantarflexion": "",
+                "dorsiflexion": ""
+            }
+        }
+    },
+    "gaitStation": {
+        "performanceTests": {
+            "gettingOnOffTable": "",
+            "walkingOnHeels": "",
+            "walkingOnToes": "",
+            "squattingAndRising": "",
+            "fingerToNose": "",
+            "straightLegRaise": ""
+        },
+        "assistiveDevice": {
+            "gaitAssessment": "",
+            "deviceType": "",
+            "medicalConditions": "",
+            "usageContext": [
+                ""
+            ],
+            "medicalNecessity": "",
+            "circumstancesOfUse": ""
+        }
+    }
+}
