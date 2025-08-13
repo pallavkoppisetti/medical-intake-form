@@ -9,7 +9,7 @@ export function Initial() {
   const [error, setError] = useState('');
 
   // Replace with your actual API endpoint
-  const API_URL = 'https://bfb83f3f085c.ngrok-free.app/autofill';
+  const API_URL = 'https://medical-intake-form.onrender.com/autofill';
 
   const handleProceed = async () => {
     setError('');
