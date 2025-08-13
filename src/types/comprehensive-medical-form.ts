@@ -395,6 +395,7 @@ export interface FormState {
 // =======================
 
 export enum FormSteps {
+  inital = -1,
   HEADER = 0,
   HISTORY = 1,
   FUNCTIONAL_STATUS = 2,
@@ -407,6 +408,7 @@ export enum FormSteps {
 }
 
 export const FORM_STEP_LABELS = {
+  [FormSteps.inital]: 'enter the scribble',
   [FormSteps.HEADER]: 'Header Information',
   [FormSteps.HISTORY]: 'History',
   [FormSteps.FUNCTIONAL_STATUS]: 'Functional Status',

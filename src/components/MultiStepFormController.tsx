@@ -13,6 +13,7 @@ import { FormReviewAndGenerate } from './FormReviewAndGenerate';
 import { PDFExportButton } from './PDFExportButton';
 import { RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { Initial } from './form-sections/initial';
 
 export interface MultiStepFormControllerProps {
   className?: string;
@@ -50,35 +51,31 @@ export function MultiStepFormController({
   };
 
   const renderCurrentForm = () => {
+    // Handle initial step (-1) first
+    if (state.currentStep === -1) {
+      return <Initial />;
+    }
+
     // Type-safe rendering based on the current step
     switch (state.currentStep) {
       case 0: // Header
         return <CEHeaderForm />;
-
       case 1: // History
         return <HistoryFormNew />;
-
       case 2: // Functional Status
         return <FunctionalStatusFormNew />;
-
       case 3: // Medical Info
         return <MedicalInfoForm />;
-
       case 4: // Physical Exam
         return <PhysicalExamForm />;
-
       case 5: // Range of Motion
         return <RangeOfMotionForm />;
-
       case 6: // Gait & Station
         return <GaitStationForm />;
-
       case 7: // Assessment
         return <AssessmentForm />;
-
       case 8: // Review & Generate PDF
         return <FormReviewAndGenerate />;
-
       default:
         // Placeholder for unimplemented sections
         return (
@@ -246,6 +243,17 @@ export function MultiStepFormController({
     );
   };
 
+  // If on the initial step (-1), only show the Initial component
+  if (state.currentStep === -1) {
+    return <Initial />;
+  }
+
+  // If we're on the initial step (-1), return only the Initial component
+  if (state.currentStep === -1) {
+    return <Initial />;
+  }
+
+  // For all other steps, render the main form layout
   return (
     <div className={`max-w-6xl mx-auto p-6 ${className}`}>
       <div className="bg-white rounded-lg shadow-lg">

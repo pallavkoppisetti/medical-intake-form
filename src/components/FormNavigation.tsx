@@ -30,9 +30,11 @@ export function FormNavigation({
   const currentValidation = getStepValidation(currentStep.id);
   const isCurrentStepComplete = isStepComplete(state.currentStep);
   const canGoNext = state.currentStep < FORM_STEPS.length - 1;
+  // Allow going previous only if we're not in the initial step (-1) and not in the first step (0)
   const canGoPrevious = state.currentStep > 0;
   const hasErrors = currentValidation && currentValidation.errors.length > 0;
   const currentProgress = currentValidation?.completionPercentage || 0;
+  const isInitialStep = state.currentStep === -1;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -75,25 +77,27 @@ export function FormNavigation({
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 lg:left-80 ${className}`}>
-      {/* Current Step Progress Bar */}
-      <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium text-gray-900">{currentStep.title}</span>
-            {getStepStatusIcon()}
+      {/* Current Step Progress Bar - Hide on initial step */}
+      {!isInitialStep && (
+        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-900">{currentStep.title}</span>
+              {getStepStatusIcon()}
+            </div>
+            <span className="text-sm text-gray-600">{Math.round(currentProgress)}% complete</span>
           </div>
-          <span className="text-sm text-gray-600">{Math.round(currentProgress)}% complete</span>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className={`h-2 rounded-full transition-all duration-300 ${
+                hasErrors ? 'bg-amber-500' : 
+                isCurrentStepComplete ? 'bg-green-500' : 'bg-blue-500'
+              }`}
+              style={{ width: `${currentProgress}%` }}
+            />
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className={`h-2 rounded-full transition-all duration-300 ${
-              hasErrors ? 'bg-amber-500' : 
-              isCurrentStepComplete ? 'bg-green-500' : 'bg-blue-500'
-            }`}
-            style={{ width: `${currentProgress}%` }}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Validation Errors */}
       {showValidationErrors && hasErrors && (
@@ -120,18 +124,20 @@ export function FormNavigation({
       {/* Navigation Controls */}
       <div className="px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Previous Button */}
-          <button
-            onClick={previousStep}
-            disabled={!canGoPrevious}
-            className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Previous
-          </button>
+          {/* Previous Button - Hide on initial step */}
+          {!isInitialStep && (
+            <button
+              onClick={previousStep}
+              disabled={!canGoPrevious}
+              className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Previous
+            </button>
+          )}
 
-          {/* Step Information and Auto-save Status */}
-          {showStepInfo && (
+          {/* Step Information and Auto-save Status - Hide on initial step */}
+          {showStepInfo && !isInitialStep && (
             <div className="flex items-center space-x-4 text-sm">
               <div className="text-center">
                 <div className="font-medium text-gray-900">
