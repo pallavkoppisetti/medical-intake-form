@@ -217,7 +217,7 @@ export interface MultiStepFormContextValue {
   // Navigation actions
   nextStep: () => void;
   previousStep: () => void;
-  goToStep: (step: number) => void;
+  goToStep: (step: number) => boolean;
   canNavigateToStep: (step: number) => boolean;
   
   // Data actions
@@ -313,13 +313,37 @@ export function MultiStepFormProvider({
     dispatch({ type: 'SET_OVERALL_PROGRESS', payload: progress });
   }, [state.formData, getFormCompletionPercentage]);
 
-  // Navigation functions
+  // Navigation functions with validation
   const nextStep = useCallback(() => {
     if (state.currentStep < FORM_STEPS.length - 1) {
+      // Get current step data
+      const currentStepId = FORM_STEPS[state.currentStep].id;
+      
+      // Auto-save current section data
+      saveToStorage(state.formData);
+      
+      // Allow navigation (validation will be triggered after step change)
       dispatch({ type: 'NEXT_STEP' });
       onStepChange?.(state.currentStep + 1);
+      
+      // Trigger validation for the step we just left
+      setTimeout(() => {
+        const sectionData = state.formData[currentStepId as keyof typeof state.formData] || {};
+        const validationResult = validateSectionData(currentStepId as keyof FloridaCEExamForm, sectionData);
+        const isComplete = isSectionComplete(currentStepId as keyof FloridaCEExamForm, sectionData);
+        const completionPercentage = getSectionCompletionPercentage(currentStepId as keyof FloridaCEExamForm, sectionData);
+        const errors = getSectionErrors(currentStepId as keyof FloridaCEExamForm, sectionData);
+
+        const validation = {
+          isValid: validationResult.success,
+          errors,
+          isComplete,
+          completionPercentage,
+        };
+        dispatch({ type: 'UPDATE_VALIDATION', payload: { sectionId: currentStepId, validation } });
+      }, 0);
     }
-  }, [state.currentStep, onStepChange]);
+  }, [state.currentStep, state.formData, validateSectionData, isSectionComplete, getSectionCompletionPercentage, getSectionErrors, onStepChange]);
 
   const previousStep = useCallback(() => {
     if (state.currentStep > 0) {
@@ -328,16 +352,21 @@ export function MultiStepFormProvider({
     }
   }, [state.currentStep, onStepChange]);
 
-  const goToStep = useCallback((step: number) => {
-    if (canNavigateToStep(step)) {
-      dispatch({ type: 'GO_TO_STEP', payload: step });
-      onStepChange?.(step);
-    }
-  }, [onStepChange]);
-
   const canNavigateToStep = useCallback((step: number) => {
     // Can always go to visited steps
     if (state.visitedSteps.has(step)) return true;
+    
+    // If we're on the review step (last step), allow navigation to any previous step for editing
+    const reviewStepIndex = FORM_STEPS.length - 1;
+    if (state.currentStep === reviewStepIndex && step < reviewStepIndex) {
+      return true;
+    }
+    
+    // Allow navigation to any step if we've reached the review step at least once
+    // (This means the user has gone through all steps)
+    if (state.visitedSteps.has(reviewStepIndex) && step < reviewStepIndex) {
+      return true;
+    }
     
     // Can go to next step if current step is complete (for required steps)
     if (step === state.currentStep + 1) {
@@ -350,6 +379,15 @@ export function MultiStepFormProvider({
     
     return false;
   }, [state.visitedSteps, state.currentStep, state.completedSections]);
+
+  const goToStep = useCallback((step: number) => {
+    if (canNavigateToStep(step)) {
+      dispatch({ type: 'GO_TO_STEP', payload: step });
+      onStepChange?.(step);
+      return true;
+    }
+    return false;
+  }, [canNavigateToStep, onStepChange]);
 
   // Data functions
   const updateSection = useCallback((sectionId: FormStepId, data: any) => {
@@ -373,7 +411,7 @@ export function MultiStepFormProvider({
       return;
     }
 
-    const sectionData = state.formData[sectionId as keyof typeof state.formData];
+    const sectionData = state.formData[sectionId as keyof typeof state.formData] || {};
     const validationResult = validateSectionData(sectionId as keyof FloridaCEExamForm, sectionData);
     const isComplete = isSectionComplete(sectionId as keyof FloridaCEExamForm, sectionData);
     const completionPercentage = getSectionCompletionPercentage(sectionId as keyof FloridaCEExamForm, sectionData);
@@ -484,7 +522,7 @@ export function MultiStepFormProvider({
     if (currentStepId === 'review') {
       return null;
     }
-    return state.formData[currentStepId as keyof typeof state.formData];
+    return state.formData[currentStepId as keyof typeof state.formData] || {};
   }, [state.currentStep, state.formData]);
 
   const isStepComplete = useCallback((step: number) => {

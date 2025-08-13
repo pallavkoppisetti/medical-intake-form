@@ -5,8 +5,6 @@ import {
   CheckCircle, 
   Lock, 
   AlertCircle, 
-  ChevronLeft, 
-  ChevronRight,
   Menu,
   X,
   Save,
@@ -44,8 +42,6 @@ export interface FormLayoutProps {
 export function FormLayout({ children, className = '' }: FormLayoutProps) {
   const {
     state,
-    nextStep,
-    previousStep,
     goToStep,
     canNavigateToStep,
     isStepComplete,
@@ -337,7 +333,7 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
         </div>
 
         {/* Main content area */}
-        <div className="px-4 lg:px-8 py-8">
+        <div className="px-4 lg:px-8 py-8 pb-48">
           <div className="max-w-4xl mx-auto">
             {/* Current step validation errors */}
             {(() => {
@@ -368,57 +364,6 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
               {children}
             </div>
-          </div>
-        </div>
-
-        {/* Bottom navigation */}
-        <div className="bg-white border-t border-gray-200 px-4 lg:px-8 py-4 sticky bottom-0">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <button
-              onClick={previousStep}
-              disabled={state.currentStep === 0}
-              className="flex items-center px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Previous
-            </button>
-
-            <div className="flex items-center space-x-4">
-              {/* Step indicators for mobile */}
-              <div className="hidden sm:flex items-center space-x-2">
-                {FORM_STEPS.map((_, index) => {
-                  const status = getStepStatus(index);
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => handleStepClick(index)}
-                      disabled={!status.canNavigate}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        status.isCurrent ? 'bg-blue-600' :
-                        status.isComplete ? 'bg-green-500' :
-                        status.hasErrors ? 'bg-red-500' :
-                        status.canNavigate ? 'bg-gray-300 hover:bg-gray-400' :
-                        'bg-gray-200'
-                      }`}
-                      title={`Step ${index + 1}: ${FORM_STEPS[index].title}`}
-                    />
-                  );
-                })}
-              </div>
-
-              <span className="text-sm text-gray-500">
-                {state.currentStep + 1} / {FORM_STEPS.length}
-              </span>
-            </div>
-
-            <button
-              onClick={nextStep}
-              disabled={state.currentStep === FORM_STEPS.length - 1}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-              <ChevronRight className="w-4 h-4 ml-2" />
-            </button>
           </div>
         </div>
       </div>

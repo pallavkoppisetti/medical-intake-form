@@ -99,17 +99,16 @@ src/
 │   │   ├── FunctionalStatusFormNew.tsx # Functional capacity assessment
 │   │   ├── MedicalInfoForm.tsx         # Medications, allergies, history
 │   │   ├── PhysicalExamForm.tsx        # Physical examination with vitals
-│   │   ├── RangeOfMotionForm_new.tsx   # Joint mobility with tables
+│   │   ├── RangeOfMotionForm.tsx       # Joint mobility with measurements
 │   │   ├── GaitStationForm.tsx         # Gait and balance assessment
-│   │   ├── AssessmentForm.tsx          # Clinical assessment and diagnosis
-│   │   ├── NeuroMuscularAssessmentForm.tsx # Neurological testing
-│   │   └── ClinicalAssessmentForm.tsx  # Professional recommendations
+│   │   └── AssessmentForm.tsx          # Clinical assessment and diagnosis
 │   ├── ui/                      # Base UI components (shadcn/ui)
 │   │   ├── button.tsx, card.tsx, form.tsx, input.tsx, label.tsx
 │   │   ├── badge.tsx, FormInput.tsx, FormTextarea.tsx, FormSelect.tsx
 │   │   └── FormCheckbox.tsx
-│   ├── FormLayout.tsx           # Main responsive layout with sidebar
-│   ├── MultiStepFormController.tsx # Main form controller and navigation
+│   ├── FormLayout.tsx           # Main responsive layout with fixed bottom nav
+│   ├── FormNavigation.tsx       # Sticky bottom navigation with progress
+│   ├── MultiStepFormController.tsx # Main form controller and logic
 │   ├── FormReviewAndGenerate.tsx # PDF review with print preview styling
 │   ├── SaveProgressIndicator.tsx # Floating auto-save indicator
 │   ├── ProgressBar.tsx          # Progress tracking components
@@ -121,21 +120,13 @@ src/
 │   └── useFormValidation.ts     # Validation logic
 ├── lib/                         # Utility libraries
 │   ├── form-storage.ts          # localStorage persistence
-│   ├── utils.ts                 # Common utilities
-│   ├── date-utils.ts            # Date formatting utilities
-│   └── validation.ts            # Form validation helpers
+│   └── utils.ts                 # Common utilities (shadcn/ui)
 ├── services/                    # Business logic services
 │   └── PDFGeneratorService.ts   # Professional PDF generation
 ├── types/                       # TypeScript type definitions
-│   ├── comprehensive-medical-form.ts # Complete form type definitions
-│   ├── florida-ce-exam-form.ts      # CE-specific types
-│   └── medical-form.ts              # Base medical form types
-├── utils/                       # Utility functions
-│   ├── pdfUtils.ts              # PDF generation utilities
-│   ├── date-utils.ts            # Date handling
-│   ├── form-storage.ts          # Data persistence
-│   └── validation.ts            # Validation functions
-└── styles/                      # Global styles and CSS
+│   └── comprehensive-medical-form.ts # Complete form type definitions
+└── utils/                       # Utility functions
+    └── pdfUtils.ts              # PDF generation utilities
 ```
 
 ## 🛠️ Installation & Setup

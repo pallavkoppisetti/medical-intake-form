@@ -5,6 +5,29 @@ All notable changes to the Medical Intake Form Application will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-08-12
+
+### ✨ New Features
+- **Sticky Bottom Navigation**: Navigation bar with Previous/Next buttons now sticks to the bottom of the screen
+- **Improved UX**: Better mobile experience with fixed navigation that's always accessible
+- **Responsive Design**: Bottom navigation adapts properly to different screen sizes
+
+### 🧹 Code Cleanup
+- **Removed 17 unused files**: Eliminated redundant components, duplicate utilities, and unused type files
+- **Simplified project structure**: Consolidated from dual `/lib` and `/utils` directories to single focused structure
+- **Better maintainability**: Removed unused form sections and duplicate code
+- **Performance improvement**: Smaller bundle size due to elimination of dead code
+
+### 🔧 Technical Improvements
+- **Fixed FormNavigation**: Now properly sticks to bottom with `fixed bottom-0` positioning
+- **Enhanced FormLayout**: Added bottom padding to prevent content overlap with fixed navigation
+- **Consolidated types**: All form types now use `comprehensive-medical-form.ts` as single source of truth
+
+### 📁 Updated File Structure
+- Removed unused form sections: `BasicInfoForm`, `ClinicalAssessmentForm`, `NeuroMuscularAssessmentForm`, etc.
+- Eliminated duplicate utilities: consolidated utility functions into focused directories
+- Simplified type definitions: single comprehensive type file instead of multiple scattered files
+
 ## [2.0.0] - 2025-08-12
 
 ### 🚀 Major Features Added

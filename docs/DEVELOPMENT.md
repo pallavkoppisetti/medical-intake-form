@@ -44,7 +44,8 @@ npm run dev
 - **Navigation**: Smart navigation with prerequisites and completion checking
 
 ### Component Architecture
-- **FormLayout**: Main responsive layout with sidebar navigation (fixed layout issues)
+- **FormLayout**: Main responsive layout with bottom padding for fixed navigation
+- **FormNavigation**: Sticky bottom navigation bar with Previous/Next buttons and progress
 - **MultiStepFormController**: Central form management and step rendering
 - **FormReviewAndGenerate**: PDF preview and generation with comprehensive test tools
 - **SaveProgressIndicator**: Floating auto-save status indicator with animations

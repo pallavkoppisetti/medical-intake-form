@@ -1,14 +1,17 @@
 import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
-import { ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle, AlertTriangle, Save } from 'lucide-react';
+import { useState } from 'react';
 
 export interface FormNavigationProps {
   className?: string;
   showStepInfo?: boolean;
+  showValidationErrors?: boolean;
 }
 
 export function FormNavigation({ 
   className = '',
-  showStepInfo = true 
+  showStepInfo = true,
+  showValidationErrors = true
 }: FormNavigationProps) {
   const {
     state,
@@ -16,53 +19,165 @@ export function FormNavigation({
     previousStep,
     getCurrentStep,
     isStepComplete,
+    getStepValidation,
+    saveForm,
+    submitForm,
   } = useMultiStepForm();
 
+  const [isSaving, setIsSaving] = useState(false);
+  
   const currentStep = getCurrentStep();
+  const currentValidation = getStepValidation(currentStep.id);
   const isCurrentStepComplete = isStepComplete(state.currentStep);
   const canGoNext = state.currentStep < FORM_STEPS.length - 1;
   const canGoPrevious = state.currentStep > 0;
+  const hasErrors = currentValidation && currentValidation.errors.length > 0;
+  const currentProgress = currentValidation?.completionPercentage || 0;
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await saveForm();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const isLastStep = state.currentStep === FORM_STEPS.length - 1;
+  const isReviewStep = currentStep.id === 'review';
+
+  const handleNext = async () => {
+    if (isLastStep && isReviewStep) {
+      // On review step, submit the form
+      const success = await submitForm();
+      if (success) {
+        // Could show success notification
+        console.log('Form submitted successfully');
+      } else {
+        // Could show error notification
+        console.error('Failed to submit form');
+      }
+    } else {
+      // Normal next step navigation with auto-validate and save
+      nextStep();
+    }
+  };
+
+  const getStepStatusIcon = () => {
+    if (isCurrentStepComplete) {
+      return <CheckCircle className="w-5 h-5 text-green-600" />;
+    }
+    if (hasErrors) {
+      return <AlertTriangle className="w-5 h-5 text-amber-500" />;
+    }
+    return null;
+  };
 
   return (
-    <div className={`flex items-center justify-between ${className}`}>
-      {/* Previous Button */}
-      <button
-        onClick={previousStep}
-        disabled={!canGoPrevious}
-        className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        <ChevronLeft className="w-4 h-4 mr-2" />
-        Previous
-      </button>
+    <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 lg:left-80 ${className}`}>
+      {/* Current Step Progress Bar */}
+      <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-2">
+            <span className="text-sm font-medium text-gray-900">{currentStep.title}</span>
+            {getStepStatusIcon()}
+          </div>
+          <span className="text-sm text-gray-600">{Math.round(currentProgress)}% complete</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            className={`h-2 rounded-full transition-all duration-300 ${
+              hasErrors ? 'bg-amber-500' : 
+              isCurrentStepComplete ? 'bg-green-500' : 'bg-blue-500'
+            }`}
+            style={{ width: `${currentProgress}%` }}
+          />
+        </div>
+      </div>
 
-      {/* Step Information */}
-      {showStepInfo && (
-        <div className="flex items-center space-x-4 text-sm">
-          <div className="text-center">
-            <div className="font-medium text-gray-900">{currentStep.title}</div>
-            <div className="text-gray-500">
-              Step {state.currentStep + 1} of {FORM_STEPS.length}
+      {/* Validation Errors */}
+      {showValidationErrors && hasErrors && (
+        <div className="px-6 py-3 bg-red-50 border-b border-red-200">
+          <div className="flex items-start space-x-2">
+            <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="text-sm font-medium text-red-800 mb-1">
+                Please complete the following required fields:
+              </h4>
+              <ul className="text-sm text-red-700 space-y-1">
+                {currentValidation.errors.slice(0, 3).map((error, index) => (
+                  <li key={index}>• {error.message}</li>
+                ))}
+                {currentValidation.errors.length > 3 && (
+                  <li className="text-red-600">• ... and {currentValidation.errors.length - 3} more</li>
+                )}
+              </ul>
             </div>
           </div>
-          
-          {isCurrentStepComplete && (
-            <div className="flex items-center text-green-600">
-              <CheckCircle className="w-4 h-4 mr-1" />
-              <span className="text-xs">Complete</span>
-            </div>
-          )}
         </div>
       )}
 
-      {/* Next Button */}
-      <button
-        onClick={nextStep}
-        disabled={!canGoNext}
-        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        Next
-        <ChevronRight className="w-4 h-4 ml-2" />
-      </button>
+      {/* Navigation Controls */}
+      <div className="px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Previous Button */}
+          <button
+            onClick={previousStep}
+            disabled={!canGoPrevious}
+            className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous
+          </button>
+
+          {/* Step Information and Auto-save Status */}
+          {showStepInfo && (
+            <div className="flex items-center space-x-4 text-sm">
+              <div className="text-center">
+                <div className="font-medium text-gray-900">
+                  Step {state.currentStep + 1} of {FORM_STEPS.length}
+                </div>
+                <div className="text-gray-500">
+                  Overall Progress: {Math.round(state.overallProgress)}%
+                </div>
+              </div>
+              
+              {state.hasUnsavedChanges && (
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="flex items-center text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                >
+                  <Save className="w-3 h-3 mr-1" />
+                  {isSaving ? 'Saving...' : 'Save Now'}
+                </button>
+              )}
+              
+              {state.lastSaved && !state.hasUnsavedChanges && (
+                <span className="text-xs text-green-600">
+                  ✓ Saved {state.lastSaved.toLocaleTimeString()}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Next/Submit Button */}
+          <button
+            onClick={handleNext}
+            disabled={!canGoNext && !isLastStep}
+            className={`flex items-center px-6 py-2 rounded-md transition-colors font-medium ${
+              (canGoNext || isLastStep)
+                ? isLastStep && isReviewStep
+                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {isLastStep && isReviewStep ? 'Submit Form' : 'Next'}
+            <ChevronRight className="w-4 h-4 ml-2" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

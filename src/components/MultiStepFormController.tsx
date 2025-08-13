@@ -1,5 +1,6 @@
 import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
 import { ProgressBar, CompactProgressBar, StepCounter } from './ProgressBar';
+import { FormNavigation } from './FormNavigation';
 import { CEHeaderForm } from './form-sections/CEHeaderForm';
 import { HistoryFormNew } from './form-sections/HistoryFormNew';
 import { FunctionalStatusFormNew } from './form-sections/FunctionalStatusFormNew';
@@ -10,7 +11,7 @@ import { GaitStationForm } from './form-sections/GaitStationForm';
 import { AssessmentForm } from './form-sections/AssessmentForm';
 import { FormReviewAndGenerate } from './FormReviewAndGenerate';
 import { PDFExportButton } from './PDFExportButton';
-import { Save, RotateCcw, Send, Eye, EyeOff, ChevronLeft, ChevronRight } from 'lucide-react';
+import { RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
 export interface MultiStepFormControllerProps {
@@ -30,12 +31,8 @@ export function MultiStepFormController({
 }: MultiStepFormControllerProps) {
   const {
     state,
-    nextStep,
-    previousStep,
     goToStep,
-    saveForm,
     resetForm,
-    submitForm,
     getCurrentStep,
     getStepValidation,
   } = useMultiStepForm();
@@ -45,28 +42,6 @@ export function MultiStepFormController({
 
   const currentStep = getCurrentStep();
   const currentValidation = getStepValidation(currentStep.id);
-
-  const handleSave = async () => {
-    const success = await saveForm();
-    if (success) {
-      // Could show success notification here
-      console.log('Form saved successfully');
-    } else {
-      // Could show error notification here
-      console.error('Failed to save form');
-    }
-  };
-
-  const handleSubmit = async () => {
-    const success = await submitForm();
-    if (success) {
-      // Could show success notification and redirect
-      console.log('Form submitted successfully');
-    } else {
-      // Could show error notification
-      console.error('Failed to submit form');
-    }
-  };
 
   const handleReset = () => {
     if (confirm('Are you sure you want to reset all form data? This action cannot be undone.')) {
@@ -114,27 +89,6 @@ export function MultiStepFormController({
             <p className="text-gray-600 mb-8">
               This section is coming soon. You can navigate to other sections using the progress bar above.
             </p>
-            
-            {/* Navigation buttons for placeholder sections */}
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={previousStep}
-                disabled={state.currentStep === 0}
-                className="flex items-center px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </button>
-              
-              <button
-                onClick={nextStep}
-                disabled={state.currentStep === FORM_STEPS.length - 1}
-                className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </button>
-            </div>
           </div>
         );
     }
@@ -334,18 +288,9 @@ export function MultiStepFormController({
           </div>
         )}
 
-        {/* Action Bar */}
+        {/* Action Bar - Simplified */}
         <div className="flex flex-wrap items-center justify-between p-4 bg-gray-50 border-b border-gray-200">
           <div className="flex items-center space-x-2">
-            <button
-              onClick={handleSave}
-              disabled={state.isLoading || !state.hasUnsavedChanges}
-              className="flex items-center px-3 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save className="w-4 h-4 mr-1" />
-              Save
-            </button>
-            
             <button
               onClick={handleReset}
               className="flex items-center px-3 py-2 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50"
@@ -375,20 +320,14 @@ export function MultiStepFormController({
               </button>
             )}
             
-            <PDFExportButton 
-              variant="outline"
-              size="default"
-              disabled={state.overallProgress < 50}
-            />
-            
-            <button
-              onClick={handleSubmit}
-              disabled={state.isSubmitting || state.overallProgress < 100}
-              className="flex items-center px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Send className="w-4 h-4 mr-1" />
-              {state.isSubmitting ? 'Submitting...' : 'Submit Form'}
-            </button>
+            {/* PDF Export only on review step */}
+            {state.currentStep === FORM_STEPS.length - 1 && (
+              <PDFExportButton 
+                variant="outline"
+                size="default"
+                disabled={state.overallProgress < 50}
+              />
+            )}
           </div>
         </div>
 
@@ -422,15 +361,25 @@ export function MultiStepFormController({
           )}
         </div>
 
-        {/* Footer */}
-        <div className="border-t border-gray-200 p-4 bg-gray-50">
-          <div className="flex items-center justify-between">
-            <CompactProgressBar />
-            <div className="text-xs text-gray-500">
-              {autoSave ? 'Auto-save enabled' : 'Remember to save your progress'}
+        {/* Enhanced Navigation Footer */}
+        {!isPreviewMode && (
+          <FormNavigation 
+            showStepInfo={true}
+            showValidationErrors={true}
+          />
+        )}
+
+        {/* Simple Footer for Preview Mode */}
+        {isPreviewMode && (
+          <div className="border-t border-gray-200 p-4 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <CompactProgressBar />
+              <div className="text-xs text-gray-500">
+                {autoSave ? 'Auto-save enabled' : 'Remember to save your progress'}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

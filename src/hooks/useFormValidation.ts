@@ -18,7 +18,7 @@ export function useFormValidation() {
       case 'header':
         return ['claimantName', 'dateOfBirth', 'examDate'];
       case 'history':
-        return ['chiefComplaint', 'pastMedicalHistory'];
+        return ['age', 'gender', 'pastMedicalHistory', 'medications', 'allergies'];
       case 'functionalStatus':
         return ['physicalDemandsOfJob', 'activitiesOfDailyLiving'];
       case 'medicalInfo':
@@ -40,7 +40,8 @@ export function useFormValidation() {
     sectionName: keyof FloridaCEExamForm,
     sectionData: any
   ): ValidationResult => {
-    if (!sectionData) {
+    // Allow empty objects but not null/undefined
+    if (sectionData === null || sectionData === undefined) {
       return { success: false, errors: [{ field: 'section', message: 'Section data is missing.' }] };
     }
 
@@ -97,6 +98,9 @@ export function useFormValidation() {
     sectionName: keyof FloridaCEExamForm,
     sectionData: any
   ): boolean => {
+    // Handle null/undefined section data
+    if (!sectionData) return false;
+    
     const requiredFields = getRequiredFieldsForSection(sectionName);
     if (requiredFields.length === 0) return true; // No required fields means complete
 
@@ -111,6 +115,9 @@ export function useFormValidation() {
     sectionName: keyof FloridaCEExamForm,
     sectionData: any
   ): number => {
+    // Handle null/undefined section data
+    if (!sectionData) return 0;
+    
     const requiredFields = getRequiredFieldsForSection(sectionName);
     if (requiredFields.length === 0) return 100;
 

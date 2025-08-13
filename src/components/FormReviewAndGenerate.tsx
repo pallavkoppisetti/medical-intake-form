@@ -33,22 +33,22 @@ interface SectionValidation {
 }
 
 export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateProps) {
-  const { state, goToStep, updateSection } = useMultiStepForm();
+  const { state, goToStep, updateSection, canNavigateToStep } = useMultiStepForm();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Development mode check
   const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
 
-  // Step mapping for navigation
+  // Step mapping for navigation - matching FORM_STEPS IDs
   const stepIdToNumber: Record<string, number> = {
     'header': 0,
     'history': 1,
-    'functional-status': 2,
-    'medical-info': 3,
-    'physical-exam': 4,
-    'range-of-motion': 5,
-    'gait-station': 6,
+    'functionalStatus': 2,
+    'medicalInfo': 3,
+    'physicalExam': 4,
+    'rangeOfMotion': 5,
+    'gaitStation': 6,
     'assessment': 7
   };
 
@@ -283,7 +283,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       recommendations: "Continue current conservative management with NSAIDs as needed. Consider referral to pain management for evaluation of epidural steroid injection if symptoms persist. Physical therapy for core strengthening and postural training may be beneficial. Ergonomic assessment recommended for future work activities. Return to modified work duties may be appropriate with above-mentioned restrictions.",
       examinerInfo: {
         name: "Dr. FNAME LNAME",
-        clinic: "EZMEDTECH Health & Wellness Center",
+        facility: "EZMEDTECH Health & Wellness Center",
         date: "August 12, 2025"
       }
     }
@@ -408,7 +408,25 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
   const handleEditSection = (stepId: string) => {
     const stepNumber = stepIdToNumber[stepId];
     if (stepNumber !== undefined) {
-      goToStep(stepNumber);
+      console.log(`Attempting to navigate to step: ${stepId} (step ${stepNumber})`);
+      console.log('Current step:', state.currentStep);
+      console.log('Visited steps:', Array.from(state.visitedSteps));
+      console.log('Can navigate to step:', canNavigateToStep?.(stepNumber));
+      
+      // Try to navigate
+      const success = goToStep(stepNumber);
+      
+      if (success) {
+        console.log(`Successfully navigated to step ${stepNumber}`);
+        toast.success(`Navigated to ${stepId} for editing`);
+      } else {
+        console.warn(`Navigation failed to step ${stepNumber}`);
+        toast.error(`Unable to navigate to ${stepId}. Please try using the progress bar above.`);
+      }
+    } else {
+      console.warn(`Unknown step ID: ${stepId}`);
+      console.log('Available step IDs:', Object.keys(stepIdToNumber));
+      toast.error(`Invalid section: ${stepId}`);
     }
   };
 
@@ -517,7 +535,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       id: 'functionalStatus',
       title: 'Functional Status',
       icon: Activity,
-      stepId: 'functional-status',
+      stepId: 'functionalStatus',
       data: state.formData.functionalStatus,
       validation: sectionValidation.functionalStatus
     },
@@ -525,7 +543,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       id: 'medicalInfo',
       title: 'Medical Information',
       icon: ClipboardList,
-      stepId: 'medical-info',
+      stepId: 'medicalInfo',
       data: state.formData.medicalInfo,
       validation: sectionValidation.medicalInfo
     },
@@ -533,7 +551,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       id: 'physicalExam',
       title: 'Physical Examination',
       icon: Stethoscope,
-      stepId: 'physical-exam',
+      stepId: 'physicalExam',
       data: state.formData.physicalExam,
       validation: sectionValidation.physicalExam
     },
@@ -541,7 +559,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       id: 'rangeOfMotion',
       title: 'Range of Motion',
       icon: Move,
-      stepId: 'range-of-motion',
+      stepId: 'rangeOfMotion',
       data: state.formData.rangeOfMotion,
       validation: sectionValidation.rangeOfMotion
     },
@@ -549,7 +567,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       id: 'gaitStation',
       title: 'Gait and Station',
       icon: RotateCcw,
-      stepId: 'gait-station',
+      stepId: 'gaitStation',
       data: state.formData.gaitStation,
       validation: sectionValidation.gaitStation
     },
