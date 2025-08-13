@@ -407,14 +407,14 @@ export function MultiStepFormController({
         </div>
 
         {/* Main content area */}
-        <div className="px-4 lg:px-8 py-8 pb-48">
-          <div className="max-w-6xl mx-auto">
+        <div className="px-2 py-4 pb-40">
+          <div className="w-full">
             {showPDFPreview ? (
               /* Side-by-side layout with form and PDF preview */
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2">
                 {/* Form content */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 flex flex-col">
-                  <div className="flex items-center justify-between mb-6 flex-shrink-0">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col">
+                  <div className="flex items-center justify-between mb-4 flex-shrink-0">
                     <h3 className="text-lg font-semibold text-gray-900">Form</h3>
                     <button
                       onClick={() => setShowPDFPreview(false)}
@@ -430,7 +430,7 @@ export function MultiStepFormController({
                         <p className="mt-2 text-gray-600">Loading form data...</p>
                       </div>
                     ) : isPreviewMode ? (
-                    <div className="space-y-6">
+                    <div className="space-y-0">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-medium text-gray-900">Form Preview</h3>
                       </div>
@@ -499,7 +499,7 @@ export function MultiStepFormController({
                         return currentValidation && 
                                currentValidation.errors.length > 0 && 
                                shouldShowErrors && (
-                          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                             <h4 className="text-sm font-medium text-red-800 mb-2">
                               Please fix the following errors:
                             </h4>
@@ -519,8 +519,8 @@ export function MultiStepFormController({
                 </div>
 
                 {/* PDF Preview */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 flex flex-col">
-                  <div className="flex items-center justify-between mb-6 flex-shrink-0">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-1 flex flex-col">
+                  <div className="flex items-center justify-between mb-2 flex-shrink-0 px-2 pt-2">
                     <h3 className="text-lg font-semibold text-gray-900">PDF Preview</h3>
                     <div className="flex space-x-2">
                       <PDFExportButton 
@@ -530,8 +530,8 @@ export function MultiStepFormController({
                       />
                     </div>
                   </div>
-                  <div className="border border-gray-200 rounded-lg overflow-hidden flex-1 min-h-0">
-                    <div className="h-full max-h-[calc(100vh-300px)] overflow-auto">
+                  <div className="rounded-lg overflow-hidden flex-1 min-h-0 p-0">
+                    <div className="h-full max-h-[calc(100vh-200px)] overflow-auto p-0">
                       <PDFTemplatePreview formData={state.formData} />
                     </div>
                   </div>
@@ -539,16 +539,16 @@ export function MultiStepFormController({
               </div>
             ) : (
               /* Single column layout */
-              <div className="max-w-4xl mx-auto">
+              <div className="w-full">
                 {/* Form content */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3">
                   {state.isLoading ? (
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                       <p className="mt-2 text-gray-600">Loading form data...</p>
                     </div>
                   ) : isPreviewMode ? (
-                    <div className="space-y-6">
+                    <div className="space-y-0">
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-medium text-gray-900">Form Preview</h3>
                       </div>
@@ -617,7 +617,7 @@ export function MultiStepFormController({
                         return currentValidation && 
                                currentValidation.errors.length > 0 && 
                                shouldShowErrors && (
-                          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                             <h4 className="text-sm font-medium text-red-800 mb-2">
                               Please fix the following errors:
                             </h4>

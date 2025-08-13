@@ -23,6 +23,13 @@ export interface HistorySection {
   historyOfPresentIllness: string; // text area
   age: number;
   gender: string;
+  reviewOfSystems?: string;
+  pastMedicalHistory?: string;
+  pastSurgicalHistory?: string;
+  medications?: string;
+  allergies?: string;
+  socialHistory?: string;
+  familyHistory?: string;
 }
 
 // =======================

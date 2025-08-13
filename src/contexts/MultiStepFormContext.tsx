@@ -437,6 +437,9 @@ export function MultiStepFormProvider({
     // Can always go to visited steps
     if (state.visitedSteps.has(step)) return true;
     
+    // Can always navigate backwards to any previous step (to fix incomplete sections)
+    if (step < state.currentStep) return true;
+    
     // If we're on the review step (last step), allow navigation to any previous step for editing
     const reviewStepIndex = FORM_STEPS.length - 1;
     if (state.currentStep === reviewStepIndex && step < reviewStepIndex) {

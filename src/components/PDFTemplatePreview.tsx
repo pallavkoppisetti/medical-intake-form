@@ -55,10 +55,10 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             data-pdf-preview
             className="c10 doc-content pdf-preview-content" 
             style={{ 
-                transform: 'scale(0.85)', 
+                transform: 'scale(0.95)', 
                 transformOrigin: 'top left',
-                width: '117.65%', // Compensate for scale
-                marginBottom: '-15%' // Reduce bottom spacing
+                width: '105%', // Minimal compensation for scale
+                marginBottom: '-5%' // Reduce bottom spacing
             }}
         >
             <div>
@@ -93,6 +93,26 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <h1 className="c12"><span className="c13">HISTORY OF PRESENT ILLNESS: &nbsp;</span></h1>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c9"><span className="c14">The Claimant is a </span><span>{history?.age || '[Age]'} </span><span className="c14">&nbsp;year old </span><span>{history?.gender || '[Gender]'}</span><span className="c2">&nbsp;with PMH of reports </span></p>
+            
+            {/* Add Past Medical History if available */}
+            {history?.pastMedicalHistory && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">PAST MEDICAL HISTORY: </span></h1>
+                <p className="c0"><span className="c2">{history.pastMedicalHistory}</span></p>
+              </>
+            )}
+            
+            {/* Add Review of Systems if available */}
+            {history?.reviewOfSystems && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">REVIEW OF SYSTEMS: </span></h1>
+                <p className="c0"><span className="c2">{history.reviewOfSystems}</span></p>
+              </>
+            )}
+            
+            <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">FUNCTIONAL STATUS: </span></h1>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c14">Dominant hand: </span><span>{functionalStatus?.dominantHand || '[Hand]'}</span><span className="c2">.</span></p>
@@ -109,22 +129,22 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CURRENT MEDICATIONS: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0 start">
-                {formatList(medicalInfo?.currentMedications, 'None reported')}
+                {formatList(history?.medications ? [history.medications] : medicalInfo?.currentMedications, 'None reported')}
             </ul>
             <p className="c0 c1"><span className="c5 c15 c3"></span></p>
             <h1 className="c12"><span className="c13">ALLERGIES: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0">
-                {formatList(medicalInfo?.allergies, 'NKDA (No Known Drug Allergies)')}
+                {formatList(history?.allergies ? [history.allergies] : medicalInfo?.allergies, 'NKDA (No Known Drug Allergies)')}
             </ul>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SURGICAL HISTORY: </span></h1>
-            <p className="c0"><span>{medicalInfo?.surgicalHistory || 'None.'}</span></p>
+            <p className="c0"><span>{history?.pastSurgicalHistory || medicalInfo?.surgicalHistory || 'None.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <h1 className="c12"><span className="c13">FAMILY IIISTORY: </span></h1>
-            <p className="c0"><span>{medicalInfo?.familyHistory || 'Noncontributory.'}</span></p>
+            <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
+            <p className="c0"><span>{history?.familyHistory || medicalInfo?.familyHistory || 'Noncontributory.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SOCIAL HISTORY: &nbsp;</span></h1>
-            <p className="c9"><span>{medicalInfo?.socialHistory || '[Enter social history]'}</span></p>
+            <p className="c9"><span>{history?.socialHistory || medicalInfo?.socialHistory || '[Enter social history]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Denies current use of tobacco/EtOH abuse/illicit substance abuse/prescription drug abuse/marijuana use.</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
