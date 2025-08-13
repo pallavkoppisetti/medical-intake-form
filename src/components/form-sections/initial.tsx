@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {FloridaCEExamForm} from '@/types/comprehensive-medical-form';
 
 export function Initial() {
   const navigate = useNavigate();

@@ -55,7 +55,6 @@ function MainForm() {
       onSubmit={handleFormSubmit}
       onStepChange={handleStepChange}
       onSectionComplete={handleSectionComplete}
-      initialData={initialFormData}
     >
       <FormLayout>
         <MultiStepFormController
