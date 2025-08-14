@@ -25,6 +25,7 @@ router = APIRouter()
 async def autofill(request: Request):
     try:
         payload = await request.json()
+        print("Received payload:", payload)
         input_text=payload["input_text"]
         sample_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'sample.json'))
         
@@ -37,7 +38,10 @@ async def autofill(request: Request):
             model=model,
             messages=[
                 {"role": "system", "content": "You are an expert in medical forms and autofill. Always respond ONLY with a valid JSON object that matches the provided form structure."},
-                {"role": "user", "content": f"Given the following text, fill out the medical intake form fields. Respond only with a valid JSON object matching the structure. Text: {input_text}. Form: {json.dumps(sample_data)}"}
+                {"role": "user", "content": f'''Given the following text, fill out the medical intake form fields. 
+                 Respond only with a valid JSON object matching the structure.Text: {input_text}. Form: {json.dumps(sample_data)}
+                 '''}
+                
             ]
         )
 

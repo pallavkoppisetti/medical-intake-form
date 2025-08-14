@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from Routes import autofill
 
 
+
 app = FastAPI()
 app.add_middleware(
 	CORSMiddleware,
@@ -11,6 +12,7 @@ app.add_middleware(
 	allow_methods=["*"],
 	allow_headers=["*"],
 )
+  
 
 app.include_router(autofill.router,tags=["autofill"])
 
