@@ -3,27 +3,31 @@ import type { FloridaCEExamForm } from '../types/comprehensive-medical-form';
 import './PDFTemplatePreview.css'; // Import the CSS file
 
 // Helper functions as specified
-const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    if (isNaN(new Date(dateString).getTime())) {
-        return dateString;
+const formatDate = (dateString?: string): string => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) {
+        return dateString || '';
     }
+
     const date = new Date(dateString);
-    const offsetDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
-    return offsetDate.toLocaleDateString('en-US', {
+
+    return date.toLocaleDateString('en-US', {
         month: '2-digit',
         day: '2-digit',
         year: 'numeric',
+        timeZone: 'UTC', // This is the crucial fix
     });
 };
 
+
 const formatDiagnosisList = (diagnoses?: string[]) => {
     if (!diagnoses || diagnoses.length === 0) return <li className="c0 c4 li-bullet-0">No diagnosis provided.</li>;
-    return diagnoses.map((d, i) => (
-        <li key={i} className="c0 c4 li-bullet-0">
-            <span>{d}</span>
-        </li>
-    ));
+  return Array.isArray(diagnoses)
+    ? diagnoses.map((d, i) => (
+      <li key={i} className="c0 c4 li-bullet-0">
+        <span>{d}</span>
+      </li>
+    ))
+    : null;
 };
 
 
@@ -89,7 +93,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CHIEF COMPLAINT: </span></h1>
-            {header?.chiefComplaintTags && Array.isArray(header.chiefComplaintTags) && header.chiefComplaintTags.length > 0 ? (
+            {Array.isArray(header?.chiefComplaintTags) && header.chiefComplaintTags.length > 0 ? (
               <div className="c0">
                 {header.chiefComplaintTags.map((complaint: string, index: number) => (
                   <p key={index} className="c0" style={{ marginLeft: '18pt', textIndent: '-18pt', marginBottom: '4pt' }}>
@@ -114,6 +118,105 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
               </>
             )}
             
+            {/* Add Past Medical History if available */}
+      {Array.isArray(history?.pastMedicalHistory) && history.pastMedicalHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">PAST MEDICAL HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.pastMedicalHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Medications if available */}
+      {Array.isArray(history?.medications) && history.medications.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">MEDICATIONS: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.medications.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Allergies if available */}
+      {Array.isArray(history?.allergies) && history.allergies.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">ALLERGIES: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.allergies.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Social History if available */}
+      {Array.isArray(history?.socialHistory) && history.socialHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">SOCIAL HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.socialHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Family History if available */}
+      {Array.isArray(history?.familyHistory) && history.familyHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.familyHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Past Surgical History if available */}
+      {Array.isArray(history?.pastSurgicalHistory) && history.pastSurgicalHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">PAST SURGICAL HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.pastSurgicalHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            
+            {/* Add Review of Systems if available */}
+            {history?.reviewOfSystems && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">REVIEW OF SYSTEMS: </span></h1>
+                <p className="c0"><span className="c2">{history.reviewOfSystems}</span></p>
+              </>
+            )}
+            
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">FUNCTIONAL STATUS: </span></h1>
             <p className="c0 c1"><span className="c2"></span></p>
@@ -131,7 +234,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CURRENT MEDICATIONS: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0 start">
-                {history?.medications && Array.isArray(history.medications) && history.medications.length > 0 ? (
+                {Array.isArray(history?.medications) && history.medications.length > 0 ? (
                   history.medications.map((medication, index) => (
                     <li key={index} className="c4 li-bullet-0">
                       <span className="c2 font-semibold">● {medication}</span>
@@ -146,7 +249,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c5 c15 c3"></span></p>
             <h1 className="c12"><span className="c13">ALLERGIES: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0">
-                {history?.allergies && Array.isArray(history.allergies) && history.allergies.length > 0 ? (
+                {Array.isArray(history?.allergies) && history.allergies.length > 0 ? (
                   history.allergies.map((allergy, index) => (
                     <li key={index} className="c4 li-bullet-0">
                       <span className="c2 font-semibold">● {allergy}</span>
@@ -160,7 +263,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             </ul>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SURGICAL HISTORY: </span></h1>
-            {history?.pastSurgicalHistory && Array.isArray(history.pastSurgicalHistory) && history.pastSurgicalHistory.length > 0 ? (
+            {Array.isArray(history?.pastSurgicalHistory) && history.pastSurgicalHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.pastSurgicalHistory.map((surgery, index) => (
                   <li key={index} className="c4 li-bullet-0">
@@ -173,7 +276,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
-            {history?.familyHistory && Array.isArray(history.familyHistory) && history.familyHistory.length > 0 ? (
+            {Array.isArray(history?.familyHistory) && history.familyHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.familyHistory.map((item, index) => (
                   <li key={index} className="c4 li-bullet-0">
@@ -186,7 +289,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SOCIAL HISTORY: &nbsp;</span></h1>
-            {history?.socialHistory && Array.isArray(history.socialHistory) && history.socialHistory.length > 0 ? (
+            {Array.isArray(history?.socialHistory) && history.socialHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.socialHistory.map((item, index) => (
                   <li key={index} className="c4 li-bullet-0">

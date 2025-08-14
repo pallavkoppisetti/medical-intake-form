@@ -1,11 +1,12 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
+import { Initial } from './components/form-sections/initial';
 import { Toaster } from 'sonner';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css'
 
-function App() {
+function MainForm() {
   const handleFormSubmit = async (formData: any) => {
-    // Here you would typically send the form data to your backend
     console.log('Submitting form data:', formData);
     
     // Simulate API call
@@ -22,6 +23,28 @@ function App() {
   const handleSectionComplete = (sectionId: string) => {
     console.log('Section completed:', sectionId);
   };
+
+  // Load any prefilled data from the initial component
+  const prefilledData = sessionStorage.getItem('prefilledData');
+  let initialFormData;
+  
+  if (prefilledData) {
+    try {
+      initialFormData = JSON.parse(prefilledData);
+      console.log('Loading prefilled form data:', initialFormData);
+      
+      // Validate the structure of the form data
+      if (!initialFormData.header || !initialFormData.history || !initialFormData.functionalStatus || 
+          !initialFormData.medicalInfo || !initialFormData.physicalExam || !initialFormData.rangeOfMotion || 
+          !initialFormData.gaitStation) {
+        console.error('Invalid form data structure:', initialFormData);
+        initialFormData = undefined;
+      }
+    } catch (err) {
+      console.error('Error parsing prefilled form data:', err);
+      initialFormData = undefined;
+    }
+  }
 
   return (
     <MultiStepFormProvider
@@ -43,6 +66,19 @@ function App() {
         closeButton
       />
     </MultiStepFormProvider>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Initial />} />
+        <Route path="/form" element={<MainForm />} />
+        {/* Catch all unmatched routes */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

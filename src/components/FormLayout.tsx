@@ -58,6 +58,18 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
   const currentStep = FORM_STEPS[state.currentStep];
 
   const getStepStatus = (stepIndex: number) => {
+    // Handle initial step
+    if (state.currentStep === -1) {
+      return {
+        isComplete: false,
+        isVisited: false,
+        isCurrent: false,
+        canNavigate: false,
+        hasErrors: false,
+        completionPercentage: 0,
+      };
+    }
+
     const step = FORM_STEPS[stepIndex];
     const isComplete = isStepComplete(stepIndex);
     const isVisited = isStepVisited(stepIndex);
@@ -144,7 +156,7 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
               ) : !status.canNavigate && !status.isVisited ? (
                 <Lock className="w-4 h-4" />
               ) : (
-                <span className="text-sm font-medium">{index + 1}</span>
+                <span className="text-sm font-medium">{index}</span>
               )}
             </div>
             {Icon && (

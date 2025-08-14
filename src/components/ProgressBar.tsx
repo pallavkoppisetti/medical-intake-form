@@ -24,6 +24,18 @@ export function ProgressBar({
   } = useMultiStepForm();
 
   const getStepStatus = (stepIndex: number) => {
+    // Don't show progress when on initial step
+    if (state.currentStep === -1) {
+      return {
+        isComplete: false,
+        isVisited: false,
+        isCurrent: false,
+        canNavigate: false,
+        hasErrors: false,
+        completionPercentage: 0
+      };
+    }
+
     const step = FORM_STEPS[stepIndex];
     const isComplete = isStepComplete(stepIndex);
     const isVisited = isStepVisited(stepIndex);
