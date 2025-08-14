@@ -49,39 +49,43 @@ export function HistoryFormNew() {
             rows={4}
           />
           
-          <FormTextarea
-            label="Medications"
-            value={historyData?.medications || ''}
-            onChange={(value) => handleChange('medications', value)}
-            placeholder="e.g., Ibuprofen 600mg TID PRN pain, Metformin 500mg BID, Lisinopril 10mg daily, Gabapentin 300mg TID PRN neuropathic pain. No known drug interactions..."
-            rows={4}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <FormTextarea
+              label="Medications"
+              value={historyData?.medications || ''}
+              onChange={(value) => handleChange('medications', value)}
+              placeholder="e.g., Ibuprofen 600mg TID PRN pain, Metformin 500mg BID, Lisinopril 10mg daily..."
+              rows={3}
+            />
+            
+            <FormTextarea
+              label="Allergies"
+              value={historyData?.allergies || ''}
+              onChange={(value) => handleChange('allergies', value)}
+              placeholder="e.g., NKDA (No Known Drug Allergies). Environmental allergies to pollen..."
+              rows={3}
+            />
+          </div>
           
-          <FormTextarea
-            label="Allergies"
-            value={historyData?.allergies || ''}
-            onChange={(value) => handleChange('allergies', value)}
-            placeholder="e.g., NKDA (No Known Drug Allergies). Environmental allergies to pollen. No food allergies reported..."
-            rows={3}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <FormTextarea
+              label="Social History"
+              value={historyData?.socialHistory || ''}
+              onChange={(value) => handleChange('socialHistory', value)}
+              placeholder="e.g., Former smoker (quit 5 years ago, 20 pack-year history). Occasional alcohol use..."
+              rows={3}
+            />
+            
+            <FormTextarea
+              label="Family History"
+              value={historyData?.familyHistory || ''}
+              onChange={(value) => handleChange('familyHistory', value)}
+              placeholder="e.g., Father deceased at age 70 from heart disease. Mother living with diabetes..."
+              rows={3}
+            />
+          </div>
           
-          <FormTextarea
-            label="Social History"
-            value={historyData?.socialHistory || ''}
-            onChange={(value) => handleChange('socialHistory', value)}
-            placeholder="e.g., Former smoker (quit 5 years ago, 20 pack-year history). Occasional alcohol use (2-3 drinks per week). Currently unemployed due to back injury. Previously worked as warehouse supervisor for 15 years. Lives with spouse, independent with ADLs..."
-            rows={4}
-          />
-          
-          <FormTextarea
-            label="Family History"
-            value={historyData?.familyHistory || ''}
-            onChange={(value) => handleChange('familyHistory', value)}
-            placeholder="e.g., Father deceased at age 70 from heart disease. Mother living with diabetes and hypertension. No family history of cancer, genetic disorders, or significant musculoskeletal conditions..."
-            rows={4}
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <FormInput
               label="Age"
               type="number"

@@ -13,6 +13,7 @@ export interface HeaderSection {
   examDate: string;
   caseNumber: string;
   chiefComplaint: string;
+  chiefComplaintTags: string[]; // Array of complaint tags
 }
 
 // =======================

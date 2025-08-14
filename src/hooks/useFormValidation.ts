@@ -58,6 +58,9 @@ export function useFormValidation() {
       if (!sectionData.examDate) {
         errors.push({ field: 'examDate', message: 'Exam Date is required.' });
       }
+      if (!sectionData.chiefComplaintTags || sectionData.chiefComplaintTags.length === 0) {
+        errors.push({ field: 'chiefComplaint', message: 'At least one chief complaint is required.' });
+      }
       if (errors.length > 0) {
         return { success: false, errors };
       }

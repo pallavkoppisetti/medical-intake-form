@@ -87,7 +87,17 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CHIEF COMPLAINT: </span></h1>
-            <p className="c0"><span className="c14">Claimants current complains include {header?.chiefComplaint || '[Enter chief complaint]'}</span></p>
+            {header?.chiefComplaintTags && header.chiefComplaintTags.length > 0 ? (
+              <ul className="c18 lst-kix_list_1-0">
+                {header.chiefComplaintTags.map((complaint: string, index: number) => (
+                  <li key={index} className="c0 c4 li-bullet-0">
+                    <span className="c14">{complaint}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="c0"><span className="c14">Claimants current complains include {header?.chiefComplaint || '[Enter chief complaint]'}</span></p>
+            )}
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">HISTORY OF PRESENT ILLNESS: &nbsp;</span></h1>

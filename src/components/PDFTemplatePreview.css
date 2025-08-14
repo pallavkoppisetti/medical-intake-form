@@ -63,10 +63,18 @@ ul.lst-kix_list_1-0 {
 }
 
 li.li-bullet-0:before {
+    content: "\2022   ";
     margin-left: -18pt;
     white-space: nowrap;
     display: inline-block;
-    min-width: 18pt
+    min-width: 18pt;
+    color: black;
+}
+
+li.li-bullet-0 {
+    margin-left: 18pt;
+    padding-left: 0pt;
+    text-indent: -18pt;
 }
 
 ul.lst-kix_list_1-3 {
