@@ -1,265 +1,283 @@
 {
-    "header": {
-        "claimantName": "",
-        "examDate": "",
-        "dateOfBirth": "",
-        "caseNumber": "",
-        "chiefComplaint": ""
-    },
-    "history": {
-        "reviewOfSystems": "",
-        "pastMedicalHistory": "",
-        "pastSurgicalHistory": "",
-        "medications": "",
-        "allergies": "",
-        "socialHistory": "",
-        "familyHistory": "",
-        "age": "",
-        "gender": ""
-    },
-    "functionalStatus": {
-        "dominantHand": "",
-        "sittingWorstDay": "",
-        "sittingBestDay": "",
-        "standingWorstDay": "",
-        "standingBestDay": "",
-        "walkingWorstDay": "",
-        "walkingBestDay": "",
-        "cookingMealPrep": "",
-        "groceryShoppingWorstDay": "",
-        "groceryShoppingBestDay": "",
-        "drivingWorstDay": "",
-        "drivingBestDay": "",
-        "bathingShowering": "",
-        "dressing": "",
-        "personalFinances": ""
-    },
-    "medicalInfo": {
-        "currentMedications": [
-            ""
-        ],
-        "allergies": [
-            ""
-        ],
-        "surgicalHistory": "",
-        "familyHistory": "",
-        "socialHistory": ""
-    },
-    "physicalExam": {
-        "vitalSigns": {
-            "bloodPressure": {
-                "systolic": "",
-                "diastolic": ""
-            },
-            "weight": "",
-            "heartRate": "",
-            "oxygenSaturation": "",
-            "height": "",
-            "temperature": "",
-            "handGripStrength": {
-                "right": "",
-                "left": ""
-            },
-            "visualAcuity": {
-                "right": {
-                    "uncorrected": "",
-                    "corrected": ""
-                },
-                "left": {
-                    "uncorrected": "",
-                    "corrected": ""
-                }
-            }
+  "header": {
+    "claimantName": "e.g John Doe",
+    "examDate": "YYYY-MM-DD",
+    "dateOfBirth": "YYYY-MM-DD",
+    "caseNumber": "e.g. FL2024-123456-789",
+    "chiefComplaint": "e.g. Severe back pain",
+    "providerName": "e.g. Dr. Smith",
+    "providerId": "e.g. 123456"
+  },
+  "history": {
+    "reviewOfSystems": "e.g. Positive for low back pain",
+    "pastMedicalHistory": "e.g. ['Hypertension', 'Diabetes']",
+    "pastSurgicalHistory": "e.g. ['Appendectomy in 2010']",
+    "medications": "e.g. ['Metformin', 'Lisinopril']",
+    "allergies": "e.g. ['Penicillin']",
+    "socialHistory": "e.g. ['Non-smoker', 'occasional alcohol']",
+    "familyHistory": "e.g. ['Father with heart disease']",
+    "age": "e.g. 45",
+    "gender": "e.g. Female",
+    "occupation": "e.g. Office worker",
+    "maritalStatus": "e.g. Married"
+  },
+  "functionalStatus": {
+    "dominantHand": "Right or Left",
+    "sittingWorstDay": "e.g., 15-30 minutes before pain increases",
+    "sittingBestDay": "e.g. 1 hour with position changes",
+    "standingWorstDay": "e.g. 5-10 minutes before pain increases",
+    "standingBestDay": "e.g. 20-30 minutes with frequent position changes",
+    "walkingWorstDay": "e.g. 1-2 blocks before pain increases",
+    "walkingBestDay": "e.g. 4-5 blocks with frequent breaks",
+    "cookingMealPrep": "e.g. Needs assistance",
+    "groceryShoppingWorstDay": "e.g. Unable to complete",
+    "groceryShoppingBestDay": "e.g. Can complete with breaks",
+    "drivingWorstDay": "e.g. 10 minutes before pain increases",
+    "drivingBestDay": "e.g. 30 minutes with breaks",
+    "bathingShowering": "e.g. Independent",
+    "dressing": "e.g. Needs help with shoes",
+    "personalFinances": "e.g. Manages independently"
+  },
+  "medicalInfo": {
+    "currentMedications": [
+      "e.g. Ibuprofen"
+    ],
+    "allergies": [
+      "e.g. Latex"
+    ],
+    "surgicalHistory": "e.g. Knee surgery in 2015",
+    "familyHistory": "e.g. Mother with diabetes",
+    "socialHistory": "e.g. Lives alone"
+  },
+  "physicalExam": {
+    "vitalSigns": {
+      "bloodPressure": {
+        "systolic": "e.g. 120",
+        "diastolic": "e.g. 80"
+      },
+      "weight": "e.g. 70 ",
+      "heartRate": "e.g. 72",
+      "oxygenSaturation": "e.g. 98",
+      "height": "e.g. 170 ",
+      "temperature": "e.g. 98.6 ",
+      "handGripStrength": {
+        "right": "e.g. 30 ",
+        "left": "e.g. 28 "
+      },
+      "visualAcuity": {
+        "right": {
+          "uncorrected": "e.g. 20/40",
+          "corrected": "e.g. 20/20"
         },
-        "general": "",
-        "eyes": "",
-        "earsNoseThroat": "",
-        "headNeck": "",
-        "respiratory": "",
-        "cardiovascular": "",
-        "abdomen": "",
-        "back": "",
-        "skin": "",
-        "musculoskeletal": "",
-        "neurological": "",
-        "psychiatry": "",
-        "neuromuscularStrength": {
-            "rightUpperExtremity": "",
-            "leftUpperExtremity": "",
-            "rightLowerExtremity": "",
-            "leftLowerExtremity": "",
-            "rightGrip": "",
-            "leftGrip": "",
-            "dexterityAssessment": ""
-        },
-        "fineGrossManipulativeSkills": {
-            "buttoning": {
-                "left": "",
-                "right": ""
-            },
-            "zipping": {
-                "left": "",
-                "right": ""
-            },
-            "pickingUpCoin": {
-                "left": "",
-                "right": ""
-            },
-            "tyingShoelaces": {
-                "left": "",
-                "right": ""
-            }
-        },
-        "reflexes": {
-            "biceps": {
-                "right": "",
-                "left": ""
-            },
-            "triceps": {
-                "right": "",
-                "left": ""
-            },
-            "knee": {
-                "right": "",
-                "left": ""
-            },
-            "achilles": {
-                "right": "",
-                "left": ""
-            }
+        "left": {
+          "uncorrected": "e.g. 20/40",
+          "corrected": "e.g. 20/20"
         }
+      }
     },
-    "rangeOfMotion": {
-        "effortOnExam": "",
-        "cervicalSpine": {
-            "forwardFlexion": "",
-            "extension": "",
-            "lateralFlexionRight": "",
-            "rotationLeft": "",
-            "rotationRight": "",
-            "lateralFlexionLeft": ""
-        },
-        "lumbarSpine": {
-            "forwardFlexion": "",
-            "extension": "",
-            "lateralFlexionRight": "",
-            "lateralFlexionLeft": ""
-        },
-        "shoulders": {
-            "left": {
-                "flexion": "",
-                "extension": "",
-                "abduction": "",
-                "externalRotation": "",
-                "internalRotation": "",
-                "adduction": ""
-            },
-            "right": {
-                "flexion": "",
-                "extension": "",
-                "abduction": "",
-                "adduction": "",
-                "internalRotation": "",
-                "externalRotation": ""
-            }
-        },
-        "elbows": {
-            "left": {
-                "flexion": "",
-                "pronation": "",
-                "supination": ""
-            },
-            "right": {
-                "flexion": "",
-                "pronation": "",
-                "supination": ""
-            }
-        },
-        "wrists": {
-            "left": {
-                "flexion": "",
-                "extension": "",
-                "ulnarDeviation": "",
-                "radialDeviation": ""
-            },
-            "right": {
-                "flexion": "",
-                "extension": "",
-                "ulnarDeviation": "",
-                "radialDeviation": ""
-            }
-        },
-        "hands": {
-            "left": {
-                "fingerFlexion": "",
-                "thumbOpposition": ""
-            },
-            "right": {
-                "fingerFlexion": "",
-                "thumbOpposition": ""
-            }
-        },
-        "hips": {
-            "left": {
-                "flexion": "",
-                "extension": "",
-                "abduction": "",
-                "adduction": "",
-                "internalRotation": "",
-                "externalRotation": ""
-            },
-            "right": {
-                "flexion": "",
-                "extension": "",
-                "abduction": "",
-                "externalRotation": "",
-                "internalRotation": "",
-                "adduction": ""
-            }
-        },
-        "knees": {
-            "left": {
-                "flexion": "",
-                "extension": ""
-            },
-            "right": {
-                "flexion": "",
-                "extension": ""
-            }
-        },
-        "ankles": {
-            "left": {
-                "dorsiflexion": "",
-                "plantarflexion": "",
-                "inversion": "",
-                "eversion": ""
-            },
-            "right": {
-                "eversion": "",
-                "inversion": "",
-                "plantarflexion": "",
-                "dorsiflexion": ""
-            }
-        }
+    "general": "e.g. Well-nourished, alert",
+    "eyes": "e.g. PERRLA",
+    "earsNoseThroat": "e.g. Tympanic membranes clear",
+    "headNeck": "e.g. No masses",
+    "respiratory": "e.g. Clear to auscultation",
+    "cardiovascular": "e.g. Regular rate and rhythm",
+    "abdomen": "e.g. Soft, non-tender",
+    "back": "e.g. No deformity",
+    "skin": "e.g. Intact",
+    "musculoskeletal": "e.g. Full range of motion",
+    "neurological": "e.g. Alert and oriented",
+    "psychiatry": "e.g. Appropriate mood",
+    "neuromuscularStrength": {
+      "rightUpperExtremity": "e.g. 5",
+      "leftUpperExtremity": "e.g. 5",
+      "rightLowerExtremity": "e.g. 5",
+      "leftLowerExtremity": "e.g. 5",
+      "rightGrip": "e.g. 30 ",
+      "leftGrip": "e.g. 28 ",
+      "dexterityAssessment": "e.g. 30"
     },
-    "gaitStation": {
-        "performanceTests": {
-            "gettingOnOffTable": "",
-            "walkingOnHeels": "",
-            "walkingOnToes": "",
-            "squattingAndRising": "",
-            "fingerToNose": "",
-            "straightLegRaise": ""
-        },
-        "assistiveDevice": {
-            "gaitAssessment": "",
-            "deviceType": "",
-            "medicalConditions": "",
-            "usageContext": [
-                ""
-            ],
-            "medicalNecessity": "",
-            "circumstancesOfUse": ""
-        }
+    "fineGrossManipulativeSkills": {
+      "buttoning": {
+        "left": "e.g. 3",
+        "right": "e.g. 3"
+      },
+      "zipping": {
+        "left": "e.g. 3",
+        "right": "e.g. 3"
+      },
+      "pickingUpCoin": {
+        "left": "e.g. 3",
+        "right": "e.g. 3"
+      },
+      "tyingShoelaces": {
+        "left": "e.g. 3",
+        "right": "e.g. 3"
+      }
+    },
+    "reflexes": {
+      "biceps": {
+        "right": "e.g. 2+",
+        "left": "e.g. 2+"
+      },
+      "triceps": {
+        "right": "e.g. 2+",
+        "left": "e.g. 2+"
+      },
+      "knee": {
+        "right": "e.g. 2+",
+        "left": "e.g. 2+"
+      },
+      "achilles": {
+        "right": "e.g. 2+",
+        "left": "e.g. 2+"
+      }
     }
+  },
+  "rangeOfMotion": {
+    "effortOnExam": "e.g. Good or fair or poor",
+    "cervicalSpine": {
+      "forwardFlexion": "e.g. 45",
+      "extension": "e.g. 45",
+      "lateralFlexionRight": "e.g. 45",
+      "rotationLeft": "e.g. 80",
+      "rotationRight": "e.g. 80",
+      "lateralFlexionLeft": "e.g. 45"
+    },
+    "lumbarSpine": {
+      "forwardFlexion": "e.g. 60",
+      "extension": "e.g. 25",
+      "lateralFlexionRight": "e.g. 25",
+      "lateralFlexionLeft": "e.g. 25"
+    },
+    "shoulders": {
+      "left": {
+        "flexion": "e.g. 180",
+        "extension": "e.g. 60",
+        "abduction": "e.g. 180",
+        "externalRotation": "e.g. 90",
+        "internalRotation": "e.g. 70",
+        "adduction": "e.g. 50"
+      },
+      "right": {
+        "flexion": "e.g. 180",
+        "extension": "e.g. 60",
+        "abduction": "e.g. 180",
+        "adduction": "e.g. 50",
+        "internalRotation": "e.g. 70",
+        "externalRotation": "e.g. 90"
+      }
+    },
+    "elbows": {
+      "left": {
+        "flexion": "e.g. 150",
+        "pronation": "e.g. 80",
+        "supination": "e.g. 80"
+      },
+      "right": {
+        "flexion": "e.g. 150",
+        "pronation": "e.g. 80",
+        "supination": "e.g. 80"
+      }
+    },
+    "wrists": {
+      "left": {
+        "flexion": "e.g. 80",
+        "extension": "e.g. 70",
+        "ulnarDeviation": "e.g. 30",
+        "radialDeviation": "e.g. 20"
+      },
+      "right": {
+        "flexion": "e.g. 80",
+        "extension": "e.g. 70",
+        "ulnarDeviation": "e.g. 30",
+        "radialDeviation": "e.g. 20"
+      }
+    },
+    "hands": {
+      "left": {
+        "fingerFlexion": "e.g. 90",
+        "thumbOpposition": "e.g. 90"
+      },
+      "right": {
+        "fingerFlexion": "e.g. 90",
+        "thumbOpposition": "e.g. 90"
+      }
+    },
+    "hips": {
+      "left": {
+        "flexion": "e.g. 120",
+        "extension": "e.g. 30",
+        "abduction": "e.g. 45",
+        "adduction": "e.g. 30",
+        "internalRotation": "e.g. 40",
+        "externalRotation": "e.g. 45"
+      },
+      "right": {
+        "flexion": "e.g. 120",
+        "extension": "e.g. 30",
+        "abduction": "e.g. 45",
+        "externalRotation": "e.g. 45",
+        "internalRotation": "e.g. 40",
+        "adduction": "e.g. 30"
+      }
+    },
+    "knees": {
+      "left": {
+        "flexion": "e.g. 135",
+        "extension": "e.g. 0"
+      },
+      "right": {
+        "flexion": "e.g. 135",
+        "extension": "e.g. 0"
+      }
+    },
+    "ankles": {
+      "left": {
+        "dorsiflexion": "e.g. 20",
+        "plantarflexion": "e.g. 50",
+        "inversion": "e.g. 35",
+        "eversion": "e.g. 15"
+      },
+      "right": {
+        "eversion": "e.g. 15",
+        "inversion": "e.g. 35",
+        "plantarflexion": "e.g. 50",
+        "dorsiflexion": "e.g. 20"
+      }
+    }
+  },
+  "gaitStation": {
+    "performanceTests": {
+      "gettingOnOffTable": "e.g. able",
+      "walkingOnHeels": "e.g. able",
+      "walkingOnToes": "e.g. unable",
+      "squattingAndRising": "e.g. able",
+      "fingerToNose": "e.g. unable",
+      "straightLegRaise": "e.g. Negative"
+    },
+    "assistiveDevice": {
+      "gaitAssessment": "e.g. Normal gait",
+      "deviceType": "e.g. Cane",
+      "medicalConditions": "e.g. Osteoarthritis",
+      "usageContext": [
+        "e.g. Outdoors only"
+      ],
+      "medicalNecessity": "e.g. Prescribed by physician",
+      "circumstancesOfUse": "e.g. On uneven ground"
+    }
+  },
+  "assessment": {
+    "diagnosis": "e.g. Lumbar strain",
+    "severity": "e.g. Moderate",
+    "duration": "e.g. 3 months"
+  },
+  "plan": {
+    "treatment": "e.g. Physical therapy",
+    "followUp": "e.g. 2 weeks",
+    "referrals": "e.g. Orthopedics"
+  },
+  "signature": {
+    "providerSignature": "e.g. Dr. Smith",
+    "dateSigned": "YYYY-MM-DD"
+  }
 }
