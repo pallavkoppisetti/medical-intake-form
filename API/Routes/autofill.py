@@ -40,7 +40,7 @@ async def autofill(request: Request):
                 {"role": "system", "content": "You are an expert in medical forms and autofill. Always respond ONLY with a valid JSON object that matches the provided form structure."},
                 {"role": "user", "content": f'''Given the following text, fill out the medical intake form fields. 
                  Respond only with a valid JSON object matching the structure.Text: {input_text}. Form: {json.dumps(sample_data)}
-                 '''}
+                 don't give extentions for numeric values, just give the value itself.'''}
                 
             ]
         )

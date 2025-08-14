@@ -15,11 +15,12 @@
     "medications": "e.g. ['Metformin', 'Lisinopril']",
     "allergies": "e.g. ['Penicillin']",
     "socialHistory": "e.g. ['Non-smoker', 'occasional alcohol']",
-    "familyHistory": "e.g. ['Father with heart disease']",
+    "familyHistory": "e.g. ['Father with heart disease','grandfather with stroke']",
     "age": "e.g. 45",
     "gender": "e.g. Female",
     "occupation": "e.g. Office worker",
-    "maritalStatus": "e.g. Married"
+    "maritalStatus": "e.g. Married",
+    "historyOfPresentIllness": "e.g. Patient reports severe back pain for 3 weeks, worsened with activity. No previous injuries."
   },
   "functionalStatus": {
     "dominantHand": "Right or Left",
@@ -55,7 +56,7 @@
         "systolic": "e.g. 120",
         "diastolic": "e.g. 80"
       },
-      "weight": "e.g. 70 ",
+      "weight": "e.g. 70",
       "heartRate": "e.g. 72",
       "oxygenSaturation": "e.g. 98",
       "height": "e.g. 170 ",
@@ -134,7 +135,7 @@
     }
   },
   "rangeOfMotion": {
-    "effortOnExam": "e.g. Good or fair or poor",
+    "effortOnExam": "e.g. Good or Fair or Poor",
     "cervicalSpine": {
       "forwardFlexion": "e.g. 45",
       "extension": "e.g. 45",
@@ -253,23 +254,24 @@
       "walkingOnToes": "e.g. unable",
       "squattingAndRising": "e.g. able",
       "fingerToNose": "e.g. unable",
-      "straightLegRaise": "e.g. Negative"
+      "straightLegRaise": "e.g. negative or positive"
     },
     "assistiveDevice": {
       "gaitAssessment": "e.g. Normal gait",
-      "deviceType": "e.g. Cane",
+      "deviceType": "e.g. cane or walker or crutches or wheelchair or rollator or quad-cane or forearm-crutches or other",
       "medicalConditions": "e.g. Osteoarthritis",
       "usageContext": [
-        "e.g. Outdoors only"
+        "e.g. walking or standing or both"
       ],
-      "medicalNecessity": "e.g. Prescribed by physician",
+      "medicalNecessity": "e.g. yes or no",
       "circumstancesOfUse": "e.g. On uneven ground"
     }
   },
   "assessment": {
     "diagnosis": "e.g. Lumbar strain",
     "severity": "e.g. Moderate",
-    "duration": "e.g. 3 months"
+    "duration": "e.g. 3 months",
+    "patientCooperation": "e.g. yes or no"
   },
   "plan": {
     "treatment": "e.g. Physical therapy",
