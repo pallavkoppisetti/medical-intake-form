@@ -4,7 +4,6 @@ import { FormNavigation } from './FormNavigation';
 import { CEHeaderForm } from './form-sections/CEHeaderForm';
 import { HistoryFormNew } from './form-sections/HistoryFormNew';
 import { FunctionalStatusFormNew } from './form-sections/FunctionalStatusFormNew';
-import { MedicalInfoForm } from './form-sections/MedicalInfoForm';
 import { PhysicalExamForm } from './form-sections/PhysicalExamForm';
 import { RangeOfMotionForm } from './form-sections/RangeOfMotionForm';
 import { GaitStationForm } from './form-sections/GaitStationForm';
@@ -16,17 +15,14 @@ import {
   CheckCircle, 
   Lock, 
   AlertCircle, 
-  Menu,
   X,
   Save,
-  RotateCcw,
   Eye,
   EyeOff,
   FileText as FilePDF,
   User,
   Heart,
   Activity,
-  Stethoscope,
   Target,
   Zap,
   FileText
@@ -37,7 +33,6 @@ const SECTION_ICONS = {
   basicInfo: User,
   history: Heart,
   functionalStatus: Activity,
-  medicalInfo: Stethoscope,
   physicalExam: Target,
   rangeOfMotion: Zap,
   gaitAndStation: Activity,
@@ -59,7 +54,6 @@ export function MultiStepFormController({
   const {
     state,
     goToStep,
-    resetForm,
     getCurrentStep,
     getStepValidation,
     canNavigateToStep,
@@ -110,12 +104,6 @@ export function MultiStepFormController({
     await saveForm();
   };
 
-  const handleReset = () => {
-    if (confirm('Are you sure you want to reset all form data? This action cannot be undone.')) {
-      resetForm();
-    }
-  };
-
   const renderCurrentForm = () => {
     switch (state.currentStep) {
       case 0:
@@ -125,16 +113,14 @@ export function MultiStepFormController({
       case 2:
         return <FunctionalStatusFormNew />;
       case 3:
-        return <MedicalInfoForm />;
-      case 4:
         return <PhysicalExamForm />;
-      case 5:
+      case 4:
         return <RangeOfMotionForm />;
-      case 6:
+      case 5:
         return <GaitStationForm />;
-      case 7:
+      case 6:
         return <AssessmentForm />;
-      case 8:
+      case 7:
         return <FormReviewAndGenerate />;
       default:
         return (
@@ -341,73 +327,8 @@ export function MultiStepFormController({
 
       {/* Main content */}
       <div className="lg:ml-80 min-h-screen">
-        {/* Top navigation bar */}
-        <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
-          <div className="px-4 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => setIsSidebarOpen(true)}
-                  className="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-                
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    {currentStep.title}
-                  </h2>
-                  <p className="text-sm text-gray-600">
-                    Complete the {currentStep.title.toLowerCase()} section
-                    {currentStep.required && <span className="text-red-500 ml-1">*Required</span>}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => setShowPDFPreview(!showPDFPreview)}
-                  className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                    showPDFPreview 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                      : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FilePDF className="w-4 h-4 mr-1" />
-                  <span className="hidden sm:inline">{showPDFPreview ? 'Hide PDF' : 'Show PDF'}</span>
-                  <span className="sm:hidden">PDF</span>
-                </button>
-
-                <PDFExportButton 
-                  variant="outline"
-                  size="default"
-                  disabled={state.overallProgress < 50}
-                />
-
-                <button
-                  onClick={handleReset}
-                  className="hidden sm:flex items-center px-3 py-2 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50"
-                >
-                  <RotateCcw className="w-4 h-4 mr-1" />
-                  Reset
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Progress indicator */}
-          <div className="px-4 lg:px-8 pb-4">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${state.overallProgress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Main content area */}
-        <div className="px-2 py-4 pb-40">
+        <div className="px-2 py-4 pb-45">
           <div className="w-full">
             {showPDFPreview ? (
               /* Side-by-side layout with form and PDF preview */
@@ -644,6 +565,8 @@ export function MultiStepFormController({
           <FormNavigation 
             showStepInfo={true}
             showValidationErrors={true}
+            showPDFPreview={showPDFPreview}
+            onTogglePDFPreview={() => setShowPDFPreview(!showPDFPreview)}
           />
         )}
       </div>

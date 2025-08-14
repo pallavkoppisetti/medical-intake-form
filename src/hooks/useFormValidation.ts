@@ -21,8 +21,6 @@ export function useFormValidation() {
         return ['age', 'gender', 'pastMedicalHistory', 'medications', 'allergies'];
       case 'functionalStatus':
         return ['physicalDemandsOfJob', 'activitiesOfDailyLiving'];
-      case 'medicalInfo':
-        return ['currentMedications', 'allergies'];
       case 'physicalExam':
         return ['generalAppearance', 'vitalSigns'];
       case 'rangeOfMotion':

@@ -17,15 +17,6 @@ const formatDate = (dateString?: string) => {
     });
 };
 
-const formatList = (items?: string[], defaultString: string = 'None') => {
-    if (!items || items.length === 0) return <li className="c0 c4 li-bullet-0">{defaultString}</li>;
-    return items.map((item, index) => (
-        <li key={index} className="c0 c4 li-bullet-0">
-            <span className="c3 c22">{item}</span>
-        </li>
-    ));
-};
-
 const formatDiagnosisList = (diagnoses?: string[]) => {
     if (!diagnoses || diagnoses.length === 0) return <li className="c0 c4 li-bullet-0">No diagnosis provided.</li>;
     return diagnoses.map((d, i) => (
@@ -47,7 +38,18 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
     formData,
     showSignaturePlaceholder = true,
 }) => {
-    const { header, history, functionalStatus, medicalInfo, assessment, gaitStation } = formData;
+    const { header, history, functionalStatus, physicalExam, rangeOfMotion, assessment, gaitStation } = formData;
+
+    // Debug: Log all form data to verify field usage
+    console.log('PDF Preview - All Form Data:', {
+        header: header ? Object.keys(header) : 'none',
+        history: history ? Object.keys(history) : 'none',
+        functionalStatus: functionalStatus ? Object.keys(functionalStatus) : 'none',
+        physicalExam: physicalExam ? Object.keys(physicalExam) : 'none',
+        rangeOfMotion: rangeOfMotion ? Object.keys(rangeOfMotion) : 'none',
+        assessment: assessment ? Object.keys(assessment) : 'none',
+        gaitStation: gaitStation ? Object.keys(gaitStation) : 'none'
+    });
 
     return (
         <div 
@@ -88,13 +90,13 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CHIEF COMPLAINT: </span></h1>
             {header?.chiefComplaintTags && header.chiefComplaintTags.length > 0 ? (
-              <ul className="c18 lst-kix_list_1-0">
+              <div className="c0">
                 {header.chiefComplaintTags.map((complaint: string, index: number) => (
-                  <li key={index} className="c0 c4 li-bullet-0">
-                    <span className="c14">{complaint}</span>
-                  </li>
+                  <p key={index} className="c0" style={{ marginLeft: '18pt', textIndent: '-18pt', marginBottom: '4pt' }}>
+                    <span className="c14" style={{ fontWeight: 'bold', fontSize: '12pt' }}>● {complaint}</span>
+                  </p>
                 ))}
-              </ul>
+              </div>
             ) : (
               <p className="c0"><span className="c14">Claimants current complains include {header?.chiefComplaint || '[Enter chief complaint]'}</span></p>
             )}
@@ -104,12 +106,101 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c9"><span className="c14">The Claimant is a </span><span>{history?.age || '[Age]'} </span><span className="c14">&nbsp;year old </span><span>{history?.gender || '[Gender]'}</span><span className="c2">&nbsp;with PMH of reports </span></p>
             
+            {/* Add History of Present Illness if available */}
+            {history?.historyOfPresentIllness && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <p className="c0"><span className="c2">{history.historyOfPresentIllness}</span></p>
+              </>
+            )}
+            
             {/* Add Past Medical History if available */}
-            {history?.pastMedicalHistory && (
+            {history?.pastMedicalHistory && history.pastMedicalHistory.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">PAST MEDICAL HISTORY: </span></h1>
-                <p className="c0"><span className="c2">{history.pastMedicalHistory}</span></p>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.pastMedicalHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Medications if available */}
+            {history?.medications && history.medications.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">MEDICATIONS: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.medications.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Allergies if available */}
+            {history?.allergies && history.allergies.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">ALLERGIES: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.allergies.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Social History if available */}
+            {history?.socialHistory && history.socialHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">SOCIAL HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.socialHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Family History if available */}
+            {history?.familyHistory && history.familyHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.familyHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {/* Add Past Surgical History if available */}
+            {history?.pastSurgicalHistory && history.pastSurgicalHistory.length > 0 && (
+              <>
+                <p className="c0 c1"><span className="c2"></span></p>
+                <h1 className="c12"><span className="c13">PAST SURGICAL HISTORY: </span></h1>
+                <ul className="c18 lst-kix_list_1-0">
+                  {history.pastSurgicalHistory.map((item, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {item}</span>
+                    </li>
+                  ))}
+                </ul>
               </>
             )}
             
@@ -139,22 +230,72 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CURRENT MEDICATIONS: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0 start">
-                {formatList(history?.medications ? [history.medications] : medicalInfo?.currentMedications, 'None reported')}
+                {history?.medications && history.medications.length > 0 ? (
+                  history.medications.map((medication, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {medication}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="c4 li-bullet-0">
+                    <span className="c2">None reported</span>
+                  </li>
+                )}
             </ul>
             <p className="c0 c1"><span className="c5 c15 c3"></span></p>
             <h1 className="c12"><span className="c13">ALLERGIES: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0">
-                {formatList(history?.allergies ? [history.allergies] : medicalInfo?.allergies, 'NKDA (No Known Drug Allergies)')}
+                {history?.allergies && history.allergies.length > 0 ? (
+                  history.allergies.map((allergy, index) => (
+                    <li key={index} className="c4 li-bullet-0">
+                      <span className="c2 font-semibold">● {allergy}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="c4 li-bullet-0">
+                    <span className="c2">NKDA (No Known Drug Allergies)</span>
+                  </li>
+                )}
             </ul>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SURGICAL HISTORY: </span></h1>
-            <p className="c0"><span>{history?.pastSurgicalHistory || medicalInfo?.surgicalHistory || 'None.'}</span></p>
+            {history?.pastSurgicalHistory && history.pastSurgicalHistory.length > 0 ? (
+              <ul className="c18 lst-kix_list_1-0">
+                {history.pastSurgicalHistory.map((surgery, index) => (
+                  <li key={index} className="c4 li-bullet-0">
+                    <span className="c2 font-semibold">● {surgery}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="c0"><span>None.</span></p>
+            )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
-            <p className="c0"><span>{history?.familyHistory || medicalInfo?.familyHistory || 'Noncontributory.'}</span></p>
+            {history?.familyHistory && history.familyHistory.length > 0 ? (
+              <ul className="c18 lst-kix_list_1-0">
+                {history.familyHistory.map((item, index) => (
+                  <li key={index} className="c4 li-bullet-0">
+                    <span className="c2 font-semibold">● {item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="c0"><span>Noncontributory.</span></p>
+            )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SOCIAL HISTORY: &nbsp;</span></h1>
-            <p className="c9"><span>{history?.socialHistory || medicalInfo?.socialHistory || '[Enter social history]'}</span></p>
+            {history?.socialHistory && history.socialHistory.length > 0 ? (
+              <ul className="c18 lst-kix_list_1-0">
+                {history.socialHistory.map((item, index) => (
+                  <li key={index} className="c4 li-bullet-0">
+                    <span className="c2 font-semibold">● {item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="c9"><span>[Enter social history]</span></p>
+            )}
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Denies current use of tobacco/EtOH abuse/illicit substance abuse/prescription drug abuse/marijuana use.</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
@@ -164,49 +305,49 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c7 c3">VITAL SIGNS:</span></p>
             <p className="c0 c1"><span className="c7 c3"></span></p>
-            <p className="c9"><span className="c2">BP: &nbsp;117/72 &nbsp;mmHg.</span></p>
-            <p className="c9"><span className="c2">Weight (lbs) 142.8</span></p>
-            <p className="c9"><span className="c2">HR: 82</span></p>
-            <p className="c9"><span className="c2">O2: &nbsp;98 % in room air.</span></p>
-            <p className="c9"><span className="c2">Height (without shoes): &nbsp;65 In.</span></p>
-            <p className="c9"><span className="c2">Temp: 98.2 F</span></p>
-            <p className="c9"><span className="c2">Visual Acuity: &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uncorrected &nbsp; &nbsp;R: 20/25 &nbsp; L: 20/20</span></p>
-            <p className="c9"><span className="c2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corrected &nbsp; &nbsp; &nbsp; &nbsp; R: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; L:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-            <p className="c9"><span className="c2">Dynamometer hand grip strength: (Lb) &nbsp;Right: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Left: </span></p>
+            <p className="c9"><span className="c2">BP: &nbsp;{physicalExam?.vitalSigns?.bloodPressure ? `${physicalExam.vitalSigns.bloodPressure.systolic}/${physicalExam.vitalSigns.bloodPressure.diastolic}` : '117/72'} &nbsp;mmHg.</span></p>
+            <p className="c9"><span className="c2">Weight (lbs) {physicalExam?.vitalSigns?.weight || '142.8'}</span></p>
+            <p className="c9"><span className="c2">HR: {physicalExam?.vitalSigns?.heartRate || '82'}</span></p>
+            <p className="c9"><span className="c2">O2: &nbsp;{physicalExam?.vitalSigns?.oxygenSaturation || '98'} % in room air.</span></p>
+            <p className="c9"><span className="c2">Height (without shoes): &nbsp;{physicalExam?.vitalSigns?.height || '65'} In.</span></p>
+            <p className="c9"><span className="c2">Temp: {physicalExam?.vitalSigns?.temperature || '98.2'} F</span></p>
+            <p className="c9"><span className="c2">Visual Acuity: &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uncorrected &nbsp; &nbsp;R: {physicalExam?.vitalSigns?.visualAcuity?.right?.uncorrected || '20/25'} &nbsp; L: {physicalExam?.vitalSigns?.visualAcuity?.left?.uncorrected || '20/20'}</span></p>
+            <p className="c9"><span className="c2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corrected &nbsp; &nbsp; &nbsp; &nbsp; R: {physicalExam?.vitalSigns?.visualAcuity?.right?.corrected || ''} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; L: {physicalExam?.vitalSigns?.visualAcuity?.left?.corrected || ''}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p className="c9"><span className="c2">Dynamometer hand grip strength: (Lb) &nbsp;Right: {physicalExam?.vitalSigns?.handGripStrength?.right || ''} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Left: {physicalExam?.vitalSigns?.handGripStrength?.left || ''}</span></p>
             <p className="c9 c1"><span className="c2"></span></p>
             <p className="c1 c23"><span className="c2"></span></p>
             <p className="c0"><span className="c2">General: &nbsp;</span></p>
-            <p className="c0"><span className="c2">Claimant appears well groomed, is alert, oriented x 3. Cooperative, well-developed, well-nourished. Responds adequately to questions and commands. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.general || 'Claimant appears well groomed, is alert, oriented x 3. Cooperative, well-developed, well-nourished. Responds adequately to questions and commands.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Eyes: </span></p>
-            <p className="c0"><span className="c2">Pupils equally, round and reactive; to light and accommodation. Extraocular movements intact, No jaundice, conjunctival injection. Visual field is intact.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.eyes || 'Pupils equally, round and reactive; to light and accommodation. Extraocular movements intact, No jaundice, conjunctival injection. Visual field is intact.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Ears/Nose/Throat: &nbsp;</span></p>
-            <p className="c0"><span className="c2">Nares normal and without hyperemia or secretions. Able to hear and understand normal speech Moist oral mucosa. Tongue protrudes in the midline. No uvula deviation, pharynx without erythema or exudates. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.earsNoseThroat || 'Nares normal and without hyperemia or secretions. Able to hear and understand normal speech Moist oral mucosa. Tongue protrudes in the midline. No uvula deviation, pharynx without erythema or exudates.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Head/Neck: &nbsp;</span></p>
-            <p className="c0"><span className="c2">Normocephalic and atraumatic. Trachea is midline. Supple. No thyromegaly, JVD or adenopathy No carotid bruit. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.headNeck || 'Normocephalic and atraumatic. Trachea is midline. Supple. No thyromegaly, JVD or adenopathy No carotid bruit.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Respiratory: </span></p>
-            <p className="c0"><span className="c2">Normal vesicular breathing sounds heard. No wheezing or rhonchi.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.respiratory || 'Normal vesicular breathing sounds heard. No wheezing or rhonchi.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Cardiovascular: </span></p>
-            <p className="c0"><span className="c2">Normal S1, normal S2, No murmur. No peripheral edema present. &nbsp;Pulses intact in lower extremity.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.cardiovascular || 'Normal S1, normal S2, No murmur. No peripheral edema present. Pulses intact in lower extremity.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Abdomen: &nbsp;</span></p>
-            <p className="c0"><span className="c2">Soft, non-distended, Bowel sounds present. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.abdomen || 'Soft, non-distended, Bowel sounds present.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Back: </span></p>
-            <p className="c0"><span className="c2">No paraspinal tenderness, No Scoliosis or kyphosis, No deformity.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.back || 'No paraspinal tenderness, No Scoliosis or kyphosis, No deformity.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Skin:</span></p>
-            <p className="c0"><span className="c2">No petechiae, hematoma or ecchymosis. No eruption or rash present. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.skin || 'No petechiae, hematoma or ecchymosis. No eruption or rash present.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Musculoskeletal:</span></p>
-            <p className="c0"><span className="c2">No deformity, swelling or effusions in hands, wrist, elbow, knee, ankle.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.musculoskeletal || 'No deformity, swelling or effusions in hands, wrist, elbow, knee, ankle.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Neurological:</span></p>
-            <p className="c0"><span className="c2">CNs Il-XII: intact. </span></p>
+            <p className="c0"><span className="c2">{physicalExam?.neurological || 'CNs Il-XII: intact.'} </span></p>
             <p className="c0"><span className="c14">Sensory pin prick/light touch/vibration: </span><span className="c14 c19">Intact over all extremities.</span></p>
             <p className="c0"><span className="c2">Rhomberg: Negative. </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
@@ -222,12 +363,12 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0"><span className="c2">4 = Active ROM against gravity, moderate resistance </span></p>
             <p className="c0"><span className="c2">5=Active ROM against gravity, maximum resistance</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Right upper extremity: 5/5</span></p>
-            <p className="c0"><span className="c2">Left upper extremity: 5/5</span></p>
-            <p className="c0"><span className="c2">Right lower extremity: 5/5.</span></p>
-            <p className="c0"><span className="c2">Left Lower extremity: 5/5.</span></p>
-            <p className="c0"><span className="c2">Right grip: 5/5 </span></p>
-            <p className="c0"><span className="c2">Left grip: 5/5 </span></p>
+            <p className="c0"><span className="c2">Right upper extremity: {physicalExam?.neuromuscularStrength?.rightUpperExtremity ?? '[Not assessed]'}/5</span></p>
+            <p className="c0"><span className="c2">Left upper extremity: {physicalExam?.neuromuscularStrength?.leftUpperExtremity ?? '[Not assessed]'}/5</span></p>
+            <p className="c0"><span className="c2">Right lower extremity: {physicalExam?.neuromuscularStrength?.rightLowerExtremity ?? '[Not assessed]'}/5.</span></p>
+            <p className="c0"><span className="c2">Left Lower extremity: {physicalExam?.neuromuscularStrength?.leftLowerExtremity ?? '[Not assessed]'}/5.</span></p>
+            <p className="c0"><span className="c2">Right grip: {physicalExam?.neuromuscularStrength?.rightGrip ?? '[Not assessed]'}/5 </span></p>
+            <p className="c0"><span className="c2">Left grip: {physicalExam?.neuromuscularStrength?.leftGrip ?? '[Not assessed]'}/5 </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Dexterity: Right-Handed, normal.</span></p>
@@ -249,120 +390,120 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0"><span className="c2">0 = Absent, 1+ = Decreased, 2+ = Normal, 3+ = Hyperreflexia, 4+ = Repeating Reflex </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Right&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Left</span></p>
-            <p className="c0"><span className="c2">Biceps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-            <p className="c0"><span className="c2">Trie eps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-            <p className="c0"><span className="c2">Knee &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+</span></p>
-            <p className="c0"><span className="c2">Achilles &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2+</span></p>
+            <p className="c0"><span className="c2">Biceps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.biceps?.right ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.biceps?.left ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p className="c0"><span className="c2">Trie eps &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.triceps?.right ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.triceps?.left ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+            <p className="c0"><span className="c2">Knee &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.knee?.right ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.knee?.left ?? '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Achilles &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.achilles?.right ?? '[Not assessed]'}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{physicalExam?.reflexes?.achilles?.left ?? '[Not assessed]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c8 c5 c3">RANGE OF MOTION: </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">CERVICAL SPINE </span></p>
-            <p className="c0"><span className="c2">Forward Flexion (0-60): &nbsp;60 </span></p>
-            <p className="c0"><span className="c2">Extension (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;60 </span></p>
-            <p className="c0"><span className="c2">Lateral Flexion (0-45): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=45 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=45 </span></p>
-            <p className="c0"><span className="c2">Rotation (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=80 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=80 </span></p>
+            <p className="c0"><span className="c2">Forward Flexion (0-60): &nbsp;{rangeOfMotion?.cervicalSpine?.forwardFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Extension (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{rangeOfMotion?.cervicalSpine?.extension ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Lateral Flexion (0-45): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.cervicalSpine?.lateralFlexionRight ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.cervicalSpine?.lateralFlexionLeft ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Rotation (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.cervicalSpine?.rotationRight ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.cervicalSpine?.rotationLeft ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">LUMBAR SPINE </span></p>
-            <p className="c0"><span className="c2">Forward Flexion (0-90): &nbsp;90</span></p>
-            <p className="c0"><span className="c2">Extension (0-25): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;20</span></p>
-            <p className="c0"><span className="c14 c19">Lateral Flexion (0-25): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span className="c14">R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20</span><span className="c6">&nbsp;</span></p>
+            <p className="c0"><span className="c2">Forward Flexion (0-90): &nbsp;{rangeOfMotion?.lumbarSpine?.forwardFlexion ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Extension (0-25): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{rangeOfMotion?.lumbarSpine?.extension ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c14 c19">Lateral Flexion (0-25): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span className="c14">R={rangeOfMotion?.lumbarSpine?.lateralFlexionRight ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.lumbarSpine?.lateralFlexionLeft ?? '[Not measured]'}</span><span className="c6">&nbsp;</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">SHOULDER </span></p>
-            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=150 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=150 </span></p>
-            <p className="c0"><span className="c2">Extension (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=50 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=50 </span></p>
-            <p className="c0"><span className="c2">Abduction (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=150 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=150 </span></p>
-            <p className="c0"><span className="c2">Adduction (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L= 30 </span></p>
-            <p className="c0"><span className="c2">External Rotation (0-90):R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
-            <p className="c0"><span className="c2">Internal Rotation (0-90): R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
+            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.shoulders?.right?.flexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.flexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Extension (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.shoulders?.right?.extension ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.extension ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Abduction (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.shoulders?.right?.abduction ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.abduction ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Adduction (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.shoulders?.right?.adduction ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.adduction ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">External Rotation (0-90):R={rangeOfMotion?.shoulders?.right?.externalRotation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.externalRotation ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Internal Rotation (0-90): R={rangeOfMotion?.shoulders?.right?.internalRotation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.shoulders?.left?.internalRotation ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">ELBOW </span></p>
-            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=150 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=150 </span></p>
-            <p className="c0"><span className="c2">Pronation (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=80 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=80 </span></p>
-            <p className="c0"><span className="c2">Supination (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=80 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=80 </span></p>
+            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.elbows?.right?.flexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.elbows?.left?.flexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Pronation (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.elbows?.right?.pronation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.elbows?.left?.pronation ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Supination (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.elbows?.right?.supination ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.elbows?.left?.supination ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">WRIST </span></p>
-            <p className="c0"><span className="c2">Dorsiflexion (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=60 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=60 </span></p>
-            <p className="c0"><span className="c2">Palmar flexion (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=70 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=70 </span></p>
-            <p className="c0"><span className="c2">Ulnar deviation (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=30 </span></p>
-            <p className="c0"><span className="c2">Radial deviation (0-20): &nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20 </span></p>
+            <p className="c0"><span className="c2">Dorsiflexion (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.wrists?.right?.extension ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.wrists?.left?.extension ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Palmar flexion (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.wrists?.right?.flexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.wrists?.left?.flexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Ulnar deviation (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.wrists?.right?.ulnarDeviation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.wrists?.left?.ulnarDeviation ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Radial deviation (0-20): &nbsp;R={rangeOfMotion?.wrists?.right?.radialDeviation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.wrists?.left?.radialDeviation ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">HAND </span></p>
             <p className="c0"><span className="c2">Thumb </span></p>
-            <p className="c0"><span className="c2">Adduction CMC joint (less than or equal to 2 cm): R=2 cm L=2cm </span></p>
-            <p className="c0"><span className="c2">Abduction CMC joint (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=50 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=50 </span></p>
-            <p className="c0"><span className="c2">Flexion MCP joint (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=60 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=60 </span></p>
-            <p className="c0"><span className="c2">Flexion IP joint (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=80 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=80 </span></p>
+            <p className="c0"><span className="c2">Adduction CMC joint (less than or equal to 2 cm): R={rangeOfMotion?.hands?.right?.thumbOpposition ? `${rangeOfMotion.hands.right.thumbOpposition}%` : '[Not measured]'} L={rangeOfMotion?.hands?.left?.thumbOpposition ? `${rangeOfMotion.hands.left.thumbOpposition}%` : '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Abduction CMC joint (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.thumbOpposition ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.thumbOpposition ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Flexion MCP joint (0-60): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Flexion IP joint (0-80): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Index </span></p>
-            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
-            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=100 </span></p>
-            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=70 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=70 </span></p>
+            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Middle </span></p>
-            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
-            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=100 </span></p>
-            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=70 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=70 </span></p>
+            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Ring </span></p>
-            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
-            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=100 </span></p>
-            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=70 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=70 </span></p>
+            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Little </span></p>
-            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=90 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=90 </span></p>
-            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=100 </span></p>
-            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=70 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=70 </span></p>
+            <p className="c0"><span className="c2">flexion MCP joint (0-90): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion PIP joint (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">flexion DIP joint (0-70): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hands?.right?.fingerFlexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hands?.left?.fingerFlexion ?? '[Not measured]'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">HIP </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Flexion (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=100 </span></p>
-            <p className="c0"><span className="c2">Extension (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=30 </span></p>
-            <p className="c0"><span className="c2">Abduction (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=40 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=40</span></p>
-            <p className="c0"><span className="c2">Adduction (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20 </span></p>
-            <p className="c0"><span className="c2">Internal Rotation (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20</span></p>
-            <p className="c0"><span className="c2">External Rotation (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20</span></p>
+            <p className="c0"><span className="c2">Flexion (0-100): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.flexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.flexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Extension (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.extension ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.extension ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Abduction (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.abduction ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.abduction ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Adduction (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.adduction ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.adduction ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Internal Rotation (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.internalRotation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.internalRotation ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">External Rotation (0-50): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.hips?.right?.externalRotation ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.hips?.left?.externalRotation ?? '[Not measured]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">KNEE </span></p>
-            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=120 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=120 </span></p>
-            <p className="c0"><span className="c2">Extension (0-10): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=10</span></p>
+            <p className="c0"><span className="c2">Flexion (0-150): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.knees?.right?.flexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.knees?.left?.flexion ?? '[Not measured]'} </span></p>
+            <p className="c0"><span className="c2">Extension (0-10): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.knees?.right?.extension ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.knees?.left?.extension ?? '[Not measured]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">ANKLE </span></p>
-            <p className="c0"><span className="c2">Dorsiflexion (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L=20</span></p>
-            <p className="c0"><span className="c2">Plantarflexion (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=40 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L= 40</span></p>
-            <p className="c0"><span className="c2">Inversion (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L= 20</span></p>
-            <p className="c0"><span className="c2">Eversion (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L= 20</span></p>
+            <p className="c0"><span className="c2">Dorsiflexion (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.ankles?.right?.dorsiflexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.dorsiflexion ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Plantarflexion (0-40): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.ankles?.right?.plantarflexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.plantarflexion ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Inversion (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.ankles?.right?.inversion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.inversion ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Eversion (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.ankles?.right?.eversion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.eversion ?? '[Not measured]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">HALLUX </span></p>
-            <p className="c0"><span className="c2">Dorsiflexion MTP Joint (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L: 30</span></p>
-            <p className="c0"><span className="c2">Plantar Flexion MTP Joint (0-30):R=30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L: 30</span></p>
+            <p className="c0"><span className="c2">Dorsiflexion MTP Joint (0-30): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R={rangeOfMotion?.ankles?.right?.dorsiflexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.dorsiflexion ?? '[Not measured]'}</span></p>
+            <p className="c0"><span className="c2">Plantar Flexion MTP Joint (0-30):R={rangeOfMotion?.ankles?.right?.plantarflexion ?? '[Not measured]'} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L={rangeOfMotion?.ankles?.left?.plantarflexion ?? '[Not measured]'}</span></p>
             <p className="c0"><span className="c2">Flexion IP Joint (0-20): &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R=20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L: 20</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">EFFORT ON EXAM: &nbsp; &nbsp; &nbsp; GOOD __X ______ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FAIR _______ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; POOR ________</span></p>
+            <p className="c0"><span className="c2">EFFORT ON EXAM: &nbsp; &nbsp; &nbsp; GOOD {rangeOfMotion?.effortOnExam === 'Good' ? '__X ______' : '______'} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FAIR {rangeOfMotion?.effortOnExam === 'Fair' ? '__X ______' : '_______'} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; POOR {rangeOfMotion?.effortOnExam === 'Poor' ? '__X ______' : '________'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c3 c8">Degrees or Difficulty in Performance are as Follows: </span></p>
             <p className="c0 c1"><span className="c8 c14 c21"></span></p>
-            <p className="c0"><span className="c2">Getting on and off the examination table- able to perform with no difficulty.</span></p>
-            <p className="c0"><span className="c2">Walking on Heels: able to perform.</span></p>
-            <p className="c0"><span className="c2">Walking on Toes: able to perform.</span></p>
-            <p className="c0"><span className="c2">Squatting and rising; able to perform.</span></p>
-            <p className="c0"><span className="c2">Finger to Nose: intact.</span></p>
-            <p className="c0"><span className="c2">Straight leg raise test: Negative.</span></p>
+            <p className="c0"><span className="c2">Getting on and off the examination table- {gaitStation?.performanceTests?.gettingOnOffTable === 'able' ? 'able to perform with no difficulty' : gaitStation?.performanceTests?.gettingOnOffTable === 'unable' ? 'unable to perform' : '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Walking on Heels: {gaitStation?.performanceTests?.walkingOnHeels === 'able' ? 'able to perform' : gaitStation?.performanceTests?.walkingOnHeels === 'unable' ? 'unable to perform' : '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Walking on Toes: {gaitStation?.performanceTests?.walkingOnToes === 'able' ? 'able to perform' : gaitStation?.performanceTests?.walkingOnToes === 'unable' ? 'unable to perform' : '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Squatting and rising: {gaitStation?.performanceTests?.squattingAndRising === 'able' ? 'able to perform' : gaitStation?.performanceTests?.squattingAndRising === 'unable' ? 'unable to perform' : '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Finger to Nose: {gaitStation?.performanceTests?.fingerToNose === 'able' ? 'intact' : gaitStation?.performanceTests?.fingerToNose === 'unable' ? 'impaired' : '[Not assessed]'}</span></p>
+            <p className="c0"><span className="c2">Straight leg raise test: {gaitStation?.performanceTests?.straightLegRaise === 'positive' ? 'Positive' : gaitStation?.performanceTests?.straightLegRaise === 'negative' ? 'Negative' : '[Not assessed]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c3">ASSISTIVE DEVICE</span><span className="c2">: </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Gait and Station: Normal gait and normal station.</span></p>
-            <p className="c0"><span className="c2">What type of assistive device is used for ambulation? She does not use any assistive device. </span></p>
-            <p className="c0"><span className="c2">Medical conditions that it was used for?</span></p>
-            <p className="c0"><span className="c2">Patient uses active assistive device for walking standing or Both?</span></p>
-            <p className="c0"><span className="c2">Is the assistive device medically necessary?</span></p>
-            <p className="c0"><span className="c2">Under what circumstance assistive device used? &nbsp; </span></p>
-            <p className="c0"><span className="c2">Was the patient fully cooperative during gait testing? Yes.</span></p>
+            <p className="c0"><span className="c2">Gait and Station: {gaitStation?.assistiveDevice?.gaitAssessment || '[Normal gait and normal station]'}</span></p>
+            <p className="c0"><span className="c2">What type of assistive device is used for ambulation? {gaitStation?.assistiveDevice?.deviceType || '[No assistive device used]'}</span></p>
+            <p className="c0"><span className="c2">Medical conditions that it was used for? {gaitStation?.assistiveDevice?.medicalConditions || '[Not applicable]'}</span></p>
+            <p className="c0"><span className="c2">Patient uses active assistive device for walking standing or Both? {gaitStation?.assistiveDevice?.usageContext?.join(', ') || '[Not applicable]'}</span></p>
+            <p className="c0"><span className="c2">Is the assistive device medically necessary? {gaitStation?.assistiveDevice?.medicalNecessity === 'yes' ? 'Yes' : gaitStation?.assistiveDevice?.medicalNecessity === 'no' ? 'No' : '[Not applicable]'}</span></p>
+            <p className="c0"><span className="c2">Under what circumstance assistive device used? {gaitStation?.assistiveDevice?.circumstancesOfUse || '[Not applicable]'}</span></p>
+            <p className="c0"><span className="c2">Was the patient fully cooperative during gait testing? {gaitStation?.assistiveDevice?.patientCooperation === 'yes' ? 'Yes' : gaitStation?.assistiveDevice?.patientCooperation === 'no' ? 'No' : '[Not assessed]'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">{gaitStation?.additionalNotes || ''}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>

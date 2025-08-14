@@ -74,10 +74,6 @@ export class PDFGeneratorService {
       this.addFunctionalStatusSection(formData.functionalStatus);
     }
     
-    if (formData.medicalInfo) {
-      this.addMedicalInfoSection(formData.medicalInfo);
-    }
-    
     if (formData.physicalExam) {
       this.addPhysicalExamSection(formData.physicalExam);
     }
@@ -389,41 +385,6 @@ export class PDFGeneratorService {
     });
     
     this.currentY += 10;
-  }
-
-  /**
-   * Add medical info section in CE format
-   */
-  private addMedicalInfoSection(data: any): void {
-    this.addCESection('Medical Information');
-    
-    if (data.currentMedications) {
-      this.addSubsection('Current Medications', 
-        Array.isArray(data.currentMedications) && data.currentMedications.length > 0 
-          ? data.currentMedications.join(', ') 
-          : 'None reported'
-      );
-    }
-    
-    if (data.allergies) {
-      this.addSubsection('Allergies', 
-        Array.isArray(data.allergies) && data.allergies.length > 0 
-          ? data.allergies.join(', ') 
-          : 'NKDA (No Known Drug Allergies)'
-      );
-    }
-    
-    if (data.surgicalHistory) {
-      this.addSubsection('Surgical History', data.surgicalHistory);
-    }
-    
-    if (data.familyHistory) {
-      this.addSubsection('Family History', data.familyHistory);
-    }
-    
-    if (data.socialHistory) {
-      this.addSubsection('Social History', data.socialHistory);
-    }
   }
 
   /**

@@ -25,12 +25,12 @@ export interface HistorySection {
   age: number;
   gender: string;
   reviewOfSystems?: string;
-  pastMedicalHistory?: string;
-  pastSurgicalHistory?: string;
-  medications?: string;
-  allergies?: string;
-  socialHistory?: string;
-  familyHistory?: string;
+  pastMedicalHistory?: string[];
+  pastSurgicalHistory?: string[];
+  medications?: string[];
+  allergies?: string[];
+  socialHistory?: string[];
+  familyHistory?: string[];
 }
 
 // =======================
@@ -53,18 +53,6 @@ export interface FunctionalStatus {
   bathingShowering: string;
   dressing: string;
   personalFinances: string;
-}
-
-// =======================
-// MEDICAL INFO SECTION
-// =======================
-
-export interface MedicalInfo {
-  currentMedications: string[];
-  allergies: string[];
-  surgicalHistory: string;
-  familyHistory: string;
-  socialHistory: string;
 }
 
 // =======================
@@ -378,7 +366,6 @@ export interface FloridaCEExamForm {
   header: HeaderSection;
   history: HistorySection;
   functionalStatus: FunctionalStatus;
-  medicalInfo: MedicalInfo;
   physicalExam: PhysicalExam;
   rangeOfMotion: RangeOfMotion;
   gaitStation: GaitStation;
@@ -409,19 +396,17 @@ export enum FormSteps {
   HEADER = 0,
   HISTORY = 1,
   FUNCTIONAL_STATUS = 2,
-  MEDICAL_INFO = 3,
-  PHYSICAL_EXAM = 4,
-  RANGE_OF_MOTION = 5,
-  GAIT_STATION = 6,
-  ASSESSMENT = 7,
-  REVIEW = 8
+  PHYSICAL_EXAM = 3,
+  RANGE_OF_MOTION = 4,
+  GAIT_STATION = 5,
+  ASSESSMENT = 6,
+  REVIEW = 7
 }
 
 export const FORM_STEP_LABELS = {
   [FormSteps.HEADER]: 'Header Information',
-  [FormSteps.HISTORY]: 'History',
+  [FormSteps.HISTORY]: 'Medical History',
   [FormSteps.FUNCTIONAL_STATUS]: 'Functional Status',
-  [FormSteps.MEDICAL_INFO]: 'Medical Information',
   [FormSteps.PHYSICAL_EXAM]: 'Physical Examination',
   [FormSteps.RANGE_OF_MOTION]: 'Range of Motion',
   [FormSteps.GAIT_STATION]: 'Gait & Station',

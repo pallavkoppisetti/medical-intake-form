@@ -6,9 +6,8 @@ import { saveFormData as saveToStorage, loadFormData as loadFromStorage } from '
 // Define form steps configuration matching Florida CE Exam Form
 export const FORM_STEPS = [
   { id: 'header', title: 'Header Information', required: true },
-  { id: 'history', title: 'History', required: true },
+  { id: 'history', title: 'Medical History', required: true },
   { id: 'functionalStatus', title: 'Functional Status', required: true },
-  { id: 'medicalInfo', title: 'Medical Information', required: true },
   { id: 'physicalExam', title: 'Physical Examination', required: true },
   { id: 'rangeOfMotion', title: 'Range of Motion', required: true },
   { id: 'gaitStation', title: 'Gait & Station', required: true },
@@ -73,6 +72,7 @@ export type FormAction =
   | { type: 'SET_SUBMITTING'; payload: boolean }
   | { type: 'SET_SUBMIT_ATTEMPTED'; payload: boolean }
   | { type: 'RESET_FORM' }
+  | { type: 'RESET_SECTION'; payload: FormStepId }
   | { type: 'LOAD_FORM_DATA'; payload: Partial<FloridaCEExamForm> };
 
 // Initial state
@@ -197,6 +197,43 @@ function formReducer(state: FormState, action: FormAction): FormState {
         isLoading: false,
       };
 
+    case 'RESET_SECTION':
+      const sectionId = action.payload;
+      const newFormData = { ...state.formData };
+      
+      // Reset the specific section
+      switch (sectionId) {
+        case 'header':
+          newFormData.header = undefined;
+          break;
+        case 'history':
+          newFormData.history = undefined;
+          break;
+        case 'functionalStatus':
+          newFormData.functionalStatus = undefined;
+          break;
+        case 'physicalExam':
+          newFormData.physicalExam = undefined;
+          break;
+        case 'rangeOfMotion':
+          newFormData.rangeOfMotion = undefined;
+          break;
+        case 'gaitStation':
+          newFormData.gaitStation = undefined;
+          break;
+        case 'assessment':
+          newFormData.assessment = undefined;
+          break;
+      }
+      
+      return {
+        ...state,
+        formData: newFormData,
+        hasUnsavedChanges: true,
+        // Remove completion status for this section
+        completedSections: new Set([...state.completedSections].filter(id => id !== sectionId)),
+      };
+
     case 'LOAD_FORM_DATA':
       return {
         ...state,
@@ -237,6 +274,7 @@ export interface MultiStepFormContextValue {
   saveForm: () => Promise<boolean>;
   loadForm: () => void;
   resetForm: () => void;
+  resetSection: (sectionId: FormStepId) => void;
   
   // Submit actions
   submitForm: () => Promise<boolean>;
@@ -569,6 +607,14 @@ export function MultiStepFormProvider({
     }
   }, [storageKey]);
 
+  const resetSection = useCallback((sectionId: FormStepId) => {
+    dispatch({ type: 'RESET_SECTION', payload: sectionId });
+    // Auto-save after resetting section
+    setTimeout(() => {
+      saveForm();
+    }, 100);
+  }, [saveForm]);
+
   // Submit function
   const submitForm = useCallback(async (): Promise<boolean> => {
     dispatch({ type: 'SET_SUBMIT_ATTEMPTED', payload: true });
@@ -642,6 +688,7 @@ export function MultiStepFormProvider({
     saveForm,
     loadForm,
     resetForm,
+    resetSection,
     submitForm,
     getCurrentStep,
     getCurrentStepData,

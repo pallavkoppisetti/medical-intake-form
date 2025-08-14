@@ -103,8 +103,8 @@ export function CEHeaderForm() {
             />
             
             {/* Case Number and Chief Complaint in same row */}
-            <div className="lg:col-span-4 grid grid-cols-1 lg:grid-cols-5 gap-4">
-              <div className="lg:col-span-2">
+            <div className="lg:col-span-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="lg:col-span-1">
                 <FormInput
                   label="Case Number"
                   value={headerData?.caseNumber || ''}
@@ -117,7 +117,7 @@ export function CEHeaderForm() {
               </div>
               
               {/* Chief Complaint - Tag-based System */}
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-1">
                 <label className="block text-xs font-medium text-gray-700 mb-2">
                   Chief Complaint <span className="text-red-500">*</span>
                 </label>
@@ -155,13 +155,13 @@ export function CEHeaderForm() {
                       {headerData.chiefComplaintTags.map((tag: string, index: number) => (
                         <div
                           key={index}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md border border-blue-200"
+                          className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg border-2 border-blue-700 shadow-sm hover:bg-blue-700 transition-colors"
                         >
-                          <span>{tag}</span>
+                          <span className="font-semibold">● {tag}</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveComplaint(index)}
-                            className="text-blue-600 hover:text-blue-800 ml-1"
+                            className="text-blue-200 hover:text-white ml-1 font-bold text-lg leading-none"
                           >
                             ×
                           </button>
