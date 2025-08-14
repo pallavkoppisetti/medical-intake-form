@@ -235,6 +235,7 @@ function formReducer(state: FormState, action: FormAction): FormState {
       };
 
     case 'LOAD_FORM_DATA':
+      console.log('LOAD_FORM_DATA action received:', action.payload);
       return {
         ...state,
         formData: action.payload,
@@ -322,11 +323,16 @@ export function MultiStepFormProvider({
   // Load form data on mount
   useEffect(() => {
     const loadSavedData = () => {
+      console.log('Loading form data...');
       try {
         const savedData = loadFromStorage(storageKey);
+        console.log('Loaded data:', savedData);
+        
+        // Load saved data if available
         if (savedData) {
           dispatch({ type: 'LOAD_FORM_DATA', payload: savedData });
         } else {
+          console.log('No saved data, setting loading to false');
           dispatch({ type: 'SET_LOADING', payload: false });
         }
       } catch (error) {
@@ -431,20 +437,22 @@ export function MultiStepFormProvider({
 
   // Navigation functions with validation
   const nextStep = useCallback(() => {
-    if (state.currentStep < FORM_STEPS.length - 1) {
-      // Get current step data
-      const currentStepId = FORM_STEPS[state.currentStep].id;
-      
-      // Auto-save current section data
-      saveToStorage(state.formData);
-      
-      // Allow navigation (validation will be triggered after step change)
-      dispatch({ type: 'NEXT_STEP' });
-      onStepChange?.(state.currentStep + 1);
-      
-      // Trigger validation for the step we just left
-      setTimeout(() => {
-        const sectionData = state.formData[currentStepId as keyof typeof state.formData] || {};
+    try {
+      if (state.currentStep < FORM_STEPS.length - 1) {
+        // Get current step data
+        const currentStepId = FORM_STEPS[state.currentStep].id;
+        
+        // Auto-save current section data
+        saveToStorage(state.formData);
+        
+        // Allow navigation (validation will be triggered after step change)
+        dispatch({ type: 'NEXT_STEP' });
+        
+        onStepChange?.(state.currentStep + 1);
+        
+        // Trigger validation for the step we just left
+        setTimeout(() => {
+          const sectionData = state.formData[currentStepId as keyof typeof state.formData] || {};
         const validationResult = validateSectionData(currentStepId as keyof FloridaCEExamForm, sectionData);
         const isComplete = isSectionComplete(currentStepId as keyof FloridaCEExamForm, sectionData);
         const completionPercentage = getSectionCompletionPercentage(currentStepId as keyof FloridaCEExamForm, sectionData);
@@ -458,6 +466,9 @@ export function MultiStepFormProvider({
         };
         dispatch({ type: 'UPDATE_VALIDATION', payload: { sectionId: currentStepId, validation } });
       }, 0);
+      }
+    } catch (error) {
+      console.error('Error in nextStep:', error);
     }
   }, [state.currentStep, state.formData, validateSectionData, isSectionComplete, getSectionCompletionPercentage, getSectionErrors, onStepChange]);
 
@@ -650,7 +661,10 @@ export function MultiStepFormProvider({
   }, [state.formData, state.completedSections, validateAllSections, onSubmit]);
 
   // Utility functions
-  const getCurrentStep = useCallback(() => FORM_STEPS[state.currentStep], [state.currentStep]);
+  const getCurrentStep = useCallback(() => {
+    const step = FORM_STEPS[state.currentStep];
+    return step;
+  }, [state.currentStep]);
   
   const getCurrentStepData = useCallback(() => {
     const currentStepId = FORM_STEPS[state.currentStep].id;

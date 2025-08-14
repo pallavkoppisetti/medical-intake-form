@@ -1,9 +1,9 @@
-import { CompleteMedicalIntakeForm } from '@/types/comprehensive-medical-form';
+import { FloridaCEExamForm } from '../types/comprehensive-medical-form';
 
 /**
  * Saves form data to localStorage
  */
-export const saveFormData = (formData: Partial<CompleteMedicalIntakeForm>, key: string = 'medical-intake-draft'): void => {
+export const saveFormData = (formData: Partial<FloridaCEExamForm>, key: string = 'medical-intake-draft'): void => {
   try {
     localStorage.setItem(key, JSON.stringify(formData));
   } catch (error) {
@@ -14,7 +14,7 @@ export const saveFormData = (formData: Partial<CompleteMedicalIntakeForm>, key: 
 /**
  * Loads form data from localStorage
  */
-export const loadFormData = (key: string = 'medical-intake-draft'): Partial<CompleteMedicalIntakeForm> | null => {
+export const loadFormData = (key: string = 'medical-intake-draft'): Partial<FloridaCEExamForm> | null => {
   try {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : null;
@@ -38,7 +38,7 @@ export const clearFormData = (key: string = 'medical-intake-draft'): void => {
 /**
  * Exports form data as JSON for download
  */
-export const exportFormData = (formData: CompleteMedicalIntakeForm, filename: string = 'medical-intake-form.json'): void => {
+export const exportFormData = (formData: FloridaCEExamForm, filename: string = 'medical-intake-form.json'): void => {
   const dataStr = JSON.stringify(formData, null, 2);
   const dataBlob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(dataBlob);

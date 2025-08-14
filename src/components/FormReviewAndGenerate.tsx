@@ -869,7 +869,7 @@ function SectionContent({
           )}
 
           {/* Tag-based fields */}
-          {data?.pastMedicalHistory && data.pastMedicalHistory.length > 0 && (
+          {data?.pastMedicalHistory && Array.isArray(data.pastMedicalHistory) && data.pastMedicalHistory.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Past Medical History:</span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -882,7 +882,7 @@ function SectionContent({
             </div>
           )}
 
-          {data?.pastSurgicalHistory && data.pastSurgicalHistory.length > 0 && (
+          {data?.pastSurgicalHistory && Array.isArray(data.pastSurgicalHistory) && data.pastSurgicalHistory.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Past Surgical History:</span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -895,7 +895,7 @@ function SectionContent({
             </div>
           )}
 
-          {data?.medications && data.medications.length > 0 && (
+          {data?.medications && Array.isArray(data.medications) && data.medications.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Medications:</span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -908,7 +908,7 @@ function SectionContent({
             </div>
           )}
 
-          {data?.allergies && data.allergies.length > 0 && (
+          {data?.allergies && Array.isArray(data.allergies) && data.allergies.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Allergies:</span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -921,7 +921,7 @@ function SectionContent({
             </div>
           )}
 
-          {data?.socialHistory && data.socialHistory.length > 0 && (
+          {data?.socialHistory && Array.isArray(data.socialHistory) && data.socialHistory.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Social History:</span>
               <div className="mt-1 flex flex-wrap gap-2">
@@ -934,7 +934,7 @@ function SectionContent({
             </div>
           )}
 
-          {data?.familyHistory && data.familyHistory.length > 0 && (
+          {data?.familyHistory && Array.isArray(data.familyHistory) && data.familyHistory.length > 0 && (
             <div>
               <span className="text-sm font-medium text-gray-700">Family History:</span>
               <div className="mt-1 flex flex-wrap gap-2">

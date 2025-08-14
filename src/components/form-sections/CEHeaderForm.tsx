@@ -3,8 +3,11 @@ import { FormInput } from '../ui/FormInput';
 import { Card, CardContent } from '../ui/card';
 
 export function CEHeaderForm() {
+  console.log('CEHeaderForm rendering...');
   const { getCurrentStepData, updateSection, updateSectionImmediate } = useMultiStepForm();
   const headerData = getCurrentStepData();
+  
+  console.log('CEHeaderForm - headerData:', headerData);
 
   const handleChange = (field: string, value: string) => {
     updateSection('header', { ...headerData, [field]: value });
