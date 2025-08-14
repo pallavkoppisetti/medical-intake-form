@@ -1,6 +1,6 @@
 import json
 import os
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException,Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import openai
@@ -18,15 +18,14 @@ if not OPEN_API_KEY:
 model = "gpt-4o"
 
 
-class AutofillRequest(BaseModel):
-    input_text: str
-
 
 router = APIRouter()
 
 @router.post("/autofill")
-async def autofill(payload: AutofillRequest):
+async def autofill(request: Request):
     try:
+        payload = await request.json()
+        input_text=payload["input_text"]
         sample_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'sample.json'))
         
 
@@ -38,7 +37,7 @@ async def autofill(payload: AutofillRequest):
             model=model,
             messages=[
                 {"role": "system", "content": "You are an expert in medical forms and autofill. Always respond ONLY with a valid JSON object that matches the provided form structure."},
-                {"role": "user", "content": f"Given the following text, fill out the medical intake form fields. Respond only with a valid JSON object matching the structure. Text: {payload.input_text}. Form: {json.dumps(sample_data)}"}
+                {"role": "user", "content": f"Given the following text, fill out the medical intake form fields. Respond only with a valid JSON object matching the structure. Text: {input_text}. Form: {json.dumps(sample_data)}"}
             ]
         )
 
@@ -62,4 +61,5 @@ async def autofill(payload: AutofillRequest):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail=f"An internal server error occurred: {str(e)}")
+
 
