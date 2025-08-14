@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useMultiStepForm } from '../contexts/MultiStepFormContext';
 import { PDFGeneratorService } from '../services/PDFGeneratorService';
+import { savePreviewAsPDF } from '../utils/printUtils';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
@@ -18,9 +19,11 @@ import {
   Move,
   RotateCcw,
   ClipboardList,
-  TestTube
+  TestTube,
+  Printer
 } from 'lucide-react';
 import { toast } from 'sonner';
+import PDFTemplatePreview from './PDFTemplatePreview';
 
 interface FormReviewAndGenerateProps {
   className?: string;
@@ -36,6 +39,13 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
   const { state, goToStep, updateSection, canNavigateToStep } = useMultiStepForm();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
+  const [generatedPdfBlob, setGeneratedPdfBlob] = useState<Blob | null>(null);
+
+  useEffect(() => {
+    // Invalidate the generated PDF when form data changes
+    setGeneratedPdfBlob(null);
+  }, [state.formData]);
 
   // Development mode check
   const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
@@ -45,11 +55,10 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
     'header': 0,
     'history': 1,
     'functionalStatus': 2,
-    'medicalInfo': 3,
-    'physicalExam': 4,
-    'rangeOfMotion': 5,
-    'gaitStation': 6,
-    'assessment': 7
+    'physicalExam': 3,
+    'rangeOfMotion': 4,
+    'gaitStation': 5,
+    'assessment': 6
   };
 
   // Sample test data for development testing
@@ -66,12 +75,12 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       age: 45,
       gender: "Female",
       reviewOfSystems: "Positive for low back pain, left leg numbness and tingling, difficulty with prolonged walking. Negative for fever, weight loss, bowel/bladder dysfunction, saddle anesthesia, or progressive neurological deficits. No recent changes in pain pattern or severity.",
-      pastMedicalHistory: "Significant for hypertension (controlled with medication), diabetes mellitus type 2 (diet controlled), and history of lumbar disc herniation L4-L5. No history of cancer, heart disease, or other significant medical conditions.",
-      pastSurgicalHistory: "Appendectomy in 1998. No other significant surgical procedures. No history of spinal surgery.",
-      medications: "Ibuprofen 600mg TID PRN pain, Metformin 500mg BID, Lisinopril 10mg daily. No known drug interactions.",
-      allergies: "NKDA (No Known Drug Allergies). Environmental allergies to pollen. No food allergies reported.",
-      socialHistory: "Former smoker (quit 3 years ago, 15 pack-year history). Occasional alcohol use (1-2 drinks per week). Currently unemployed due to back injury. Previously worked as warehouse supervisor for 12 years. Lives with spouse and two children, independent with most ADLs but requires assistance with heavy household tasks.",
-      familyHistory: "Father deceased at age 68 from heart disease. Mother living with diabetes and hypertension. No family history of cancer, genetic disorders, or significant musculoskeletal conditions."
+      pastMedicalHistory: ["Hypertension (controlled with medication)", "Diabetes mellitus type 2 (diet controlled)", "Lumbar disc herniation L4-L5"],
+      pastSurgicalHistory: ["Appendectomy (1998)"],
+      medications: ["Ibuprofen 600mg TID PRN pain", "Metformin 500mg BID", "Lisinopril 10mg daily"],
+      allergies: ["NKDA (No Known Drug Allergies)", "Environmental allergies to pollen"],
+      socialHistory: ["Former smoker (quit 3 years ago, 15 pack-year history)", "Occasional alcohol use (1-2 drinks per week)", "Currently unemployed due to back injury", "Previously worked as warehouse supervisor for 12 years"],
+      familyHistory: ["Father deceased at age 68 from heart disease", "Mother living with diabetes and hypertension"]
     },
     functionalStatus: {
       dominantHand: "Right" as const,
@@ -89,13 +98,6 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       bathingShowering: "Independent but requires shower chair for longer showers",
       dressing: "Independent with lower extremity dressing but slower due to back stiffness",
       personalFinances: "Independent with no limitations"
-    },
-    medicalInfo: {
-      currentMedications: ["Ibuprofen 600mg TID PRN", "Metformin 500mg BID", "Lisinopril 10mg daily"],
-      allergies: ["NKDA"],
-      surgicalHistory: "Appendectomy 1998",
-      familyHistory: "Father: heart disease (deceased), Mother: diabetes/hypertension",
-      socialHistory: "Former smoker (quit 3 years ago), occasional alcohol, unemployed due to injury"
     },
     physicalExam: {
       vitalSigns: {
@@ -298,7 +300,6 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       updateSection('header', sampleData.header);
       updateSection('history', sampleData.history);
       updateSection('functionalStatus', sampleData.functionalStatus);
-      updateSection('medicalInfo', sampleData.medicalInfo);
       updateSection('physicalExam', sampleData.physicalExam);
       updateSection('rangeOfMotion', sampleData.rangeOfMotion);
       updateSection('gaitStation', sampleData.gaitStation);
@@ -335,7 +336,6 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       header: validateHeaderSection(formData.header),
       history: validateHistorySection(formData.history),
       functionalStatus: validateFunctionalStatusSection(formData.functionalStatus),
-      medicalInfo: validateMedicalInfoSection(formData.medicalInfo),
       physicalExam: validatePhysicalExamSection(formData.physicalExam),
       rangeOfMotion: validateRangeOfMotionSection(formData.rangeOfMotion),
       gaitStation: validateGaitStationSection(formData.gaitStation),
@@ -345,16 +345,17 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
 
   const sectionValidation = validateSections();
 
-  // Generate PDF using the PDFGeneratorService
+  // Generate PDF using the PDFGeneratorService (legacy)
   const handleGeneratePDF = async () => {
     try {
       setIsGeneratingPDF(true);
       
       const pdfGenerator = new PDFGeneratorService();
       const pdfBlob = pdfGenerator.generatePDF(state.formData);
+      setGeneratedPdfBlob(pdfBlob);
       
       toast.success('PDF generated successfully!', {
-        description: 'Your CE Exam report has been generated.',
+        description: 'Your CE Exam report has been generated and is ready for download.',
         duration: 3000,
       });
       
@@ -371,17 +372,51 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
     }
   };
 
+  // New: Print-based PDF generation for perfect fidelity
+  const handlePrintPDF = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      const previewElement = document.getElementById('pdf-preview-content');
+      if (!previewElement) {
+        toast.error('PDF Preview not found', {
+          description: 'Please ensure the preview is visible before generating PDF.',
+          duration: 3000,
+        });
+        return;
+      }
+      
+      await savePreviewAsPDF(previewElement as HTMLElement, state.formData);
+      
+      toast.success('PDF ready for download!', {
+        description: 'Use your browser\'s print dialog to save as PDF for perfect fidelity.',
+        duration: 5000,
+      });
+      
+    } catch (error) {
+      console.error('Error printing PDF:', error);
+      toast.error('Failed to generate PDF', {
+        description: 'Please try again or contact support.',
+        duration: 5000,
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
   // Download PDF with formatted filename
   const handleDownloadPDF = async () => {
     try {
       setIsDownloading(true);
       
-      const pdfBlob = await handleGeneratePDF();
-      
-      // Create formatted filename
-      const patientName = state.formData.header?.claimantName || 'Unknown';
-      const examDate = state.formData.header?.examDate || new Date().toISOString().split('T')[0];
-      const filename = `CE_Exam_${patientName.replace(/\s+/g, '_')}_${examDate.replace(/-/g, '')}.pdf`;
+      const pdfBlob = generatedPdfBlob ?? await handleGeneratePDF();
+      if (!pdfBlob) {
+        toast.error('PDF not available to download.');
+        return;
+      }
+
+      const pdfGenerator = new PDFGeneratorService();
+      const filename = pdfGenerator.getPDFFilename(state.formData);
       
       // Download the file
       const url = URL.createObjectURL(pdfBlob);
@@ -461,15 +496,6 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
     };
   }
 
-  function validateMedicalInfoSection(data: any): SectionValidation {
-    const hasBasicInfo = data?.currentMedications || data?.allergies || data?.surgicalHistory;
-    return {
-      isComplete: !!hasBasicInfo,
-      missingFields: hasBasicInfo ? [] : ['currentMedications', 'allergies'],
-      progress: hasBasicInfo ? 100 : 0
-    };
-  }
-
   function validatePhysicalExamSection(data: any): SectionValidation {
     const required = ['generalAppearance', 'vitalSigns'];
     const missing = required.filter(field => !data?.[field]);
@@ -538,14 +564,6 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
       stepId: 'functionalStatus',
       data: state.formData.functionalStatus,
       validation: sectionValidation.functionalStatus
-    },
-    {
-      id: 'medicalInfo',
-      title: 'Medical Information',
-      icon: ClipboardList,
-      stepId: 'medicalInfo',
-      data: state.formData.medicalInfo,
-      validation: sectionValidation.medicalInfo
     },
     {
       id: 'physicalExam',
@@ -668,6 +686,14 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
               )}
               
               <Button
+                onClick={() => setShowPdfPreview(!showPdfPreview)}
+                variant="outline"
+                size="sm"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                {showPdfPreview ? 'Hide Preview' : 'Show Live Preview'}
+              </Button>
+              <Button
                 onClick={handleGeneratePDF}
                 disabled={isGeneratingPDF || overallCompletion < 50}
                 variant="outline"
@@ -678,13 +704,28 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
                 ) : (
                   <FileText className="h-4 w-4 mr-2" />
                 )}
-                Generate PDF
+                Generate PDF (Legacy)
+              </Button>
+              
+              <Button
+                onClick={handlePrintPDF}
+                disabled={isGeneratingPDF || overallCompletion < 50}
+                variant="default"
+                size="sm"
+                title="Print PDF - Perfect fidelity to preview"
+              >
+                {isGeneratingPDF ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Printer className="h-4 w-4 mr-2" />
+                )}
+                Print as PDF
               </Button>
               
               <Button
                 onClick={handleDownloadPDF}
                 disabled={isDownloading || overallCompletion < 50}
-                variant="default"
+                variant="secondary"
                 size="sm"
               >
                 {isDownloading ? (
@@ -692,9 +733,24 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
                 ) : (
                   <Download className="h-4 w-4 mr-2" />
                 )}
-                Download PDF
+                Download PDF (Legacy)
               </Button>
             </div>
+
+            {/* PDF Live Preview */}
+            {showPdfPreview && (
+              <Card className="border-2 border-gray-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                    <FileText className="h-5 w-5" />
+                    Live PDF Preview
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PDFTemplatePreview formData={state.formData} />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Form Sections */}
             <div className="space-y-6">
@@ -791,6 +847,7 @@ function SectionContent({
         <div className="space-y-4">
           {renderField('Age', data?.age, 'age')}
           {renderField('Gender', data?.gender, 'gender')}
+          
           <div>
             <span className="text-sm font-medium text-gray-700">History of Present Illness:</span>
             <div className={`mt-1 p-3 bg-gray-50 rounded border ${
@@ -801,6 +858,107 @@ function SectionContent({
               {data?.historyOfPresentIllness || 'No history documented'}
             </div>
           </div>
+
+          {data?.reviewOfSystems && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Review of Systems:</span>
+              <div className="mt-1 p-3 bg-gray-50 rounded border border-gray-200">
+                {data.reviewOfSystems}
+              </div>
+            </div>
+          )}
+
+          {/* Tag-based fields */}
+          {/* {data?.pastMedicalHistory && data.pastMedicalHistory.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Past Medical History:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.pastMedicalHistory.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )} */}
+
+          {Array.isArray(data?.pastMedicalHistory) && data.pastMedicalHistory.length > 0 && (
+          <div>
+            <span className="text-sm font-medium text-gray-700">Past Medical History:</span>
+            <div className="mt-1 flex flex-wrap gap-2">
+              {data.pastMedicalHistory.map((item: string, index: number) => (
+                <span key={index} className="inline-block rounded bg-blue-100 px-2 py-1 text-sm text-blue-800">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+          {data?.pastSurgicalHistory && data.pastSurgicalHistory.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Past Surgical History:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.pastSurgicalHistory.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data?.medications && data.medications.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Medications:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.medications.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-green-100 text-green-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data?.allergies && data.allergies.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Allergies:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.allergies.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-red-100 text-red-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data?.socialHistory && data.socialHistory.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Social History:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.socialHistory.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {data?.familyHistory && data.familyHistory.length > 0 && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Family History:</span>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {data.familyHistory.map((item: string, index: number) => (
+                  <span key={index} className="inline-block px-2 py-1 bg-orange-100 text-orange-800 text-sm rounded">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       );
 
@@ -817,49 +975,6 @@ function SectionContent({
           {renderField('Cooking/Meal Prep', data?.cookingMealPrep)}
           {renderField('Bathing/Showering', data?.bathingShowering)}
           {renderField('Dressing', data?.dressing)}
-        </div>
-      );
-
-    case 'medicalInfo':
-      return (
-        <div className="space-y-4">
-          <div>
-            <span className="text-sm font-medium text-gray-700">Current Medications:</span>
-            <div className="mt-1">
-              {data?.currentMedications?.length > 0 ? (
-                <ul className="list-disc list-inside space-y-1">
-                  {data.currentMedications.map((med: string, index: number) => (
-                    <li key={index} className="text-gray-900">{med}</li>
-                  ))}
-                </ul>
-              ) : (
-                <span className={validation.missingFields.includes('currentMedications') ? 'text-red-600' : 'text-gray-500'}>
-                  None reported
-                </span>
-              )}
-            </div>
-          </div>
-          
-          <div>
-            <span className="text-sm font-medium text-gray-700">Allergies:</span>
-            <div className="mt-1">
-              {data?.allergies?.length > 0 ? (
-                <ul className="list-disc list-inside space-y-1">
-                  {data.allergies.map((allergy: string, index: number) => (
-                    <li key={index} className="text-gray-900">{allergy}</li>
-                  ))}
-                </ul>
-              ) : (
-                <span className={validation.missingFields.includes('allergies') ? 'text-red-600' : 'text-gray-500'}>
-                  NKDA (No Known Drug Allergies)
-                </span>
-              )}
-            </div>
-          </div>
-          
-          {renderField('Surgical History', data?.surgicalHistory)}
-          {renderField('Family History', data?.familyHistory)}
-          {renderField('Social History', data?.socialHistory)}
         </div>
       );
 

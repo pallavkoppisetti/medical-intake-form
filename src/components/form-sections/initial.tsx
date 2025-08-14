@@ -7,7 +7,7 @@ export function Initial() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Replace with your actual API endpoint
+  // Replace the endoint if hosted
   const API_URL = 'https://medical-intake-form.onrender.com/autofill';
 
   const handleProceed = async () => {
@@ -17,7 +17,7 @@ export function Initial() {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: inputText.trim()
+        body: JSON.stringify({"input_text" : inputText})
       });
       
       if (!response.ok) throw new Error('Failed to process document');
@@ -25,9 +25,6 @@ export function Initial() {
       const formData = await response.json();
       console.log('Received form data:', formData);
       localStorage.setItem('medical-intake-form', JSON.stringify(formData));
-    //   sessionStorage.setItem('prefilledData', JSON.stringify(formData));
-      
-      // Navigate to the form
       navigate('/form');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process document');

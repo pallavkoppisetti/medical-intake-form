@@ -347,31 +347,6 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
         {/* Main content area */}
         <div className="px-4 lg:px-8 py-8 pb-48">
           <div className="max-w-4xl mx-auto">
-            {/* Current step validation errors */}
-            {(() => {
-              const currentValidation = getStepValidation(currentStep.id);
-              if (currentValidation && currentValidation.errors.length > 0) {
-                return (
-                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-start">
-                      <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" />
-                      <div>
-                        <h4 className="text-sm font-medium text-red-800 mb-2">
-                          Please fix the following errors:
-                        </h4>
-                        <ul className="text-sm text-red-700 space-y-1">
-                          {currentValidation.errors.map((error, index) => (
-                            <li key={index}>• {error.message}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })()}
-
             {/* Form content */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
               {children}

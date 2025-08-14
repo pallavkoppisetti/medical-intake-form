@@ -1,40 +1,41 @@
 import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
-import { ChevronLeft, ChevronRight, CheckCircle, AlertTriangle, Save } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertTriangle, Save, RotateCcw, FileText as FilePDF } from 'lucide-react';
 import { useState } from 'react';
+import { PDFExportButton } from './PDFExportButton';
 
 export interface FormNavigationProps {
   className?: string;
   showStepInfo?: boolean;
   showValidationErrors?: boolean;
+  showPDFPreview?: boolean;
+  onTogglePDFPreview?: () => void;
 }
 
 export function FormNavigation({ 
   className = '',
   showStepInfo = true,
-  showValidationErrors = true
+  showValidationErrors = true,
+  showPDFPreview = false,
+  onTogglePDFPreview
 }: FormNavigationProps) {
   const {
     state,
     nextStep,
     previousStep,
     getCurrentStep,
-    isStepComplete,
     getStepValidation,
     saveForm,
     submitForm,
+    resetSection,
   } = useMultiStepForm();
 
   const [isSaving, setIsSaving] = useState(false);
   
   const currentStep = getCurrentStep();
   const currentValidation = getStepValidation(currentStep.id);
-  const isCurrentStepComplete = isStepComplete(state.currentStep);
   const canGoNext = state.currentStep < FORM_STEPS.length - 1;
-  // Allow going previous only if we're not in the initial step (-1) and not in the first step (0)
   const canGoPrevious = state.currentStep > 0;
   const hasErrors = currentValidation && currentValidation.errors.length > 0;
-  const currentProgress = currentValidation?.completionPercentage || 0;
-  const isInitialStep = state.currentStep === -1;
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -65,40 +66,16 @@ export function FormNavigation({
     }
   };
 
-  const getStepStatusIcon = () => {
-    if (isCurrentStepComplete) {
-      return <CheckCircle className="w-5 h-5 text-green-600" />;
+  // Page-specific reset function
+  const handlePageReset = () => {
+    const currentStepName = currentStep.title;
+    if (confirm(`Are you sure you want to reset all data for the "${currentStepName}" section? This action cannot be undone.`)) {
+      resetSection(currentStep.id);
     }
-    if (hasErrors) {
-      return <AlertTriangle className="w-5 h-5 text-amber-500" />;
-    }
-    return null;
   };
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 lg:left-80 ${className}`}>
-      {/* Current Step Progress Bar - Hide on initial step */}
-      {!isInitialStep && (
-        <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-900">{currentStep.title}</span>
-              {getStepStatusIcon()}
-            </div>
-            <span className="text-sm text-gray-600">{Math.round(currentProgress)}% complete</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full transition-all duration-300 ${
-                hasErrors ? 'bg-amber-500' : 
-                isCurrentStepComplete ? 'bg-green-500' : 'bg-blue-500'
-              }`}
-              style={{ width: `${currentProgress}%` }}
-            />
-          </div>
-        </div>
-      )}
-
       {/* Validation Errors */}
       {showValidationErrors && hasErrors && (
         <div className="px-6 py-3 bg-red-50 border-b border-red-200">
@@ -123,49 +100,51 @@ export function FormNavigation({
 
       {/* Navigation Controls */}
       <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Previous Button - Hide on initial step */}
-          {!isInitialStep && (
-            <button
-              onClick={previousStep}
-              disabled={!canGoPrevious}
-              className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4 mr-2" />
-              Previous
-            </button>
-          )}
+        <div className="flex items-center justify-between mb-4">
+          {/* Previous Button */}
+          <button
+            onClick={previousStep}
+            disabled={!canGoPrevious}
+            className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous
+          </button>
 
-          {/* Step Information and Auto-save Status - Hide on initial step */}
-          {showStepInfo && !isInitialStep && (
-            <div className="flex items-center space-x-4 text-sm">
-              <div className="text-center">
-                <div className="font-medium text-gray-900">
-                  Step {state.currentStep + 1} of {FORM_STEPS.length}
-                </div>
-                <div className="text-gray-500">
-                  Overall Progress: {Math.round(state.overallProgress)}%
-                </div>
-              </div>
-              
-              {state.hasUnsavedChanges && (
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="flex items-center text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
-                >
-                  <Save className="w-3 h-3 mr-1" />
-                  {isSaving ? 'Saving...' : 'Save Now'}
-                </button>
-              )}
-              
-              {state.lastSaved && !state.hasUnsavedChanges && (
-                <span className="text-xs text-green-600">
-                  ✓ Saved {state.lastSaved.toLocaleTimeString()}
-                </span>
-              )}
-            </div>
-          )}
+          {/* Center buttons - PDF controls and page reset */}
+          <div className="flex items-center space-x-3">
+            {/* PDF Preview Toggle */}
+            <button
+              onClick={onTogglePDFPreview}
+              className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                showPDFPreview 
+                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              <FilePDF className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">{showPDFPreview ? 'Hide PDF' : 'Show PDF'}</span>
+              <span className="sm:hidden">PDF</span>
+            </button>
+
+            {/* PDF Export Button */}
+            <PDFExportButton 
+              variant="outline"
+              size="sm"
+              showValidation={false}
+              disabled={state.overallProgress < 50}
+            />
+
+            {/* Page-specific Reset Button */}
+            <button
+              onClick={handlePageReset}
+              className="flex items-center px-3 py-2 text-sm border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors"
+            >
+              <RotateCcw className="w-4 h-4 mr-1" />
+              <span className="hidden sm:inline">Reset Page</span>
+              <span className="sm:hidden">Reset</span>
+            </button>
+          </div>
 
           {/* Next/Submit Button */}
           <button
@@ -183,6 +162,37 @@ export function FormNavigation({
             <ChevronRight className="w-4 h-4 ml-2" />
           </button>
         </div>
+
+        {/* Step Information and Auto-save Status */}
+        {showStepInfo && (
+          <div className="flex items-center justify-center space-x-4 text-sm pt-2 border-t border-gray-200">
+            <div className="text-center">
+              <div className="font-medium text-gray-900">
+                Step {state.currentStep + 1} of {FORM_STEPS.length}
+              </div>
+              <div className="text-gray-500">
+                Overall Progress: {Math.round(state.overallProgress)}%
+              </div>
+            </div>
+            
+            {state.hasUnsavedChanges && (
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
+              >
+                <Save className="w-3 h-3 mr-1" />
+                {isSaving ? 'Saving...' : 'Save Now'}
+              </button>
+            )}
+            
+            {state.lastSaved && !state.hasUnsavedChanges && (
+              <span className="text-xs text-green-600">
+                ✓ Saved {state.lastSaved.toLocaleTimeString()}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

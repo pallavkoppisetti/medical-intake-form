@@ -8,7 +8,6 @@ import './App.css'
 
 function MainForm() {
   const handleFormSubmit = async (formData: any) => {
-    // Here you would typically send the form data to your backend
     console.log('Submitting form data:', formData);
     
     // Simulate API call
@@ -56,14 +55,12 @@ function MainForm() {
       onStepChange={handleStepChange}
       onSectionComplete={handleSectionComplete}
     >
-      <FormLayout>
-        <MultiStepFormController
-          showProgressBar={false}
-          progressBarOrientation="horizontal"
-          enablePreview={true}
-          autoSave={true}
-        />
-      </FormLayout>
+      <MultiStepFormController
+        showProgressBar={true}
+        progressBarOrientation="horizontal"
+        enablePreview={true}
+        autoSave={true}
+      />
       <Toaster 
         position="top-right"
         richColors

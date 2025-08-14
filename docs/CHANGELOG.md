@@ -5,6 +5,55 @@ All notable changes to the Medical Intake Form Application will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-08-13
+
+### 🚀 Major Features Added
+
+#### Dynamic PDF Data Population
+- **Fully Dynamic PDF Preview**: All hardcoded values replaced with real form data
+- **Range of Motion**: Complete dynamic integration for all joints (cervical, lumbar, shoulders, elbows, wrists, hands, hips, knees, ankles, hallux)
+- **Neuromuscular Strength**: Dynamic strength ratings for all extremities and grip strength
+- **Reflexes**: Dynamic reflex testing results with proper bilateral formatting
+- **Gait Station**: Dynamic gait assessment, assistive device information, and performance testing
+- **Placeholder System**: Missing data displays as `[Not assessed]`, `[Not measured]`, or `[Not applicable]`
+
+#### Tag-Based Medical Input System
+- **EMR-Style Tag Input**: Chief complaint and medical history fields now use tag-based entry
+- **Intuitive Interface**: Add tags by typing and pressing Enter or comma
+- **Visual Feedback**: Tags display as prominent chips with easy removal
+- **PDF Integration**: Tags render as bullet points in professional PDF format
+- **Compact Layout**: Maximized fields per row for efficient data entry
+
+#### Streamlined Navigation & UI
+- **Bottom Navigation**: Moved all controls to bottom sticky bar for better UX
+- **Page-Specific Reset**: Reset button now only clears current page data
+- **Removed Redundancy**: Eliminated duplicate Medical Information section
+- **Compact Form Design**: Reduced padding and optimized field spacing
+- **Medical History**: Renamed from "History" for clarity
+
+#### Enhanced Form Architecture
+- **Migration Logic**: Automatic data structure migration for existing users
+- **Array Field Support**: Full support for tag arrays with validation
+- **Dynamic Validation**: Real-time validation updated for new data structures
+- **Type Safety**: Complete TypeScript support for all new features
+
+### 🧹 Code Quality & Documentation
+- **Comprehensive Documentation**: All docs moved to `/docs` folder
+- **Clean README**: Streamlined main README with links to detailed documentation
+- **Build Error Fixes**: Resolved all TypeScript errors and build issues
+- **File Organization**: Moved all documentation files to proper locations
+
+### 🐛 Bug Fixes
+- **Reflexes Data Structure**: Fixed property access for nested reflex objects
+- **PDF Preview**: Resolved blank preview issues with proper data mapping
+- **Form Visibility**: Fixed blank Medical History page rendering
+- **Navigation Issues**: Resolved content visibility problems with bottom navigation
+
+### 📁 File Structure Updates
+- **Documentation Consolidation**: All `.md` files moved to `/docs` folder
+- **Clean Root Directory**: Removed documentation clutter from project root
+- **Updated Documentation**: Comprehensive guides for all features and deployment
+
 ## [2.1.0] - 2025-08-12
 
 ### ✨ New Features

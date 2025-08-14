@@ -8,6 +8,7 @@ export interface FormSelectProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  onImmediateChange?: (value: string) => void;
 }
 
 export function FormSelect({
@@ -20,7 +21,14 @@ export function FormSelect({
   disabled = false,
   error,
   className = '',
+  onImmediateChange,
 }: FormSelectProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newValue = e.target.value;
+    onChange(newValue); // existing validation/save logic
+    onImmediateChange?.(newValue); // immediate preview update
+  };
+
   return (
     <div className={`space-y-2 ${className}`}>
       <label className="block text-sm font-medium text-gray-700">
@@ -29,7 +37,7 @@ export function FormSelect({
       </label>
       <select
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         required={required}
         disabled={disabled}
         className={`w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500 ${

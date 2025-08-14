@@ -1,6 +1,14 @@
 
 @import "tailwindcss";
 
+/* Reset default body margins/padding */
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
 /* Tailwind CSS v4 theme configuration */
 @theme {
   --color-background: #ffffff;

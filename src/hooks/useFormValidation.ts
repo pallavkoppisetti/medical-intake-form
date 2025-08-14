@@ -21,8 +21,6 @@ export function useFormValidation() {
         return ['age', 'gender', 'pastMedicalHistory', 'medications', 'allergies'];
       case 'functionalStatus':
         return ['physicalDemandsOfJob', 'activitiesOfDailyLiving'];
-      case 'medicalInfo':
-        return ['currentMedications', 'allergies'];
       case 'physicalExam':
         return ['generalAppearance', 'vitalSigns'];
       case 'rangeOfMotion':
@@ -30,7 +28,7 @@ export function useFormValidation() {
       case 'gaitStation':
         return ['gait', 'station'];
       case 'assessment':
-        return ['diagnosis', 'prognosis'];
+        return ['diagnosisAssessment', 'examinerInfo.name', 'examinerInfo.facility', 'examinerInfo.date', 'examinerSignature'];
       default:
         return [];
     }
@@ -58,6 +56,39 @@ export function useFormValidation() {
       if (!sectionData.examDate) {
         errors.push({ field: 'examDate', message: 'Exam Date is required.' });
       }
+      if (!sectionData.chiefComplaintTags || sectionData.chiefComplaintTags.length === 0) {
+        errors.push({ field: 'chiefComplaint', message: 'At least one chief complaint is required.' });
+      }
+      if (errors.length > 0) {
+        return { success: false, errors };
+      }
+    }
+
+    // Assessment section validation with signature requirement
+    if (sectionName === 'assessment') {
+      const errors: ValidationError[] = [];
+      
+      if (!sectionData.diagnosisAssessment || sectionData.diagnosisAssessment.length === 0 || 
+          sectionData.diagnosisAssessment.every((diagnosis: string) => !diagnosis.trim())) {
+        errors.push({ field: 'diagnosisAssessment', message: 'At least one diagnosis is required.' });
+      }
+      
+      if (!sectionData.examinerInfo?.name) {
+        errors.push({ field: 'examinerInfo.name', message: 'Examiner name is required.' });
+      }
+      
+      if (!sectionData.examinerInfo?.facility) {
+        errors.push({ field: 'examinerInfo.facility', message: 'Examiner facility is required.' });
+      }
+      
+      if (!sectionData.examinerInfo?.date) {
+        errors.push({ field: 'examinerInfo.date', message: 'Examination date is required.' });
+      }
+      
+      if (!sectionData.examinerSignature) {
+        errors.push({ field: 'examinerSignature', message: 'Digital signature is required to complete the form.' });
+      }
+      
       if (errors.length > 0) {
         return { success: false, errors };
       }

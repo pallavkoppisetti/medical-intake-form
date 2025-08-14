@@ -19,7 +19,21 @@ export class PDFGeneratorService {
     this.margin = 20;
     this.pageNumber = 1;
     this.totalPages = 1;
-    this.lineHeight = 6;
+    this.lineHeight = 5; // Tighter spacing to match preview
+  }
+
+  /**
+   * Generate PDF from complete form data
+   */
+  /**
+   * Generate a safe PDF filename from form data.
+   */
+  public getPDFFilename(formData: Partial<FloridaCEExamForm>): string {
+    const patientName = formData.header?.claimantName || 'Unknown';
+    const examDate = formData.header?.examDate || new Date().toISOString().split('T')[0];
+    const safePatientName = patientName.replace(/[^a-zA-Z0-9_]/g, '_');
+    const safeExamDate = examDate.replace(/-/g, '');
+    return `CE_Exam_${safePatientName}_${safeExamDate}.pdf`;
   }
 
   /**
@@ -60,10 +74,6 @@ export class PDFGeneratorService {
       this.addFunctionalStatusSection(formData.functionalStatus);
     }
     
-    if (formData.medicalInfo) {
-      this.addMedicalInfoSection(formData.medicalInfo);
-    }
-    
     if (formData.physicalExam) {
       this.addPhysicalExamSection(formData.physicalExam);
     }
@@ -86,7 +96,7 @@ export class PDFGeneratorService {
    */
   private addCEHeader(_headerData: any): void {
     // Add doctor/clinic information in top-right corner
-    this.doc.setFontSize(10);
+    this.doc.setFontSize(8); // Smaller to match 11pt Calibri
     this.doc.setFont('helvetica', 'normal');
     
     const rightMargin = this.pageWidth - this.margin;
@@ -95,31 +105,31 @@ export class PDFGeneratorService {
     const doctorLine1 = 'Dr. FNAME LNAME, MD, FACP. 1234, W SR 001, Suite 1004,';
     const doctorLine1Width = this.doc.getTextWidth(doctorLine1);
     this.doc.text(doctorLine1, rightMargin - doctorLine1Width, this.currentY);
-    this.currentY += 6;
+    this.currentY += 5;
     
     // Line 2: Board certification and address
     const doctorLine2 = 'Diplomate of American Board of Internal Medicine. Atlanta, GA, 32750.';
     const doctorLine2Width = this.doc.getTextWidth(doctorLine2);
     this.doc.text(doctorLine2, rightMargin - doctorLine2Width, this.currentY);
-    this.currentY += 6;
+    this.currentY += 5;
     
     // Line 3: Clinic and phone
     const doctorLine3 = 'EZMEDTECH HEALTH & WELLNESS CENTER. Phone: 888-999-0000';
     const doctorLine3Width = this.doc.getTextWidth(doctorLine3);
     this.doc.text(doctorLine3, rightMargin - doctorLine3Width, this.currentY);
-    this.currentY += 15;
+    this.currentY += 12;
     
     // Reset position for centered title
     this.currentY = Math.max(this.currentY, 35); // Ensure enough space below header info
     
     // Centered title - larger and bold
-    this.doc.setFontSize(14);
+    this.doc.setFontSize(11); // Match 14pt Calibri in preview
     this.doc.setFont('helvetica', 'bold');
     
     const title = 'TO: FLORIDA DIVISION OF DISABILITY DETERMINATION';
     const titleWidth = this.doc.getTextWidth(title);
     this.doc.text(title, (this.pageWidth - titleWidth) / 2, this.currentY);
-    this.currentY += 15;
+    this.currentY += 12;
     
     // Add horizontal line separator
     this.doc.setLineWidth(0.5);
@@ -375,41 +385,6 @@ export class PDFGeneratorService {
     });
     
     this.currentY += 10;
-  }
-
-  /**
-   * Add medical info section in CE format
-   */
-  private addMedicalInfoSection(data: any): void {
-    this.addCESection('Medical Information');
-    
-    if (data.currentMedications) {
-      this.addSubsection('Current Medications', 
-        Array.isArray(data.currentMedications) && data.currentMedications.length > 0 
-          ? data.currentMedications.join(', ') 
-          : 'None reported'
-      );
-    }
-    
-    if (data.allergies) {
-      this.addSubsection('Allergies', 
-        Array.isArray(data.allergies) && data.allergies.length > 0 
-          ? data.allergies.join(', ') 
-          : 'NKDA (No Known Drug Allergies)'
-      );
-    }
-    
-    if (data.surgicalHistory) {
-      this.addSubsection('Surgical History', data.surgicalHistory);
-    }
-    
-    if (data.familyHistory) {
-      this.addSubsection('Family History', data.familyHistory);
-    }
-    
-    if (data.socialHistory) {
-      this.addSubsection('Social History', data.socialHistory);
-    }
   }
 
   /**
@@ -899,30 +874,61 @@ export class PDFGeneratorService {
     this.currentY += splitRecommendations.length * this.lineHeight + 20;
     
     // 4. Examiner info and date at bottom
-    this.addExaminerSignature(data?.examinerInfo);
+    this.addExaminerSignature(data);
   }
 
   /**
    * Add examiner signature block at bottom of assessment
    */
-  private addExaminerSignature(examinerInfo: any): void {
-    this.checkPageBreak(40);
+  private addExaminerSignature(data: any): void {
+    this.checkPageBreak(60);
     
-    this.doc.setFontSize(10);
+    this.doc.setFontSize(11);
     this.doc.setFont('helvetica', 'normal');
     
-    // Examiner name
-    const examinerName = examinerInfo?.name || 'Dr. FNAME LNAME';
+    // Add signature image if present
+    if (data?.examinerSignature) {
+      try {
+        // Add signature image with exact preview dimensions
+        this.doc.addImage(
+          data.examinerSignature,
+          'PNG',
+          this.margin,
+          this.currentY,
+          60, // width - match preview scaling
+          20  // height - match preview scaling
+        );
+        this.currentY += 25;
+      } catch (error) {
+        console.warn('Could not add signature image to PDF:', error);
+        // Fallback to text placeholder
+        this.doc.setFont('helvetica', 'italic');
+        this.doc.setFontSize(10);
+        this.doc.text('[Digital Signature]', this.margin, this.currentY);
+        this.currentY += this.lineHeight + 8;
+      }
+    } else {
+      // No signature provided
+      this.doc.setFont('helvetica', 'italic');
+      this.doc.setFontSize(10);
+      this.doc.text('[Digital signature required]', this.margin, this.currentY);
+      this.currentY += this.lineHeight + 8;
+    }
+    
+    // Examiner name with exact preview formatting
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setFontSize(11);
+    const examinerName = data?.examinerInfo?.name || 'Dr. FNAME LNAME';
     this.doc.text(`Examiner: ${examinerName}.`, this.margin, this.currentY);
     this.currentY += this.lineHeight + 4;
     
     // Clinic name
-    const clinicName = examinerInfo?.clinic || 'EZMEDTECH Health & Wellness Center';
+    const clinicName = data?.examinerInfo?.facility || 'EZMEDTECH Health & Wellness Center';
     this.doc.text(`${clinicName}.`, this.margin, this.currentY);
     this.currentY += this.lineHeight + 4;
     
     // Date
-    const examDate = examinerInfo?.date || new Date().toLocaleDateString('en-US', {
+    const examDate = data?.examinerInfo?.date || new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long', 
       day: 'numeric'
