@@ -8,7 +8,7 @@ export function Initial() {
   const [error, setError] = useState('');
 
   // Replace the endoint if hosted
-  const API_URL = 'https://59fb40f83048.ngrok-free.app/autofill';
+  const API_URL = 'https://medical-intake-form.onrender.com/autofill';
 
   const handleProceed = async () => {
     setError('');
