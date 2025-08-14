@@ -21,11 +21,13 @@ const formatDate = (dateString?: string): string => {
 
 const formatDiagnosisList = (diagnoses?: string[]) => {
     if (!diagnoses || diagnoses.length === 0) return <li className="c0 c4 li-bullet-0">No diagnosis provided.</li>;
-    return diagnoses.map((d, i) => (
-        <li key={i} className="c0 c4 li-bullet-0">
-            <span>{d}</span>
-        </li>
-    ));
+  return Array.isArray(diagnoses)
+    ? diagnoses.map((d, i) => (
+      <li key={i} className="c0 c4 li-bullet-0">
+        <span>{d}</span>
+      </li>
+    ))
+    : null;
 };
 
 
@@ -91,7 +93,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CHIEF COMPLAINT: </span></h1>
-            {header?.chiefComplaintTags && header.chiefComplaintTags.length > 0 ? (
+            {Array.isArray(header?.chiefComplaintTags) && header.chiefComplaintTags.length > 0 ? (
               <div className="c0">
                 {header.chiefComplaintTags.map((complaint: string, index: number) => (
                   <p key={index} className="c0" style={{ marginLeft: '18pt', textIndent: '-18pt', marginBottom: '4pt' }}>
@@ -117,7 +119,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
             
             {/* Add Past Medical History if available */}
-            {history?.pastMedicalHistory && history.pastMedicalHistory.length > 0 && (
+      {Array.isArray(history?.pastMedicalHistory) && history.pastMedicalHistory.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">PAST MEDICAL HISTORY: </span></h1>
@@ -132,7 +134,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
 
             {/* Add Medications if available */}
-            {history?.medications && history.medications.length > 0 && (
+      {Array.isArray(history?.medications) && history.medications.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">MEDICATIONS: </span></h1>
@@ -147,7 +149,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
 
             {/* Add Allergies if available */}
-            {history?.allergies && history.allergies.length > 0 && (
+      {Array.isArray(history?.allergies) && history.allergies.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">ALLERGIES: </span></h1>
@@ -162,7 +164,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
 
             {/* Add Social History if available */}
-            {history?.socialHistory && history.socialHistory.length > 0 && (
+      {Array.isArray(history?.socialHistory) && history.socialHistory.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">SOCIAL HISTORY: </span></h1>
@@ -177,7 +179,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
 
             {/* Add Family History if available */}
-            {history?.familyHistory && history.familyHistory.length > 0 && (
+      {Array.isArray(history?.familyHistory) && history.familyHistory.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
@@ -192,7 +194,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
 
             {/* Add Past Surgical History if available */}
-            {history?.pastSurgicalHistory && history.pastSurgicalHistory.length > 0 && (
+      {Array.isArray(history?.pastSurgicalHistory) && history.pastSurgicalHistory.length > 0 && (
               <>
                 <p className="c0 c1"><span className="c2"></span></p>
                 <h1 className="c12"><span className="c13">PAST SURGICAL HISTORY: </span></h1>
@@ -232,7 +234,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">CURRENT MEDICATIONS: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0 start">
-                {history?.medications && history.medications.length > 0 ? (
+                {Array.isArray(history?.medications) && history.medications.length > 0 ? (
                   history.medications.map((medication, index) => (
                     <li key={index} className="c4 li-bullet-0">
                       <span className="c2 font-semibold">● {medication}</span>
@@ -247,7 +249,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c5 c15 c3"></span></p>
             <h1 className="c12"><span className="c13">ALLERGIES: &nbsp;</span></h1>
             <ul className="c18 lst-kix_list_1-0">
-                {history?.allergies && history.allergies.length > 0 ? (
+                {Array.isArray(history?.allergies) && history.allergies.length > 0 ? (
                   history.allergies.map((allergy, index) => (
                     <li key={index} className="c4 li-bullet-0">
                       <span className="c2 font-semibold">● {allergy}</span>
@@ -261,7 +263,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             </ul>
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SURGICAL HISTORY: </span></h1>
-            {history?.pastSurgicalHistory && history.pastSurgicalHistory.length > 0 ? (
+            {Array.isArray(history?.pastSurgicalHistory) && history.pastSurgicalHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.pastSurgicalHistory.map((surgery, index) => (
                   <li key={index} className="c4 li-bullet-0">
@@ -274,7 +276,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">FAMILY HISTORY: </span></h1>
-            {history?.familyHistory && history.familyHistory.length > 0 ? (
+            {Array.isArray(history?.familyHistory) && history.familyHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.familyHistory.map((item, index) => (
                   <li key={index} className="c4 li-bullet-0">
@@ -287,7 +289,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             )}
             <p className="c0 c1"><span className="c2"></span></p>
             <h1 className="c12"><span className="c13">SOCIAL HISTORY: &nbsp;</span></h1>
-            {history?.socialHistory && history.socialHistory.length > 0 ? (
+            {Array.isArray(history?.socialHistory) && history.socialHistory.length > 0 ? (
               <ul className="c18 lst-kix_list_1-0">
                 {history.socialHistory.map((item, index) => (
                   <li key={index} className="c4 li-bullet-0">
