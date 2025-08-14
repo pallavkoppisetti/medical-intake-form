@@ -1,6 +1,5 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
-import { FormLayout } from './components/FormLayout';
 import { Initial } from './components/form-sections/initial';
 import { Toaster } from 'sonner';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
