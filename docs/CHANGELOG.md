@@ -5,6 +5,52 @@ All notable changes to the Medical Intake Form Application will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2025-08-14
+
+### 🚀 Major Features Added
+
+#### Auto-Fill Functionality & Routing
+- **Medical Document Auto-Fill**: Added initial landing page where users can paste medical documents
+- **AI Document Processing**: Integration with backend API to extract form data from medical text
+- **React Router Integration**: Clean navigation between landing page (`/`) and main form (`/form`)
+- **Smart Form Pre-Population**: Auto-populated forms from processed medical documents
+- **Dual Entry Options**: Users can choose auto-fill or manual entry
+
+#### Enhanced Medical History UI
+- **Color-Coded Card System**: Each medical history field now has its own color-coded card
+- **Visual Organization**: Improved UX with distinct sections for different medical information types
+- **Medical UI Standards**: Color scheme follows healthcare conventions:
+  - **Blue**: Review of Systems (primary)
+  - **Green**: Patient Demographics 
+  - **Orange**: History of Present Illness
+  - **Purple**: Past Medical & Surgical History
+  - **Yellow**: Medications (pharmacy standard)
+  - **Red**: Allergies (alert/warning standard)
+  - **Teal**: Social & Family History
+
+#### Defensive Programming & Error Handling
+- **Array Validation**: Added `Array.isArray()` checks before all `.map()` operations
+- **Error Boundaries**: Implemented comprehensive error boundary components
+- **Migration Safety**: Enhanced data migration logic for array field conversions
+- **Robust Form Handling**: Prevents crashes from malformed data structures
+
+### 🧹 Code Quality & Merge Management
+- **Clean Branch Merge**: Successfully merged `adithya` branch with auto-fill functionality
+- **Conflict Resolution**: Preserved main branch improvements while adding new features
+- **Dependency Management**: Added `react-router-dom@7.8.0` for routing
+- **Documentation Updates**: Updated copilot instructions with docs folder requirement
+
+### 🐛 Bug Fixes
+- **Array Mapping Errors**: Fixed `TypeError: X.map is not a function` for all history fields
+- **PDF Preview Crashes**: Resolved crashes in PDFTemplatePreview component
+- **Form Review Errors**: Fixed FormReviewAndGenerate component array handling
+- **Build Stability**: Ensured all TypeScript errors are resolved
+
+### 📚 Documentation
+- **Comprehensive Updates**: Updated all documentation to reflect new features
+- **Docs Folder Mandate**: All documentation now properly organized in `/docs` folder
+- **Developer Guidelines**: Enhanced development guidelines with defensive coding practices
+
 ## [3.0.0] - 2025-08-13
 
 ### 🚀 Major Features Added
@@ -36,18 +82,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Array Field Support**: Full support for tag arrays with validation
 - **Dynamic Validation**: Real-time validation updated for new data structures
 - **Type Safety**: Complete TypeScript support for all new features
-
-### 🧹 Code Quality & Documentation
-- **Comprehensive Documentation**: All docs moved to `/docs` folder
-- **Clean README**: Streamlined main README with links to detailed documentation
-- **Build Error Fixes**: Resolved all TypeScript errors and build issues
-- **File Organization**: Moved all documentation files to proper locations
-
-### 🐛 Bug Fixes
-- **Reflexes Data Structure**: Fixed property access for nested reflex objects
-- **PDF Preview**: Resolved blank preview issues with proper data mapping
-- **Form Visibility**: Fixed blank Medical History page rendering
-- **Navigation Issues**: Resolved content visibility problems with bottom navigation
 
 ### 📁 File Structure Updates
 - **Documentation Consolidation**: All `.md` files moved to `/docs` folder

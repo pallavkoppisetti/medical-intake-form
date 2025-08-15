@@ -11,7 +11,6 @@ import { AssessmentForm } from './form-sections/AssessmentForm';
 import { FormReviewAndGenerate } from './FormReviewAndGenerate';
 import PDFTemplatePreview from './PDFTemplatePreview';
 import { PDFExportButton } from './PDFExportButton';
-import { ErrorBoundary } from './ErrorBoundary';
 import { 
   CheckCircle, 
   Lock, 
@@ -40,6 +39,7 @@ const SECTION_ICONS = {
   assessment: FileText,
   review: FileText
 } as const;
+import { Initial } from './form-sections/initial';
 
 export interface MultiStepFormControllerProps {
   className?: string;
@@ -52,24 +52,6 @@ export interface MultiStepFormControllerProps {
 export function MultiStepFormController({
   className = '',
 }: MultiStepFormControllerProps) {
-  const context = useMultiStepForm();
-  
-  // Add defensive check for context
-  if (!context) {
-    console.error('MultiStepFormController: Context is undefined');
-    return (
-      <div className="text-center py-16">
-        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h3 className="text-xl font-medium text-gray-900 mb-2">
-          Form Context Error
-        </h3>
-        <p className="text-gray-600 mb-8">
-          The form context is not available. Please refresh the page.
-        </p>
-      </div>
-    );
-  }
-
   const {
     state,
     goToStep,
@@ -79,29 +61,13 @@ export function MultiStepFormController({
     isStepComplete,
     isStepVisited,
     saveForm,
-  } = context;
+  } = useMultiStepForm();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [showPDFPreview, setShowPDFPreview] = useState(false);
 
   const currentStep = getCurrentStep();
-  
-  // Add defensive check for currentStep
-  if (!currentStep) {
-    console.error('Current step is undefined, step index:', state.currentStep);
-    return (
-      <div className="text-center py-16">
-        <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h3 className="text-xl font-medium text-gray-900 mb-2">
-          Navigation Error
-        </h3>
-        <p className="text-gray-600 mb-8">
-          Unable to determine current form step. Please refresh the page.
-        </p>
-      </div>
-    );
-  }
 
   const getStepStatus = (stepIndex: number) => {
     const step = FORM_STEPS[stepIndex];
@@ -140,49 +106,41 @@ export function MultiStepFormController({
   };
 
   const renderCurrentForm = () => {
-    const FormComponent = (() => {
-      switch (state.currentStep) {
-        case 0:
-          return CEHeaderForm;
-        case 1:
-          return HistoryFormNew;
-        case 2:
-          return FunctionalStatusFormNew;
-        case 3:
-          return PhysicalExamForm;
-        case 4:
-          return RangeOfMotionForm;
-        case 5:
-          return GaitStationForm;
-        case 6:
-          return AssessmentForm;
-        case 7:
-          return FormReviewAndGenerate;
-        default:
-          console.warn('Unknown step:', state.currentStep);
-          return () => (
-            <div className="text-center py-16">
-              <h3 className="text-xl font-medium text-gray-900 mb-2">
-                {currentStep.title}
-              </h3>
-              <p className="text-gray-600 mb-8">
-                This section is coming soon.
-              </p>
-            </div>
-          );
-      }
-    })();
+    // Handle initial step (-1) first
+    if (state.currentStep === -1) {
+      return <Initial />;
+    }
 
-    return (
-      <ErrorBoundary
-        onReset={() => {
-          console.log('Form error boundary reset triggered');
-          // Could add additional reset logic here
-        }}
-      >
-        <FormComponent />
-      </ErrorBoundary>
-    );
+    // Type-safe rendering based on the current step
+    switch (state.currentStep) {
+      case 0:
+        return <CEHeaderForm />;
+      case 1:
+        return <HistoryFormNew />;
+      case 2:
+        return <FunctionalStatusFormNew />;
+      case 3:
+        return <PhysicalExamForm />;
+      case 4:
+        return <RangeOfMotionForm />;
+      case 5:
+        return <GaitStationForm />;
+      case 6:
+        return <AssessmentForm />;
+      case 7:
+        return <FormReviewAndGenerate />;
+      default:
+        return (
+          <div className="text-center py-16">
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              {currentStep.title}
+            </h3>
+            <p className="text-gray-600 mb-8">
+              This section is coming soon.
+            </p>
+          </div>
+        );
+    }
   };
 
   const renderSidebarItem = (step: typeof FORM_STEPS[number], index: number) => {
@@ -502,16 +460,7 @@ export function MultiStepFormController({
                   </div>
                   <div className="rounded-lg overflow-hidden flex-1 min-h-0 p-0">
                     <div className="h-full max-h-[calc(100vh-200px)] overflow-auto p-0">
-                      <ErrorBoundary
-                        fallback={
-                          <div className="text-center py-8">
-                            <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                            <p className="text-red-600">Unable to load PDF preview</p>
-                          </div>
-                        }
-                      >
-                        <PDFTemplatePreview formData={state.formData} />
-                      </ErrorBoundary>
+                      <PDFTemplatePreview formData={state.formData} />
                     </div>
                   </div>
                 </div>

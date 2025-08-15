@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMultiStepForm } from '../../contexts/MultiStepFormContext';
 import { FormInput } from '../ui/FormInput';
 import { FormTextarea } from '../ui/FormTextarea';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent } from '../ui/card';
 import { HistorySection } from '../../types/comprehensive-medical-form';
 
 // Tag Input Component
@@ -122,12 +122,14 @@ export function HistoryFormNew() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Medical History</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          
+      {/* Medical History Header */}
+      <div className="text-center border-b-2 border-gray-800 pb-2">
+        <h1 className="text-xl font-bold text-gray-900">Medical History</h1>
+      </div>
+
+      {/* Review of Systems - Primary Section */}
+      <Card className="bg-blue-50 border-l-4 border-blue-500">
+        <CardContent className="pt-4">
           <FormTextarea
             label="Review of Systems"
             value={safeHistoryData.reviewOfSystems || ''}
@@ -136,7 +138,15 @@ export function HistoryFormNew() {
             placeholder="e.g., Positive for low back pain, leg numbness..."
             rows={2}
           />
-          
+        </CardContent>
+      </Card>
+
+      {/* Patient Demographics - Green Section */}
+      <Card className="bg-green-50 border-l-4 border-green-500">
+        <CardContent className="pt-4">
+          <div className="mb-3">
+            <p className="font-semibold text-green-800 text-sm">PATIENT DEMOGRAPHICS</p>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <FormInput
               label="Age"
@@ -155,17 +165,30 @@ export function HistoryFormNew() {
               required
             />
           </div>
+        </CardContent>
+      </Card>
 
+      {/* Present Illness - Orange Section */}
+      <Card className="bg-orange-50 border-l-4 border-orange-500">
+        <CardContent className="pt-4">
+          <div className="mb-3">
+            <p className="font-semibold text-orange-800 text-sm">HISTORY OF PRESENT ILLNESS</p>
+          </div>
           <FormTextarea
-            label="History of Present Illness"
+            label="Current Condition Description"
             value={safeHistoryData.historyOfPresentIllness}
             onChange={(value) => handleChange('historyOfPresentIllness', value)}
             onImmediateChange={(value) => handleImmediateChange('historyOfPresentIllness', value)}
             placeholder="Describe the current illness or condition..."
             rows={3}
           />
+        </CardContent>
+      </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Medical Information - Each field in separate cards */}
+      <div className="space-y-4">
+        <Card className="bg-purple-50 border-l-4 border-purple-500">
+          <CardContent className="pt-4">
             <TagInput
               label="Past Medical History"
               placeholder="Add previous conditions..."
@@ -175,47 +198,11 @@ export function HistoryFormNew() {
                 handleImmediateChange('pastMedicalHistory', tags);
               }}
             />
+          </CardContent>
+        </Card>
 
-            <TagInput
-              label="Medications"
-              placeholder="Add medications..."
-              tags={safeHistoryData.medications || []}
-              onTagsChange={(tags) => {
-                handleChange('medications', tags);
-                handleImmediateChange('medications', tags);
-              }}
-            />
-
-            <TagInput
-              label="Allergies"
-              placeholder="Add allergies..."
-              tags={safeHistoryData.allergies || []}
-              onTagsChange={(tags) => {
-                handleChange('allergies', tags);
-                handleImmediateChange('allergies', tags);
-              }}
-            />
-
-            <TagInput
-              label="Social History"
-              placeholder="Add social history..."
-              tags={safeHistoryData.socialHistory || []}
-              onTagsChange={(tags) => {
-                handleChange('socialHistory', tags);
-                handleImmediateChange('socialHistory', tags);
-              }}
-            />
-
-            <TagInput
-              label="Family History"
-              placeholder="Add family history..."
-              tags={safeHistoryData.familyHistory || []}
-              onTagsChange={(tags) => {
-                handleChange('familyHistory', tags);
-                handleImmediateChange('familyHistory', tags);
-              }}
-            />
-
+        <Card className="bg-purple-50 border-l-4 border-purple-500">
+          <CardContent className="pt-4">
             <TagInput
               label="Past Surgical History"
               placeholder="Add surgical procedures..."
@@ -225,9 +212,68 @@ export function HistoryFormNew() {
                 handleImmediateChange('pastSurgicalHistory', tags);
               }}
             />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-yellow-50 border-l-4 border-yellow-500">
+          <CardContent className="pt-4">
+            <TagInput
+              label="Medications"
+              placeholder="Add medications..."
+              tags={safeHistoryData.medications || []}
+              onTagsChange={(tags) => {
+                handleChange('medications', tags);
+                handleImmediateChange('medications', tags);
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-red-50 border-l-4 border-red-500">
+          <CardContent className="pt-4">
+            <TagInput
+              label="Allergies"
+              placeholder="Add allergies..."
+              tags={safeHistoryData.allergies || []}
+              onTagsChange={(tags) => {
+                handleChange('allergies', tags);
+                handleImmediateChange('allergies', tags);
+              }}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Social & Family History - Each field in separate cards */}
+      <div className="space-y-4">
+        <Card className="bg-teal-50 border-l-4 border-teal-500">
+          <CardContent className="pt-4">
+            <TagInput
+              label="Social History"
+              placeholder="Add social history..."
+              tags={safeHistoryData.socialHistory || []}
+              onTagsChange={(tags) => {
+                handleChange('socialHistory', tags);
+                handleImmediateChange('socialHistory', tags);
+              }}
+            />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-teal-50 border-l-4 border-teal-500">
+          <CardContent className="pt-4">
+            <TagInput
+              label="Family History"
+              placeholder="Add family history..."
+              tags={safeHistoryData.familyHistory || []}
+              onTagsChange={(tags) => {
+                handleChange('familyHistory', tags);
+                handleImmediateChange('familyHistory', tags);
+              }}
+            />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
