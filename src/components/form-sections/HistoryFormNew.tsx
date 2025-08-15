@@ -48,7 +48,7 @@ const TagInput = ({
           {tags.map((tag, index) => (
             <span 
               key={index}
-              className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200"
+              className="inline-flex items-center px-2 py-0.5 rounded text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
             >
               {tag}
               <button
@@ -127,48 +127,53 @@ export function HistoryFormNew() {
         <h1 className="text-xl font-bold text-gray-900">Medical History</h1>
       </div>
 
-      {/* Review of Systems - Primary Section */}
-      <Card className="bg-blue-50 border-l-4 border-blue-500">
-        <CardContent className="pt-4">
-          <FormTextarea
-            label="Review of Systems"
-            value={safeHistoryData.reviewOfSystems || ''}
-            onChange={(value) => handleChange('reviewOfSystems', value)}
-            onImmediateChange={(value) => handleImmediateChange('reviewOfSystems', value)}
-            placeholder="e.g., Positive for low back pain, leg numbness..."
-            rows={2}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Patient Demographics - Green Section */}
-      <Card className="bg-green-50 border-l-4 border-green-500">
-        <CardContent className="pt-4">
-          <div className="mb-3">
-            <p className="font-semibold text-green-800 text-sm">PATIENT DEMOGRAPHICS</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <FormInput
-              label="Age"
-              type="number"
-              value={safeHistoryData.age.toString()}
-              onChange={(value) => handleChange('age', parseInt(value) || 0)}
-              onImmediateChange={(value) => handleImmediateChange('age', parseInt(value) || 0)}
-              placeholder="Enter age"
+      {/* Review of Systems and Patient Demographics - Same Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-blue-50 border-l-4 border-blue-500">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-blue-800">Review of Systems</h3>
+            </div>
+            <FormTextarea
+              label=""
+              value={safeHistoryData.reviewOfSystems || ''}
+              onChange={(value) => handleChange('reviewOfSystems', value)}
+              onImmediateChange={(value) => handleImmediateChange('reviewOfSystems', value)}
+              placeholder="e.g., Positive for low back pain, leg numbness..."
+              rows={2}
             />
-            <FormInput
-              label="Gender"
-              value={safeHistoryData.gender}
-              onChange={(value) => handleChange('gender', value)}
-              onImmediateChange={(value) => handleImmediateChange('gender', value)}
-              placeholder="e.g., Male/Female"
-              required
-            />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Present Illness - Orange Section */}
+        <Card className="bg-green-50 border-l-4 border-green-500">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-green-800">Patient Demographics</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <FormInput
+                label="Age"
+                type="number"
+                value={safeHistoryData.age.toString()}
+                onChange={(value) => handleChange('age', parseInt(value) || 0)}
+                onImmediateChange={(value) => handleImmediateChange('age', parseInt(value) || 0)}
+                placeholder="Enter age"
+              />
+              <FormInput
+                label="Gender"
+                value={safeHistoryData.gender}
+                onChange={(value) => handleChange('gender', value)}
+                onImmediateChange={(value) => handleImmediateChange('gender', value)}
+                placeholder="e.g., Male/Female"
+                required
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* History of Present Illness - Commented Out */}
+      {/* 
       <Card className="bg-orange-50 border-l-4 border-orange-500">
         <CardContent className="pt-4">
           <div className="mb-3">
@@ -184,13 +189,17 @@ export function HistoryFormNew() {
           />
         </CardContent>
       </Card>
+      */}
 
-      {/* Medical Information - Each field in separate cards */}
-      <div className="space-y-4">
+      {/* Past Medical History and Past Surgical History - Same Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-purple-50 border-l-4 border-purple-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-purple-800">Past Medical History</h3>
+            </div>
             <TagInput
-              label="Past Medical History"
+              label=""
               placeholder="Add previous conditions..."
               tags={safeHistoryData.pastMedicalHistory || []}
               onTagsChange={(tags) => {
@@ -202,9 +211,12 @@ export function HistoryFormNew() {
         </Card>
 
         <Card className="bg-purple-50 border-l-4 border-purple-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-purple-800">Past Surgical History</h3>
+            </div>
             <TagInput
-              label="Past Surgical History"
+              label=""
               placeholder="Add surgical procedures..."
               tags={safeHistoryData.pastSurgicalHistory || []}
               onTagsChange={(tags) => {
@@ -214,11 +226,17 @@ export function HistoryFormNew() {
             />
           </CardContent>
         </Card>
+      </div>
 
+      {/* Medications and Allergies - Same Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-yellow-50 border-l-4 border-yellow-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-yellow-800">Medications</h3>
+            </div>
             <TagInput
-              label="Medications"
+              label=""
               placeholder="Add medications..."
               tags={safeHistoryData.medications || []}
               onTagsChange={(tags) => {
@@ -230,9 +248,12 @@ export function HistoryFormNew() {
         </Card>
 
         <Card className="bg-red-50 border-l-4 border-red-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-red-800">Allergies</h3>
+            </div>
             <TagInput
-              label="Allergies"
+              label=""
               placeholder="Add allergies..."
               tags={safeHistoryData.allergies || []}
               onTagsChange={(tags) => {
@@ -244,12 +265,15 @@ export function HistoryFormNew() {
         </Card>
       </div>
 
-      {/* Social & Family History - Each field in separate cards */}
-      <div className="space-y-4">
+      {/* Social History and Family History - Same Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-teal-50 border-l-4 border-teal-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-teal-800">Social History</h3>
+            </div>
             <TagInput
-              label="Social History"
+              label=""
               placeholder="Add social history..."
               tags={safeHistoryData.socialHistory || []}
               onTagsChange={(tags) => {
@@ -261,9 +285,12 @@ export function HistoryFormNew() {
         </Card>
 
         <Card className="bg-teal-50 border-l-4 border-teal-500">
-          <CardContent className="pt-4">
+          <CardContent className="pt-1">
+            <div className="mb-3">
+              <h3 className="text-lg font-bold text-teal-800">Family History</h3>
+            </div>
             <TagInput
-              label="Family History"
+              label=""
               placeholder="Add family history..."
               tags={safeHistoryData.familyHistory || []}
               onTagsChange={(tags) => {
