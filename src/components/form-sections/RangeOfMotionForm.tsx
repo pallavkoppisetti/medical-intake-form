@@ -39,40 +39,45 @@ export function RangeOfMotionForm() {
         <p className="text-sm text-gray-600 mt-2">All measurements in degrees - Normal ranges shown in parentheses</p>
       </div>
 
-      {/* Effort on Exam */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Ruler className="w-5 h-5 text-green-500" />
-            Effort on Examination
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-6">
-            {['Good', 'Fair', 'Poor'].map((effort) => (
-              <label key={effort} className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="effort"
-                  value={effort}
-                  checked={romData?.effortOnExam === effort}
-                  onChange={(e) => handleEffortChange(e.target.value)}
-                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-700">{effort}</span>
-              </label>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Effort on Exam, Cervical Spine and Lumbar Spine Row */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 lg:grid-cols-1 gap-4">
+        {/* Effort on Exam Card */}
+        <div className="xl:col-span-3 lg:col-span-1">
+          <Card className="bg-green-50 border-l-4 border-green-500 h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-center gap-2 text-green-800">
+                <Ruler className="w-5 h-5 text-green-500" />
+                Effort on Examination
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col justify-center h-full">
+              <div className="flex xl:flex-col lg:flex-row xl:gap-3 lg:gap-6 justify-center">
+                {['Good', 'Fair', 'Poor'].map((effort) => (
+                  <label key={effort} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="effort"
+                      value={effort}
+                      checked={romData?.effortOnExam === effort}
+                      onChange={(e) => handleEffortChange(e.target.value)}
+                      className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm font-medium text-gray-700">{effort}</span>
+                  </label>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Cervical Spine */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">CERVICAL SPINE</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {/* Cervical Spine Card */}
+        <div className="xl:col-span-4 lg:col-span-1">
+          <Card className="bg-blue-50 border-l-4 border-blue-500 h-full">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-blue-800">CERVICAL SPINE</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-3">
             <FormInput
               label="Forward Flexion (0-60°)"
               type="number"
@@ -130,318 +135,381 @@ export function RangeOfMotionForm() {
           </div>
         </CardContent>
       </Card>
+        </div>
 
-      {/* Lumbar Spine */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">LUMBAR SPINE</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <FormInput
-              label="Forward Flexion (0-90°)"
-              type="number"
-              min="0"
-              max="120"
-              value={romData?.lumbarSpine?.forwardFlexion?.toString() || ''}
-              onChange={(value) => handleSingleJointChange('lumbarSpine', 'forwardFlexion', value)}
-              placeholder="90"
-            />
-            <FormInput
-              label="Extension (0-25°)"
-              type="number"
-              min="0"
-              max="40"
-              value={romData?.lumbarSpine?.extension?.toString() || ''}
-              onChange={(value) => handleSingleJointChange('lumbarSpine', 'extension', value)}
-              placeholder="25"
-            />
-            <FormInput
-              label="Lateral Flexion R (0-25°)"
-              type="number"
-              min="0"
-              max="40"
-              value={romData?.lumbarSpine?.lateralFlexionRight?.toString() || ''}
-              onChange={(value) => handleSingleJointChange('lumbarSpine', 'lateralFlexionRight', value)}
-              placeholder="25"
-            />
-            <FormInput
-              label="Lateral Flexion L (0-25°)"
-              type="number"
-              min="0"
-              max="40"
-              value={romData?.lumbarSpine?.lateralFlexionLeft?.toString() || ''}
-              onChange={(value) => handleSingleJointChange('lumbarSpine', 'lateralFlexionLeft', value)}
-              placeholder="25"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Shoulders */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">SHOULDERS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Shoulder */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Shoulder</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {/* Lumbar Spine Card */}
+        <div className="xl:col-span-5 lg:col-span-1">
+          <Card className="bg-purple-50 border-l-4 border-purple-500 h-full">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-purple-800">LUMBAR SPINE</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-4 gap-3">
                 <FormInput
-                  label="Flexion (0-180°)"
+                  label="Forward Flexion (0-90°)"
                   type="number"
                   min="0"
-                  max="200"
-                  value={romData?.shoulders?.left?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'flexion', value)}
-                  placeholder="180"
-                />
-                <FormInput
-                  label="Extension (0-60°)"
-                  type="number"
-                  min="0"
-                  max="80"
-                  value={romData?.shoulders?.left?.extension?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'extension', value)}
-                  placeholder="60"
-                />
-                <FormInput
-                  label="Abduction (0-180°)"
-                  type="number"
-                  min="0"
-                  max="200"
-                  value={romData?.shoulders?.left?.abduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'abduction', value)}
-                  placeholder="180"
-                />
-                <FormInput
-                  label="Adduction (0-50°)"
-                  type="number"
-                  min="0"
-                  max="70"
-                  value={romData?.shoulders?.left?.adduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'adduction', value)}
-                  placeholder="50"
-                />
-                <FormInput
-                  label="Internal Rotation (0-90°)"
-                  type="number"
-                  min="0"
-                  max="110"
-                  value={romData?.shoulders?.left?.internalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'internalRotation', value)}
+                  max="120"
+                  value={romData?.lumbarSpine?.forwardFlexion?.toString() || ''}
+                  onChange={(value) => handleSingleJointChange('lumbarSpine', 'forwardFlexion', value)}
                   placeholder="90"
                 />
                 <FormInput
-                  label="External Rotation (0-90°)"
-                  type="number"
-                  min="0"
-                  max="110"
-                  value={romData?.shoulders?.left?.externalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'left', 'externalRotation', value)}
-                  placeholder="90"
-                />
-              </div>
-            </div>
-
-            {/* Right Shoulder */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Shoulder</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <FormInput
-                  label="Flexion (0-180°)"
-                  type="number"
-                  min="0"
-                  max="200"
-                  value={romData?.shoulders?.right?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'flexion', value)}
-                  placeholder="180"
-                />
-                <FormInput
-                  label="Extension (0-60°)"
-                  type="number"
-                  min="0"
-                  max="80"
-                  value={romData?.shoulders?.right?.extension?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'extension', value)}
-                  placeholder="60"
-                />
-                <FormInput
-                  label="Abduction (0-180°)"
-                  type="number"
-                  min="0"
-                  max="200"
-                  value={romData?.shoulders?.right?.abduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'abduction', value)}
-                  placeholder="180"
-                />
-                <FormInput
-                  label="Adduction (0-50°)"
-                  type="number"
-                  min="0"
-                  max="70"
-                  value={romData?.shoulders?.right?.adduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'adduction', value)}
-                  placeholder="50"
-                />
-                <FormInput
-                  label="Internal Rotation (0-90°)"
-                  type="number"
-                  min="0"
-                  max="110"
-                  value={romData?.shoulders?.right?.internalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'internalRotation', value)}
-                  placeholder="90"
-                />
-                <FormInput
-                  label="External Rotation (0-90°)"
-                  type="number"
-                  min="0"
-                  max="110"
-                  value={romData?.shoulders?.right?.externalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('shoulders', 'right', 'externalRotation', value)}
-                  placeholder="90"
-                />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Elbows */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">ELBOWS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Elbow */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Elbow</h4>
-              <div className="grid grid-cols-3 gap-4">
-                <FormInput
-                  label="Flexion (0-150°)"
-                  type="number"
-                  min="0"
-                  max="160"
-                  value={romData?.elbows?.left?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'left', 'flexion', value)}
-                  placeholder="150"
-                />
-                <FormInput
-                  label="Pronation (0-80°)"
-                  type="number"
-                  min="0"
-                  max="90"
-                  value={romData?.elbows?.left?.pronation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'left', 'pronation', value)}
-                  placeholder="80"
-                />
-                <FormInput
-                  label="Supination (0-80°)"
-                  type="number"
-                  min="0"
-                  max="90"
-                  value={romData?.elbows?.left?.supination?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'left', 'supination', value)}
-                  placeholder="80"
-                />
-              </div>
-            </div>
-
-            {/* Right Elbow */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Elbow</h4>
-              <div className="grid grid-cols-3 gap-4">
-                <FormInput
-                  label="Flexion (0-150°)"
-                  type="number"
-                  min="0"
-                  max="160"
-                  value={romData?.elbows?.right?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'right', 'flexion', value)}
-                  placeholder="150"
-                />
-                <FormInput
-                  label="Pronation (0-80°)"
-                  type="number"
-                  min="0"
-                  max="90"
-                  value={romData?.elbows?.right?.pronation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'right', 'pronation', value)}
-                  placeholder="80"
-                />
-                <FormInput
-                  label="Supination (0-80°)"
-                  type="number"
-                  min="0"
-                  max="90"
-                  value={romData?.elbows?.right?.supination?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('elbows', 'right', 'supination', value)}
-                  placeholder="80"
-                />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Wrists */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">WRISTS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Wrist */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Wrist</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <FormInput
-                  label="Flexion (0-80°)"
-                  type="number"
-                  min="0"
-                  max="90"
-                  value={romData?.wrists?.left?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('wrists', 'left', 'flexion', value)}
-                  placeholder="80"
-                />
-                <FormInput
-                  label="Extension (0-70°)"
-                  type="number"
-                  min="0"
-                  max="80"
-                  value={romData?.wrists?.left?.extension?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('wrists', 'left', 'extension', value)}
-                  placeholder="70"
-                />
-                <FormInput
-                  label="Ulnar Deviation (0-30°)"
+                  label="Extension (0-25°)"
                   type="number"
                   min="0"
                   max="40"
-                  value={romData?.wrists?.left?.ulnarDeviation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('wrists', 'left', 'ulnarDeviation', value)}
-                  placeholder="30"
+                  value={romData?.lumbarSpine?.extension?.toString() || ''}
+                  onChange={(value) => handleSingleJointChange('lumbarSpine', 'extension', value)}
+                  placeholder="25"
                 />
                 <FormInput
-                  label="Radial Deviation (0-20°)"
+                  label="Lateral Flexion R (0-25°)"
                   type="number"
                   min="0"
-                  max="30"
-                  value={romData?.wrists?.left?.radialDeviation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('wrists', 'left', 'radialDeviation', value)}
-                  placeholder="20"
+                  max="40"
+                  value={romData?.lumbarSpine?.lateralFlexionRight?.toString() || ''}
+                  onChange={(value) => handleSingleJointChange('lumbarSpine', 'lateralFlexionRight', value)}
+                  placeholder="25"
+                />
+                <FormInput
+                  label="Lateral Flexion L (0-25°)"
+                  type="number"
+                  min="0"
+                  max="40"
+                  value={romData?.lumbarSpine?.lateralFlexionLeft?.toString() || ''}
+                  onChange={(value) => handleSingleJointChange('lumbarSpine', 'lateralFlexionLeft', value)}
+                  placeholder="25"
                 />
               </div>
-            </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
-            {/* Right Wrist */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Wrist</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Shoulders and Hips Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Shoulders */}
+        <Card className="bg-indigo-50 border-l-4 border-indigo-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-indigo-800">SHOULDERS</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Left Shoulder */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Shoulder</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <FormInput
+                    label="Flexion (0-180°)"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={romData?.shoulders?.left?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'flexion', value)}
+                    placeholder="180"
+                  />
+                  <FormInput
+                    label="Extension (0-60°)"
+                    type="number"
+                    min="0"
+                    max="80"
+                    value={romData?.shoulders?.left?.extension?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'extension', value)}
+                    placeholder="60"
+                  />
+                  <FormInput
+                    label="Abduction (0-180°)"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={romData?.shoulders?.left?.abduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'abduction', value)}
+                    placeholder="180"
+                  />
+                  <FormInput
+                    label="Adduction (0-50°)"
+                    type="number"
+                    min="0"
+                    max="70"
+                    value={romData?.shoulders?.left?.adduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'adduction', value)}
+                    placeholder="50"
+                  />
+                  <FormInput
+                    label="Internal Rotation (0-90°)"
+                    type="number"
+                    min="0"
+                    max="110"
+                    value={romData?.shoulders?.left?.internalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'internalRotation', value)}
+                    placeholder="90"
+                  />
+                  <FormInput
+                    label="External Rotation (0-90°)"
+                    type="number"
+                    min="0"
+                    max="110"
+                    value={romData?.shoulders?.left?.externalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'left', 'externalRotation', value)}
+                    placeholder="90"
+                  />
+                </div>
+              </div>
+
+              {/* Right Shoulder */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Shoulder</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <FormInput
+                    label="Flexion (0-180°)"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={romData?.shoulders?.right?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'flexion', value)}
+                    placeholder="180"
+                  />
+                  <FormInput
+                    label="Extension (0-60°)"
+                    type="number"
+                    min="0"
+                    max="80"
+                    value={romData?.shoulders?.right?.extension?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'extension', value)}
+                    placeholder="60"
+                  />
+                  <FormInput
+                    label="Abduction (0-180°)"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={romData?.shoulders?.right?.abduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'abduction', value)}
+                    placeholder="180"
+                  />
+                  <FormInput
+                    label="Adduction (0-50°)"
+                    type="number"
+                    min="0"
+                    max="70"
+                    value={romData?.shoulders?.right?.adduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'adduction', value)}
+                    placeholder="50"
+                  />
+                  <FormInput
+                    label="Internal Rotation (0-90°)"
+                    type="number"
+                    min="0"
+                    max="110"
+                    value={romData?.shoulders?.right?.internalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'internalRotation', value)}
+                    placeholder="90"
+                  />
+                  <FormInput
+                    label="External Rotation (0-90°)"
+                    type="number"
+                    min="0"
+                    max="110"
+                    value={romData?.shoulders?.right?.externalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('shoulders', 'right', 'externalRotation', value)}
+                    placeholder="90"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Hips */}
+        <Card className="bg-teal-50 border-l-4 border-teal-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-teal-800">HIPS</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Left Hip */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Hip</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <FormInput
+                    label="Flexion (0-120°)"
+                    type="number"
+                    min="0"
+                    max="140"
+                    value={romData?.hips?.left?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'flexion', value)}
+                    placeholder="120"
+                  />
+                  <FormInput
+                    label="Extension (0-30°)"
+                    type="number"
+                    min="0"
+                    max="40"
+                    value={romData?.hips?.left?.extension?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'extension', value)}
+                    placeholder="30"
+                  />
+                  <FormInput
+                    label="Abduction (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.left?.abduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'abduction', value)}
+                    placeholder="45"
+                  />
+                  <FormInput
+                    label="Adduction (0-30°)"
+                    type="number"
+                    min="0"
+                    max="40"
+                    value={romData?.hips?.left?.adduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'adduction', value)}
+                    placeholder="30"
+                  />
+                  <FormInput
+                    label="Internal Rotation (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.left?.internalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'internalRotation', value)}
+                    placeholder="45"
+                  />
+                  <FormInput
+                    label="External Rotation (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.left?.externalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'left', 'externalRotation', value)}
+                    placeholder="45"
+                  />
+                </div>
+              </div>
+
+              {/* Right Hip */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Hip</h4>
+                <div className="grid grid-cols-3 gap-3">
+                  <FormInput
+                    label="Flexion (0-120°)"
+                    type="number"
+                    min="0"
+                    max="140"
+                    value={romData?.hips?.right?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'flexion', value)}
+                    placeholder="120"
+                  />
+                  <FormInput
+                    label="Extension (0-30°)"
+                    type="number"
+                    min="0"
+                    max="40"
+                    value={romData?.hips?.right?.extension?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'extension', value)}
+                    placeholder="30"
+                  />
+                  <FormInput
+                    label="Abduction (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.right?.abduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'abduction', value)}
+                    placeholder="45"
+                  />
+                  <FormInput
+                    label="Adduction (0-30°)"
+                    type="number"
+                    min="0"
+                    max="40"
+                    value={romData?.hips?.right?.adduction?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'adduction', value)}
+                    placeholder="30"
+                  />
+                  <FormInput
+                    label="Internal Rotation (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.right?.internalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'internalRotation', value)}
+                    placeholder="45"
+                  />
+                  <FormInput
+                    label="External Rotation (0-45°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.hips?.right?.externalRotation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hips', 'right', 'externalRotation', value)}
+                    placeholder="45"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Wrists and Ankles Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Wrists */}
+        <Card className="bg-purple-50 border-l-4 border-purple-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-purple-800">WRISTS</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Left Wrist */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Wrist</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <FormInput
+                    label="Flexion (0-80°)"
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={romData?.wrists?.left?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('wrists', 'left', 'flexion', value)}
+                    placeholder="80"
+                  />
+                  <FormInput
+                    label="Extension (0-70°)"
+                    type="number"
+                    min="0"
+                    max="80"
+                    value={romData?.wrists?.left?.extension?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('wrists', 'left', 'extension', value)}
+                    placeholder="70"
+                  />
+                  <FormInput
+                    label="Ulnar Deviation (0-30°)"
+                    type="number"
+                    min="0"
+                    max="40"
+                    value={romData?.wrists?.left?.ulnarDeviation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('wrists', 'left', 'ulnarDeviation', value)}
+                    placeholder="30"
+                  />
+                  <FormInput
+                    label="Radial Deviation (0-20°)"
+                    type="number"
+                    min="0"
+                    max="30"
+                    value={romData?.wrists?.left?.radialDeviation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('wrists', 'left', 'radialDeviation', value)}
+                    placeholder="20"
+                  />
+                </div>
+              </div>
+
+              {/* Right Wrist */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Wrist</h4>
+                <div className="grid grid-cols-2 gap-3">
                 <FormInput
                   label="Flexion (0-80°)"
                   type="number"
@@ -484,209 +552,254 @@ export function RangeOfMotionForm() {
         </CardContent>
       </Card>
 
-      {/* Hands */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">HANDS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Hand */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Hand</h4>
-              <div className="grid grid-cols-2 gap-4">
-                <FormInput
-                  label="Finger Flexion (0-90°)"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={romData?.hands?.left?.fingerFlexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hands', 'left', 'fingerFlexion', value)}
-                  placeholder="90"
-                />
-                <FormInput
-                  label="Thumb Opposition (0-100°)"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={romData?.hands?.left?.thumbOpposition?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hands', 'left', 'thumbOpposition', value)}
-                  placeholder="100"
-                />
+        {/* Ankles */}
+        <Card className="bg-yellow-50 border-l-4 border-yellow-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-yellow-800">ANKLES</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* Left Ankle */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Ankle</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <FormInput
+                    label="Dorsiflexion (0-20°)"
+                    type="number"
+                    min="0"
+                    max="30"
+                    value={romData?.ankles?.left?.dorsiflexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'left', 'dorsiflexion', value)}
+                    placeholder="20"
+                  />
+                  <FormInput
+                    label="Plantar Flexion (0-50°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.ankles?.left?.plantarFlexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'left', 'plantarFlexion', value)}
+                    placeholder="50"
+                  />
+                  <FormInput
+                    label="Inversion (0-35°)"
+                    type="number"
+                    min="0"
+                    max="45"
+                    value={romData?.ankles?.left?.inversion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'left', 'inversion', value)}
+                    placeholder="35"
+                  />
+                  <FormInput
+                    label="Eversion (0-15°)"
+                    type="number"
+                    min="0"
+                    max="25"
+                    value={romData?.ankles?.left?.eversion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'left', 'eversion', value)}
+                    placeholder="15"
+                  />
+                </div>
+              </div>
+
+              {/* Right Ankle */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Ankle</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <FormInput
+                    label="Dorsiflexion (0-20°)"
+                    type="number"
+                    min="0"
+                    max="30"
+                    value={romData?.ankles?.right?.dorsiflexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'right', 'dorsiflexion', value)}
+                    placeholder="20"
+                  />
+                  <FormInput
+                    label="Plantar Flexion (0-50°)"
+                    type="number"
+                    min="0"
+                    max="60"
+                    value={romData?.ankles?.right?.plantarFlexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'right', 'plantarFlexion', value)}
+                    placeholder="50"
+                  />
+                  <FormInput
+                    label="Inversion (0-35°)"
+                    type="number"
+                    min="0"
+                    max="45"
+                    value={romData?.ankles?.right?.inversion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'right', 'inversion', value)}
+                    placeholder="35"
+                  />
+                  <FormInput
+                    label="Eversion (0-15°)"
+                    type="number"
+                    min="0"
+                    max="25"
+                    value={romData?.ankles?.right?.eversion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('ankles', 'right', 'eversion', value)}
+                    placeholder="15"
+                  />
+                </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </div>
 
-            {/* Right Hand */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Hand</h4>
-              <div className="grid grid-cols-2 gap-4">
-                <FormInput
-                  label="Finger Flexion (0-90°)"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={romData?.hands?.right?.fingerFlexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hands', 'right', 'fingerFlexion', value)}
-                  placeholder="90"
-                />
-                <FormInput
-                  label="Thumb Opposition (0-100°)"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={romData?.hands?.right?.thumbOpposition?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hands', 'right', 'thumbOpposition', value)}
-                  placeholder="100"
-                />
+      {/* Elbows, Hands, and Knees Row */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 lg:grid-cols-1 gap-4">
+        {/* Elbows */}
+        <Card className="bg-orange-50 border-l-4 border-orange-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-orange-800">ELBOWS</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Elbow */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Elbow</h4>
+                <div className="grid grid-cols-1 gap-3">
+                  <FormInput
+                    label="Flexion (0-150°)"
+                    type="number"
+                    min="0"
+                    max="160"
+                    value={romData?.elbows?.left?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'left', 'flexion', value)}
+                    placeholder="150"
+                  />
+                  <FormInput
+                    label="Pronation (0-80°)"
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={romData?.elbows?.left?.pronation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'left', 'pronation', value)}
+                    placeholder="80"
+                  />
+                  <FormInput
+                    label="Supination (0-80°)"
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={romData?.elbows?.left?.supination?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'left', 'supination', value)}
+                    placeholder="80"
+                  />
+                </div>
+              </div>
+
+              {/* Right Elbow */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Elbow</h4>
+                <div className="grid grid-cols-1 gap-3">
+                  <FormInput
+                    label="Flexion (0-150°)"
+                    type="number"
+                    min="0"
+                    max="160"
+                    value={romData?.elbows?.right?.flexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'right', 'flexion', value)}
+                    placeholder="150"
+                  />
+                  <FormInput
+                    label="Pronation (0-80°)"
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={romData?.elbows?.right?.pronation?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'right', 'pronation', value)}
+                    placeholder="80"
+                  />
+                  <FormInput
+                    label="Supination (0-80°)"
+                    type="number"
+                    min="0"
+                    max="90"
+                    value={romData?.elbows?.right?.supination?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('elbows', 'right', 'supination', value)}
+                    placeholder="80"
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Hips */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">HIPS</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Hip */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Hip</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <FormInput
-                  label="Flexion (0-120°)"
-                  type="number"
-                  min="0"
-                  max="140"
-                  value={romData?.hips?.left?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'flexion', value)}
-                  placeholder="120"
-                />
-                <FormInput
-                  label="Extension (0-30°)"
-                  type="number"
-                  min="0"
-                  max="40"
-                  value={romData?.hips?.left?.extension?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'extension', value)}
-                  placeholder="30"
-                />
-                <FormInput
-                  label="Abduction (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.left?.abduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'abduction', value)}
-                  placeholder="45"
-                />
-                <FormInput
-                  label="Adduction (0-30°)"
-                  type="number"
-                  min="0"
-                  max="40"
-                  value={romData?.hips?.left?.adduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'adduction', value)}
-                  placeholder="30"
-                />
-                <FormInput
-                  label="Internal Rotation (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.left?.internalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'internalRotation', value)}
-                  placeholder="45"
-                />
-                <FormInput
-                  label="External Rotation (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.left?.externalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'left', 'externalRotation', value)}
-                  placeholder="45"
-                />
+        {/* Hands */}
+        <Card className="bg-cyan-50 border-l-4 border-cyan-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-cyan-800">HANDS</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Hand */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Hand</h4>
+                <div className="grid grid-cols-1 gap-3">
+                  <FormInput
+                    label="Finger Flexion (0-90°)"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={romData?.hands?.left?.fingerFlexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hands', 'left', 'fingerFlexion', value)}
+                    placeholder="90"
+                  />
+                  <FormInput
+                    label="Thumb Opposition (0-100°)"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={romData?.hands?.left?.thumbOpposition?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hands', 'left', 'thumbOpposition', value)}
+                    placeholder="100"
+                  />
+                </div>
+              </div>
+
+              {/* Right Hand */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Hand</h4>
+                <div className="grid grid-cols-1 gap-3">
+                  <FormInput
+                    label="Finger Flexion (0-90°)"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={romData?.hands?.right?.fingerFlexion?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hands', 'right', 'fingerFlexion', value)}
+                    placeholder="90"
+                  />
+                  <FormInput
+                    label="Thumb Opposition (0-100°)"
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={romData?.hands?.right?.thumbOpposition?.toString() || ''}
+                    onChange={(value) => handleBilateralChange('hands', 'right', 'thumbOpposition', value)}
+                    placeholder="100"
+                  />
+                </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Right Hip */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Hip</h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <FormInput
-                  label="Flexion (0-120°)"
-                  type="number"
-                  min="0"
-                  max="140"
-                  value={romData?.hips?.right?.flexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'flexion', value)}
-                  placeholder="120"
-                />
-                <FormInput
-                  label="Extension (0-30°)"
-                  type="number"
-                  min="0"
-                  max="40"
-                  value={romData?.hips?.right?.extension?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'extension', value)}
-                  placeholder="30"
-                />
-                <FormInput
-                  label="Abduction (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.right?.abduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'abduction', value)}
-                  placeholder="45"
-                />
-                <FormInput
-                  label="Adduction (0-30°)"
-                  type="number"
-                  min="0"
-                  max="40"
-                  value={romData?.hips?.right?.adduction?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'adduction', value)}
-                  placeholder="30"
-                />
-                <FormInput
-                  label="Internal Rotation (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.right?.internalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'internalRotation', value)}
-                  placeholder="45"
-                />
-                <FormInput
-                  label="External Rotation (0-45°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.hips?.right?.externalRotation?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('hips', 'right', 'externalRotation', value)}
-                  placeholder="45"
-                />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Knees */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">KNEES</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Knee */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Knee</h4>
-              <div className="grid grid-cols-2 gap-4">
+        {/* Knees */}
+        <Card className="bg-red-50 border-l-4 border-red-500 h-full">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-red-800">KNEES</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Left Knee */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Left Knee</h4>
+                <div className="grid grid-cols-1 gap-3">
                 <FormInput
                   label="Flexion (0-135°)"
                   type="number"
@@ -705,13 +818,13 @@ export function RangeOfMotionForm() {
                   onChange={(value) => handleBilateralChange('knees', 'left', 'extension', value)}
                   placeholder="0"
                 />
+                </div>
               </div>
-            </div>
 
-            {/* Right Knee */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Knee</h4>
-              <div className="grid grid-cols-2 gap-4">
+              {/* Right Knee */}
+              <div>
+                <h4 className="font-medium text-gray-700 mb-3">Right Knee</h4>
+                <div className="grid grid-cols-1 gap-3">
                 <FormInput
                   label="Flexion (0-135°)"
                   type="number"
@@ -730,107 +843,12 @@ export function RangeOfMotionForm() {
                   onChange={(value) => handleBilateralChange('knees', 'right', 'extension', value)}
                   placeholder="0"
                 />
+                </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Ankles */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">ANKLES</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            {/* Left Ankle */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Left Ankle</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <FormInput
-                  label="Dorsiflexion (0-20°)"
-                  type="number"
-                  min="0"
-                  max="30"
-                  value={romData?.ankles?.left?.dorsiflexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'left', 'dorsiflexion', value)}
-                  placeholder="20"
-                />
-                <FormInput
-                  label="Plantarflexion (0-50°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.ankles?.left?.plantarflexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'left', 'plantarflexion', value)}
-                  placeholder="50"
-                />
-                <FormInput
-                  label="Inversion (0-35°)"
-                  type="number"
-                  min="0"
-                  max="45"
-                  value={romData?.ankles?.left?.inversion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'left', 'inversion', value)}
-                  placeholder="35"
-                />
-                <FormInput
-                  label="Eversion (0-15°)"
-                  type="number"
-                  min="0"
-                  max="25"
-                  value={romData?.ankles?.left?.eversion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'left', 'eversion', value)}
-                  placeholder="15"
-                />
-              </div>
-            </div>
-
-            {/* Right Ankle */}
-            <div>
-              <h4 className="font-medium text-gray-700 mb-3">Right Ankle</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <FormInput
-                  label="Dorsiflexion (0-20°)"
-                  type="number"
-                  min="0"
-                  max="30"
-                  value={romData?.ankles?.right?.dorsiflexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'right', 'dorsiflexion', value)}
-                  placeholder="20"
-                />
-                <FormInput
-                  label="Plantarflexion (0-50°)"
-                  type="number"
-                  min="0"
-                  max="60"
-                  value={romData?.ankles?.right?.plantarflexion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'right', 'plantarflexion', value)}
-                  placeholder="50"
-                />
-                <FormInput
-                  label="Inversion (0-35°)"
-                  type="number"
-                  min="0"
-                  max="45"
-                  value={romData?.ankles?.right?.inversion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'right', 'inversion', value)}
-                  placeholder="35"
-                />
-                <FormInput
-                  label="Eversion (0-15°)"
-                  type="number"
-                  min="0"
-                  max="25"
-                  value={romData?.ankles?.right?.eversion?.toString() || ''}
-                  onChange={(value) => handleBilateralChange('ankles', 'right', 'eversion', value)}
-                  placeholder="15"
-                />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
