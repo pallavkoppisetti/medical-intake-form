@@ -1,9 +1,11 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
-import { Initial } from './components/form-sections/initial';
 import { Toaster } from 'sonner';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css'
+import Dashboard from './components/DashBoard';
+import { SignIn } from './components/auth/SignIn';
+import { SignUp } from './components/auth/SignUp';
 
 function MainForm() {
   const handleFormSubmit = async (formData: any) => {
@@ -73,8 +75,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Initial />} />
         <Route path="/form" element={<MainForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<SignIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+      
+        {/* Add other routes as needed */}
         {/* Catch all unmatched routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
