@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Save, RotateCcw } from 'lucide-react';
+import { Save, RotateCcw, Upload } from 'lucide-react';
 
 export interface SignatureComponentProps {
   onSignatureChange: (signatureDataUrl: string) => void;
@@ -21,6 +21,7 @@ export const SignatureComponent: React.FC<SignatureComponentProps> = ({
   label = 'Digital Signature',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
@@ -165,6 +166,74 @@ export const SignatureComponent: React.FC<SignatureComponentProps> = ({
     onSignatureChange(dataUrl);
   }, [hasSignature, onSignatureChange]);
 
+  // Handle file upload for signature
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file.');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size must be less than 5MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Clear canvas and set white background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Calculate dimensions to fit image while maintaining aspect ratio
+        const maxWidth = canvas.width;
+        const maxHeight = canvas.height;
+        let { width: imgWidth, height: imgHeight } = img;
+
+        // Scale down if necessary
+        if (imgWidth > maxWidth || imgHeight > maxHeight) {
+          const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+          imgWidth *= ratio;
+          imgHeight *= ratio;
+        }
+
+        // Center the image
+        const x = (canvas.width - imgWidth) / 2;
+        const y = (canvas.height - imgHeight) / 2;
+
+        // Draw the image
+        ctx.drawImage(img, x, y, imgWidth, imgHeight);
+
+        // Update state and trigger save
+        setHasSignature(true);
+        const dataUrl = canvas.toDataURL('image/png');
+        onSignatureChange(dataUrl);
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    // Clear the file input
+    event.target.value = '';
+  }, [onSignatureChange]);
+
+  // Trigger file input
+  const triggerFileUpload = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
   // Auto-save signature on drawing with debounce
   useEffect(() => {
     if (hasSignature && !isDrawing) {
@@ -212,8 +281,33 @@ export const SignatureComponent: React.FC<SignatureComponentProps> = ({
         
         {/* Instructions */}
         <p className="text-xs text-gray-500 mt-2 text-center">
-          {hasSignature ? 'Signature captured' : 'Sign above using your mouse or finger'}
+          {hasSignature ? 'Signature captured' : 'Sign above using your mouse or finger, or upload an image'}
         </p>
+      </div>
+
+      {/* Upload Options */}
+      <div className="flex items-center justify-center mt-2 mb-2">
+        <span className="text-xs text-gray-400">OR</span>
+      </div>
+      
+      <div className="flex justify-center mb-3">
+        <button
+          type="button"
+          onClick={triggerFileUpload}
+          className="flex items-center px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+        >
+          <Upload className="w-4 h-4 mr-2" />
+          Upload Signature Image
+        </button>
+        
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileUpload}
+          className="hidden"
+        />
       </div>
 
       {/* Action Buttons */}

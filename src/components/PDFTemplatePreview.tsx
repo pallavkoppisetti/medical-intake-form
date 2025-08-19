@@ -14,14 +14,17 @@ const formatDate = (dateString?: string): string => {
         month: '2-digit',
         day: '2-digit',
         year: 'numeric',
-        timeZone: 'UTC', // This is th            <p className="c0"><span className="c2">{assessment?.medicalRecordsReviewStatement || 'I have reviewed the patient\'s medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient.'}</span></p> crucial fix
+        timeZone: 'UTC', // This is the crucial fix
     });
 };
 
-// Assessment helper function
+// Assessment helper function for concentration text
 const getConcentrationText = (formData: Partial<FloridaCEExamForm>): string => {
     const concentration = formData.assessment?.medicalSourceStatement?.understandingMemoryConcentration;
-    return concentration || 'Understanding, memory, sustained concentration: Normal.';
+    if (concentration && concentration.trim()) {
+        return `Understanding, memory, sustained concentration: ${concentration}`;
+    }
+    return 'Understanding, memory, sustained concentration: Normal.';
 };
 
 const formatDiagnosisList = (diagnoses?: string[]) => {
@@ -534,7 +537,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c3">Limitations</span><span className="c2">: {assessment?.medicalSourceStatement?.limitations || 'None noted during examination.'}</span></p>
             <p className="c0 c1"><span className="c6"></span></p>
-            <p className="c0"><span className="c2">Claimant’s activities of daily living is mildly affected by .</span></p>
+            {/* <p className="c0"><span className="c2">Claimant’s activities of daily living is mildly affected by .</span></p> */}
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
@@ -552,7 +555,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0"><span className="c2">STATEMENT RE REVIEW OF MEDICAL RECORDS: </span></p>
-            <p className="c0"><span className="c2">I have reviewed the patient’s medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient. </span></p>
+            <p className="c0"><span className="c2">{assessment?.medicalRecordsReviewStatement || 'I have reviewed the patient\'s medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             {/* Digital Signature */}
             {assessment?.examinerSignature ? (
