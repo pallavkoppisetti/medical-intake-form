@@ -5,6 +5,44 @@ All notable changes to the Medical Intake Form Application will be documented in
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.1] - 2025-08-19
+
+### 🎨 UI/UX Improvements
+
+#### Sidebar Header Enhancement
+- **Professional Gradient Background**: Refined sidebar header with elegant dark slate gradient
+- **Improved Text Readability**: Enhanced contrast with crisp white text and better typography
+- **Minimal Clean Design**: Simplified header layout focusing on essential information only
+- **Responsive Styling**: Consistent header appearance across mobile and desktop
+
+#### Progress Bar Refinements
+- **Whole Number Display**: All progress percentages now display as whole numbers only
+- **Enhanced Readability**: Removed decimal places for cleaner, more professional appearance
+- **Consistent Formatting**: Applied `Math.round()` across all progress components
+
+#### Assessment Section Layout
+- **Color-Coded Cards**: Added consistent color coding to assessment section cards
+- **Grid Layout Optimization**: Arranged related cards side-by-side for better space utilization
+  - Medical Source Statement & Recommendations (side-by-side)
+  - Imaging/Records Review & Examiner Information (side-by-side)
+- **Professional Card Styling**: Consistent with other form sections color scheme
+
+#### Physical Exam Form Enhancements
+- **Organized Grid Layout**: Restructured body systems examination into logical 3-column grids
+- **Color-Coded Sections**: Added distinct color themes for different examination categories
+- **Improved Visual Hierarchy**: Better organization of vital signs and examination components
+- **Side-by-Side Components**: Optimized layout for Fine & Gross Manipulative Skills and Deep Tendon Reflexes
+
+### 🛠️ Technical Improvements
+- **Code Cleanup**: Removed unused imports and dependencies
+- **Type Safety**: Enhanced TypeScript definitions for new physical exam fields
+- **Build Optimization**: Ensured clean builds with no errors or warnings
+- **Import Management**: Cleaned up unused icon imports
+
+### 📚 Documentation Updates
+- **Changelog**: Updated with comprehensive change documentation
+- **Component Structure**: Better organized form sections for maintainability
+
 ## [3.1.0] - 2025-08-14
 
 ### 🚀 Major Features Added

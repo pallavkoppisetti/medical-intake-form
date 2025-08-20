@@ -103,7 +103,7 @@ export function AssessmentForm() {
   return (
     <div className="space-y-6">
       {/* Diagnosis/Assessment Section */}
-      <Card>
+      <Card className="bg-purple-50 border-l-4 border-purple-500">
         <CardHeader>
           <CardTitle>Diagnosis/Assessment</CardTitle>
         </CardHeader>
@@ -144,157 +144,163 @@ export function AssessmentForm() {
         </CardContent>
       </Card>
 
-      {/* Medical Source Statement */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Medical Source Statement</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Abilities */}
-          <div className="space-y-2">
-            <FormTextarea
-              label="Abilities"
-              value={formData.medicalSourceStatement.abilities}
-              onChange={(value: string) => handleChange('medicalSourceStatement.abilities', value)}
-              placeholder="Claimant is able to..."
-              rows={4}
-            />
-          </div>
-
-          <div className="my-4 border-t border-gray-200"></div>
-
-          {/* Understanding, Memory, Concentration */}
-          <div className="space-y-2">
-            <FormTextarea
-              label="Understanding, Memory, and Concentration Assessment"
-              value={formData.medicalSourceStatement.understandingMemoryConcentration}
-              onChange={(value: string) => handleChange('medicalSourceStatement.understandingMemoryConcentration', value)}
-              placeholder="Assessment of claimant's understanding, memory, and concentration abilities..."
-              rows={4}
-            />
-          </div>
-
-          <div className="my-4 border-t border-gray-200"></div>
-
-          {/* Limitations */}
-          <div className="space-y-2">
-            <FormTextarea
-              label="Limitations"
-              value={formData.medicalSourceStatement.limitations}
-              onChange={(value: string) => handleChange('medicalSourceStatement.limitations', value)}
-              placeholder="Claimant's activities of daily living..."
-              rows={4}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recommendations */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recommendations</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <FormTextarea
-              label="Treatment Recommendations"
-              value={formData.recommendations}
-              onChange={(value: string) => handleChange('recommendations', value)}
-              placeholder="Enter treatment recommendations..."
-              rows={6}
-            />
-          </div>
-          
-          {/* Quick Insert Templates */}
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Quick Insert Common Recommendations:</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {COMMON_RECOMMENDATIONS.map((recommendation, index) => (
-                <Button
-                  key={index}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => insertRecommendationTemplate(recommendation)}
-                  className="text-left justify-start text-xs"
-                >
-                  {recommendation}
-                </Button>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Imaging and Records Review */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Imaging and Records Review</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="imaging">Imaging Reviewed</Label>
-            <Input
-              id="imaging"
-              value={formData.imagingReviewed}
-              onChange={(e) => handleChange('imagingReviewed', e.target.value)}
-              placeholder="List imaging studies reviewed (X-rays, MRI, CT, etc.)"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <FormTextarea
-              label="Statement Re Review of Medical Records"
-              value={formData.medicalRecordsReviewStatement}
-              onChange={(value: string) => handleChange('medicalRecordsReviewStatement', value)}
-              rows={4}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Examiner Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Examiner Information</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Medical Source Statement and Recommendations - Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Medical Source Statement */}
+        <Card className="bg-indigo-50 border-l-4 border-indigo-500">
+          <CardHeader>
+            <CardTitle>Medical Source Statement</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Abilities */}
             <div className="space-y-2">
-              <Label htmlFor="examinerName">Examiner Name</Label>
+              <FormTextarea
+                label="Abilities"
+                value={formData.medicalSourceStatement.abilities}
+                onChange={(value: string) => handleChange('medicalSourceStatement.abilities', value)}
+                placeholder="Claimant is able to..."
+                rows={4}
+              />
+            </div>
+
+            <div className="my-4 border-t border-indigo-200"></div>
+
+            {/* Understanding, Memory, Concentration */}
+            <div className="space-y-2">
+              <FormTextarea
+                label="Understanding, Memory, and Concentration Assessment"
+                value={formData.medicalSourceStatement.understandingMemoryConcentration}
+                onChange={(value: string) => handleChange('medicalSourceStatement.understandingMemoryConcentration', value)}
+                placeholder="Assessment of claimant's understanding, memory, and concentration abilities..."
+                rows={4}
+              />
+            </div>
+
+            <div className="my-4 border-t border-indigo-200"></div>
+
+            {/* Limitations */}
+            <div className="space-y-2">
+              <FormTextarea
+                label="Limitations"
+                value={formData.medicalSourceStatement.limitations}
+                onChange={(value: string) => handleChange('medicalSourceStatement.limitations', value)}
+                placeholder="Claimant's activities of daily living..."
+                rows={4}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recommendations */}
+        <Card className="bg-emerald-50 border-l-4 border-emerald-500">
+          <CardHeader>
+            <CardTitle>Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <FormTextarea
+                label="Treatment Recommendations"
+                value={formData.recommendations}
+                onChange={(value: string) => handleChange('recommendations', value)}
+                placeholder="Enter treatment recommendations..."
+                rows={6}
+              />
+            </div>
+            
+            {/* Quick Insert Templates */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Quick Insert Common Recommendations:</Label>
+              <div className="grid grid-cols-1 gap-2">
+                {COMMON_RECOMMENDATIONS.map((recommendation, index) => (
+                  <Button
+                    key={index}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => insertRecommendationTemplate(recommendation)}
+                    className="text-left justify-start text-xs"
+                  >
+                    {recommendation}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Imaging and Records Review & Examiner Information - Side by Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Imaging and Records Review */}
+        <Card className="bg-blue-50 border-l-4 border-blue-500">
+          <CardHeader>
+            <CardTitle>Imaging and Records Review</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="imaging">Imaging Reviewed</Label>
               <Input
-                id="examinerName"
-                value={formData.examinerInfo.name}
-                onChange={(e) => handleChange('examinerInfo.name', e.target.value)}
-                placeholder="Dr. John Smith, MD"
+                id="imaging"
+                value={formData.imagingReviewed}
+                onChange={(e) => handleChange('imagingReviewed', e.target.value)}
+                placeholder="List imaging studies reviewed (X-rays, MRI, CT, etc.)"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="facility">Facility</Label>
-              <Input
-                id="facility"
-                value={formData.examinerInfo.facility}
-                onChange={(e) => handleChange('examinerInfo.facility', e.target.value)}
-                placeholder="Medical Center Name"
+              <FormTextarea
+                label="Statement Re Review of Medical Records"
+                value={formData.medicalRecordsReviewStatement}
+                onChange={(value: string) => handleChange('medicalRecordsReviewStatement', value)}
+                rows={4}
               />
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div className="space-y-2">
-            <Label htmlFor="examDate">Examination Date</Label>
-            <Input
-              id="examDate"
-              type="date"
-              value={formData.examinerInfo.date}
-              onChange={(e) => handleChange('examinerInfo.date', e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
+        {/* Examiner Information */}
+        <Card className="bg-amber-50 border-l-4 border-amber-500">
+          <CardHeader>
+            <CardTitle>Examiner Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="examinerName">Examiner Name</Label>
+                <Input
+                  id="examinerName"
+                  value={formData.examinerInfo.name}
+                  onChange={(e) => handleChange('examinerInfo.name', e.target.value)}
+                  placeholder="Dr. John Smith, MD"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="facility">Facility</Label>
+                <Input
+                  id="facility"
+                  value={formData.examinerInfo.facility}
+                  onChange={(e) => handleChange('examinerInfo.facility', e.target.value)}
+                  placeholder="Medical Center Name"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="examDate">Examination Date</Label>
+              <Input
+                id="examDate"
+                type="date"
+                value={formData.examinerInfo.date}
+                onChange={(e) => handleChange('examinerInfo.date', e.target.value)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Digital Signature Section */}
-      <Card>
+      <Card className="bg-slate-50 border-l-4 border-slate-500">
         <CardHeader>
           <CardTitle>Examiner Digital Signature</CardTitle>
         </CardHeader>

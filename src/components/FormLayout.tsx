@@ -174,7 +174,7 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
                 {step.required && <span className="text-red-500 ml-1">*</span>}
               </h3>
               <span className="text-xs text-gray-500 ml-2">
-                {status.completionPercentage}%
+                {Math.round(status.completionPercentage)}%
               </span>
             </div>
             
@@ -217,19 +217,30 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         {/* Sidebar header */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Medical Intake</h1>
-              <p className="text-blue-100 text-sm mt-1">Patient Assessment Form</p>
+        <div className="relative p-8 border-b border-gray-200 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white overflow-hidden">
+          {/* Dark overlay for better text contrast */}
+          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+          
+          <div className="relative flex items-center justify-between z-10">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold tracking-tight text-white leading-tight shadow-2xl" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>
+                Medical Intake
+              </h1>
+              <p className="text-gray-100 text-base font-semibold shadow-lg" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.8)'}}>
+                Florida CE Examination Form
+              </p>
             </div>
+            
             <button
               onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md hover:bg-blue-700"
+              className="lg:hidden p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-200"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
+          
+          {/* Subtle bottom gradient */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
         </div>
 
         {/* Overall progress */}

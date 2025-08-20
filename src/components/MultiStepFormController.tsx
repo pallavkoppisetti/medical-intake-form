@@ -15,7 +15,6 @@ import {
   CheckCircle, 
   Lock, 
   AlertCircle, 
-  X,
   Save,
   Eye,
   EyeOff,
@@ -207,7 +206,7 @@ export function MultiStepFormController({
                 {step.required && <span className="text-red-500 ml-1">*</span>}
               </h3>
               <span className="text-xs text-gray-500 ml-2">
-                {status.completionPercentage}%
+                {Math.round(status.completionPercentage)}%
               </span>
             </div>
             
@@ -250,18 +249,14 @@ export function MultiStepFormController({
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         {/* Sidebar header */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Medical Intake</h1>
-              <p className="text-blue-100 text-sm mt-1">Patient Assessment Form</p>
-            </div>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md hover:bg-blue-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="relative p-8 border-b border-gray-700 bg-gradient-to-b from-slate-900 to-slate-800 text-white overflow-hidden">
+          <div className="relative z-10">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-50 leading-tight">
+              Medical Intake
+            </h1>
+            <p className="mt-2 text-base text-slate-300 font-medium">
+              Florida CE Examination Form
+            </p>
           </div>
         </div>
 

@@ -360,11 +360,11 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Neurological:</span></p>
             <p className="c0"><span className="c2">{physicalExam?.neurological || 'CNs Il-XII: intact.'} </span></p>
-            <p className="c0"><span className="c14">Sensory pin prick/light touch/vibration: </span><span className="c14 c19">Intact over all extremities.</span></p>
-            <p className="c0"><span className="c2">Rhomberg: Negative. </span></p>
+            <p className="c0"><span className="c14">Sensory pin prick/light touch/vibration: </span><span className="c14 c19">{physicalExam?.sensory || 'Intact over all extremities.'}</span></p>
+            <p className="c0"><span className="c2">Rhomberg: {physicalExam?.rhomberg || 'Negative.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Psychiatry:</span></p>
-            <p className="c0"><span className="c2">Stable mood and affect.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.psychiatry || 'Stable mood and affect.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c15 c3">Neuromuscular Strength. </span></p>
@@ -383,7 +383,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0"><span className="c2">Left grip: {physicalExam?.neuromuscularStrength?.leftGrip ?? '[Not assessed]'}/5 </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Dexterity: Right-Handed, normal.</span></p>
+            <p className="c0"><span className="c2">Dexterity: {physicalExam?.neuromuscularStrength?.dexterityAssessment || 'Right-Handed, normal.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c3">FINE &amp; GROSS MANIPULATIVE SKILLS</span><span className="c2">: </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
