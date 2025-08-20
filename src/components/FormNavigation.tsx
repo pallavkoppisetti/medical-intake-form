@@ -2,6 +2,8 @@ import { useMultiStepForm, FORM_STEPS } from '../contexts/MultiStepFormContext';
 import { ChevronLeft, ChevronRight, AlertTriangle, Save, RotateCcw, FileText as FilePDF } from 'lucide-react';
 import { useState } from 'react';
 import { PDFExportButton } from './PDFExportButton';
+import UploadButton from './UploadButton';
+
 
 export interface FormNavigationProps {
   className?: string;
@@ -11,12 +13,12 @@ export interface FormNavigationProps {
   onTogglePDFPreview?: () => void;
 }
 
-export function FormNavigation({ 
+export function FormNavigation({
   className = '',
   showStepInfo = true,
   showValidationErrors = true,
   showPDFPreview = false,
-  onTogglePDFPreview
+  onTogglePDFPreview,
 }: FormNavigationProps) {
   const {
     state,
@@ -30,12 +32,19 @@ export function FormNavigation({
   } = useMultiStepForm();
 
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const currentStep = getCurrentStep();
   const currentValidation = getStepValidation(currentStep.id);
   const canGoNext = state.currentStep < FORM_STEPS.length - 1;
   const canGoPrevious = state.currentStep > 0;
   const hasErrors = currentValidation && currentValidation.errors.length > 0;
+
+  const isLastStep = state.currentStep === FORM_STEPS.length - 1;
+  const isReviewStep = currentStep.id === 'review';
+
+  // Retrieve doctorId and patientName from localStorage or context
+  const doctorId = localStorage.getItem('doctorid') || ''; // Fallback to empty string
+  const patientName = state.formData?.header?.claimantName || localStorage.getItem('medical-intake-form.header.claimantName') || 'Unknown Patient';
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -46,18 +55,13 @@ export function FormNavigation({
     }
   };
 
-  const isLastStep = state.currentStep === FORM_STEPS.length - 1;
-  const isReviewStep = currentStep.id === 'review';
-
   const handleNext = async () => {
     if (isLastStep && isReviewStep) {
       // On review step, submit the form
       const success = await submitForm();
       if (success) {
-        // Could show success notification
         console.log('Form submitted successfully');
       } else {
-        // Could show error notification
         console.error('Failed to submit form');
       }
     } else {
@@ -117,8 +121,8 @@ export function FormNavigation({
             <button
               onClick={onTogglePDFPreview}
               className={`flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
-                showPDFPreview 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                showPDFPreview
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -128,7 +132,7 @@ export function FormNavigation({
             </button>
 
             {/* PDF Export Button */}
-            <PDFExportButton 
+            <PDFExportButton
               variant="outline"
               size="sm"
               showValidation={false}
@@ -151,15 +155,25 @@ export function FormNavigation({
             onClick={handleNext}
             disabled={!canGoNext && !isLastStep}
             className={`flex items-center px-6 py-2 rounded-md transition-colors font-medium ${
-              (canGoNext || isLastStep)
+              canGoNext || isLastStep
                 ? isLastStep && isReviewStep
-                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
                   : 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
-            {isLastStep && isReviewStep ? 'Submit Form' : 'Next'}
-            <ChevronRight className="w-4 h-4 ml-2" />
+            {isLastStep && isReviewStep ? (
+              <UploadButton
+                formData={state.formData}
+                doctorId={doctorId}
+                patientName={patientName}
+              />
+            ) : (
+              <>
+                Next
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </>
+            )}
           </button>
         </div>
 
@@ -174,7 +188,7 @@ export function FormNavigation({
                 Overall Progress: {Math.round(state.overallProgress)}%
               </div>
             </div>
-            
+
             {state.hasUnsavedChanges && (
               <button
                 onClick={handleSave}
@@ -185,7 +199,7 @@ export function FormNavigation({
                 {isSaving ? 'Saving...' : 'Save Now'}
               </button>
             )}
-            
+
             {state.lastSaved && !state.hasUnsavedChanges && (
               <span className="text-xs text-green-600">
                 ✓ Saved {state.lastSaved.toLocaleTimeString()}
@@ -199,14 +213,14 @@ export function FormNavigation({
 }
 
 // Simplified navigation for inside form sections
-export function SimpleNavigation({ 
-  onNext, 
+export function SimpleNavigation({
+  onNext,
   onPrevious,
   nextDisabled = false,
   previousDisabled = false,
-  nextLabel = "Next",
-  previousLabel = "Previous",
-  className = ""
+  nextLabel = 'Next',
+  previousLabel = 'Previous',
+  className = '',
 }: {
   onNext?: () => void;
   onPrevious?: () => void;
@@ -227,7 +241,7 @@ export function SimpleNavigation({
         <ChevronLeft className="w-4 h-4 mr-2" />
         {previousLabel}
       </button>
-      
+
       <button
         type="button"
         onClick={onNext}

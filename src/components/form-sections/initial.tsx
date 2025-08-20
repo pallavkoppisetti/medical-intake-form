@@ -8,7 +8,7 @@ export function Initial() {
   const [error, setError] = useState('');
 
   // Replace the endoint if hosted
-  const API_URL = 'https://medical-intake-form.onrender.com/autofill';
+  const API_URL = 'http://127.0.0.1:8000/autofill';
 
   const handleProceed = async () => {
     setError('');

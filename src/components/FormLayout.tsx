@@ -321,14 +321,14 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
                   Reset
                 </button>
                 
-                <button
+                {/* <button
                   onClick={handleSubmit}
                   disabled={state.isSubmitting || state.overallProgress < 100}
                   className="flex items-center px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4 mr-1" />
                   {state.isSubmitting ? 'Submitting...' : 'Submit Form'}
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
