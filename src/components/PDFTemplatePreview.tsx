@@ -555,7 +555,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0"><span className="c2">STATEMENT RE REVIEW OF MEDICAL RECORDS: </span></p>
-            <p className="c0"><span className="c2">{assessment?.medicalRecordsReviewStatement || 'I have reviewed the patient\'s medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient.'}</span></p>
+            <p className="c0"><span className="c2">I have reviewed the patient's medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient. </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             {/* Digital Signature */}
             {assessment?.examinerSignature ? (
