@@ -349,35 +349,6 @@ export function MultiStepFormController({
                     </div>
                   ) : (
                     <>
-                      {/* Dynamic error display */}
-                      {(() => {
-                        const currentValidation = getStepValidation(currentStep.id);
-                        const currentSectionData = state.formData[currentStep.id as keyof typeof state.formData];
-                        const hasFormData = currentSectionData && Object.keys(currentSectionData).length > 0;
-                        const isCurrentStepVisited = state.visitedSteps.has(state.currentStep);
-                        
-                        // Show errors if:
-                        // 1. User has started filling the form (has data), OR
-                        // 2. User has visited this step before, OR  
-                        // 3. Submit was attempted
-                        const shouldShowErrors = hasFormData || isCurrentStepVisited || state.submitAttempted;
-                        
-                        return currentValidation && 
-                               currentValidation.errors.length > 0 && 
-                               shouldShowErrors && (
-                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 className="text-sm font-medium text-red-800 mb-2">
-                              Please fix the following errors:
-                            </h4>
-                            <ul className="text-sm text-red-700 space-y-1">
-                              {currentValidation.errors.map((error: any, index: number) => (
-                                <li key={index}>• {error.message}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })()}
-                      
                       {renderCurrentForm()}
                     </>
                   )}
@@ -467,35 +438,6 @@ export function MultiStepFormController({
                     </div>
                   ) : (
                     <>
-                      {/* Dynamic error display */}
-                      {(() => {
-                        const currentValidation = getStepValidation(currentStep.id);
-                        const currentSectionData = state.formData[currentStep.id as keyof typeof state.formData];
-                        const hasFormData = currentSectionData && Object.keys(currentSectionData).length > 0;
-                        const isCurrentStepVisited = state.visitedSteps.has(state.currentStep);
-                        
-                        // Show errors if:
-                        // 1. User has started filling the form (has data), OR
-                        // 2. User has visited this step before, OR  
-                        // 3. Submit was attempted
-                        const shouldShowErrors = hasFormData || isCurrentStepVisited || state.submitAttempted;
-                        
-                        return currentValidation && 
-                               currentValidation.errors.length > 0 && 
-                               shouldShowErrors && (
-                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 className="text-sm font-medium text-red-800 mb-2">
-                              Please fix the following errors:
-                            </h4>
-                            <ul className="text-sm text-red-700 space-y-1">
-                              {currentValidation.errors.map((error: any, index: number) => (
-                                <li key={index}>• {error.message}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })()}
-                      
                       {renderCurrentForm()}
                     </>
                   )}
