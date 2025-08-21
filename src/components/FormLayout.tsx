@@ -20,6 +20,7 @@ import {
   Zap,
   FileText
 } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 // Icon mapping for each section
 const SECTION_ICONS = {
@@ -174,7 +175,7 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
                 {step.required && <span className="text-red-500 ml-1">*</span>}
               </h3>
               <span className="text-xs text-gray-500 ml-2">
-                {status.completionPercentage}%
+                {Math.round(status.completionPercentage)}%
               </span>
             </div>
             
@@ -216,20 +217,15 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
       <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        {/* Sidebar header */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Medical Intake</h1>
-              <p className="text-blue-100 text-sm mt-1">Patient Assessment Form</p>
-            </div>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md hover:bg-blue-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Sidebar header (logo only) */}
+        <div className="relative border-b border-gray-200 h-20 bg-white flex items-center justify-center px-4 py-4 shadow-sm select-none">
+          <BrandLogo height={52} className="flex-shrink-0" />
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-200 z-10"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
         </div>
 
         {/* Overall progress */}

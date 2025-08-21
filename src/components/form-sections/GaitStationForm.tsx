@@ -39,7 +39,8 @@ export function GaitStationForm() {
     'walkingOnHeels',
     'walkingOnToes',
     'squattingAndRising',
-    'fingerToNose'
+    'fingerToNose',
+    'straightLegRaise'
   ];
 
   const performanceTestLabels = {
@@ -47,7 +48,8 @@ export function GaitStationForm() {
     walkingOnHeels: 'Walking on Heels',
     walkingOnToes: 'Walking on Toes',
     squattingAndRising: 'Squatting and rising',
-    fingerToNose: 'Finger to Nose'
+    fingerToNose: 'Finger to Nose',
+    straightLegRaise: 'Straight Leg Raise Test'
   };
 
   const assistiveDeviceOptions = [
@@ -74,83 +76,83 @@ export function GaitStationForm() {
       </div>
 
       {/* Performance Tests */}
-      <Card>
+      <Card className="bg-blue-50 border-l-4 border-blue-500">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-blue-800">
             <CheckCircle className="w-5 h-5 text-blue-500" />
             Performance Tests
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {performanceTests.map((test) => (
-            <div key={test} className="space-y-3">
-              <h4 className="text-sm font-semibold text-gray-700">
-                {performanceTestLabels[test as keyof typeof performanceTestLabels]}
-              </h4>
-              <div className="flex gap-6">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name={test}
-                    value="able"
-                    checked={gaitData?.performanceTests?.[test] === 'able'}
-                    onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
-                    className="w-4 h-4 text-green-600 focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">Able to perform</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name={test}
-                    value="unable"
-                    checked={gaitData?.performanceTests?.[test] === 'unable'}
-                    onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
-                    className="w-4 h-4 text-red-600 focus:ring-red-500"
-                  />
-                  <span className="text-sm text-gray-700">Unable to perform</span>
-                </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {performanceTests.map((test) => (
+              <div key={test} className="space-y-3 p-4 bg-white rounded-lg border border-blue-200">
+                <h4 className="text-sm font-semibold text-gray-700">
+                  {performanceTestLabels[test as keyof typeof performanceTestLabels]}
+                </h4>
+                <div className="flex flex-col gap-2">
+                  {test === 'straightLegRaise' ? (
+                    <>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name={test}
+                          value="positive"
+                          checked={gaitData?.performanceTests?.[test] === 'positive'}
+                          onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
+                          className="w-4 h-4 text-red-600 focus:ring-red-500"
+                        />
+                        <span className="text-sm text-gray-700">Positive</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name={test}
+                          value="negative"
+                          checked={gaitData?.performanceTests?.[test] === 'negative'}
+                          onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
+                          className="w-4 h-4 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">Negative</span>
+                      </label>
+                    </>
+                  ) : (
+                    <>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name={test}
+                          value="able"
+                          checked={gaitData?.performanceTests?.[test] === 'able'}
+                          onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
+                          className="w-4 h-4 text-green-600 focus:ring-green-500"
+                        />
+                        <span className="text-sm text-gray-700">Able to perform</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name={test}
+                          value="unable"
+                          checked={gaitData?.performanceTests?.[test] === 'unable'}
+                          onChange={(e) => handlePerformanceTestChange(test, e.target.value)}
+                          className="w-4 h-4 text-red-600 focus:ring-red-500"
+                        />
+                        <span className="text-sm text-gray-700">Unable to perform</span>
+                      </label>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-
-          {/* Straight Leg Raise Test */}
-          <div className="space-y-3 border-t pt-4">
-            <h4 className="text-sm font-semibold text-gray-700">
-              Straight Leg Raise Test
-            </h4>
-            <div className="flex gap-6">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="straightLegRaise"
-                  value="positive"
-                  checked={gaitData?.performanceTests?.straightLegRaise === 'positive'}
-                  onChange={(e) => handlePerformanceTestChange('straightLegRaise', e.target.value)}
-                  className="w-4 h-4 text-red-600 focus:ring-red-500"
-                />
-                <span className="text-sm text-gray-700">Positive</span>
-              </label>
-              <label className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  name="straightLegRaise"
-                  value="negative"
-                  checked={gaitData?.performanceTests?.straightLegRaise === 'negative'}
-                  onChange={(e) => handlePerformanceTestChange('straightLegRaise', e.target.value)}
-                  className="w-4 h-4 text-green-600 focus:ring-green-500"
-                />
-                <span className="text-sm text-gray-700">Negative</span>
-              </label>
-            </div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
       {/* Assistive Device Section */}
-      <Card>
+      <Card className="bg-purple-50 border-l-4 border-purple-500">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-purple-800">
             <Users className="w-5 h-5 text-purple-500" />
             Assistive Device Assessment
           </CardTitle>
@@ -276,10 +278,13 @@ export function GaitStationForm() {
       </Card>
 
       {/* Additional Notes */}
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="bg-green-50 border-l-4 border-green-500">
+        <CardHeader>
+          <CardTitle className="text-green-800">Additional Observations and Notes</CardTitle>
+        </CardHeader>
+        <CardContent>
           <FormTextarea
-            label="Additional Observations and Notes"
+            label=""
             value={gaitData?.additionalNotes || ''}
             onChange={(value) => updateSection('gaitStation', { ...gaitData, additionalNotes: value })}
             placeholder="Any additional observations about the patient's gait, station, balance, or functional mobility that were not captured above..."

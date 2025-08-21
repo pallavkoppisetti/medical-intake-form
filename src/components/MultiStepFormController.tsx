@@ -15,11 +15,7 @@ import {
   CheckCircle, 
   Lock, 
   AlertCircle, 
-  X,
-  Save,
-  Eye,
   EyeOff,
-  FileText as FilePDF,
   User,
   Heart,
   Activity,
@@ -27,6 +23,7 @@ import {
   Zap,
   FileText
 } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 // Icon mapping for each section
 const SECTION_ICONS = {
@@ -60,7 +57,6 @@ export function MultiStepFormController({
     canNavigateToStep,
     isStepComplete,
     isStepVisited,
-    saveForm,
   } = useMultiStepForm();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -99,10 +95,6 @@ export function MultiStepFormController({
       goToStep(stepIndex);
       setIsSidebarOpen(false); // Close mobile sidebar
     }
-  };
-
-  const handleSave = async () => {
-    await saveForm();
   };
 
   const renderCurrentForm = () => {
@@ -207,7 +199,7 @@ export function MultiStepFormController({
                 {step.required && <span className="text-red-500 ml-1">*</span>}
               </h3>
               <span className="text-xs text-gray-500 ml-2">
-                {status.completionPercentage}%
+                {Math.round(status.completionPercentage)}%
               </span>
             </div>
             
@@ -249,20 +241,9 @@ export function MultiStepFormController({
       <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        {/* Sidebar header */}
-        <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold">Medical Intake</h1>
-              <p className="text-blue-100 text-sm mt-1">Patient Assessment Form</p>
-            </div>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-1 rounded-md hover:bg-blue-700"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        {/* Sidebar header (logo only) */}
+        <div className="relative border-b border-gray-200 h-20 bg-white flex items-center justify-center px-4 py-4 shadow-sm select-none">
+          <BrandLogo height={52} className="flex-shrink-0" />
         </div>
 
         {/* Overall progress */}
@@ -284,51 +265,8 @@ export function MultiStepFormController({
         </div>
 
         {/* Navigation items */}
-        <div className="p-4 overflow-y-auto flex-1" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+        <div className="p-4 overflow-y-auto flex-1">
           {FORM_STEPS.map((step, index) => renderSidebarItem(step, index))}
-        </div>
-
-        {/* Sidebar footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-            <span>
-              {state.lastSaved ? `Saved: ${state.lastSaved.toLocaleTimeString()}` : 'Not saved'}
-            </span>
-            {state.hasUnsavedChanges && (
-              <span className="text-amber-600 font-medium">Unsaved changes</span>
-            )}
-          </div>
-          
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={handleSave}
-              disabled={!state.hasUnsavedChanges}
-              className="flex items-center justify-center px-3 py-2 text-xs bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save className="w-3 h-3 mr-1" />
-              Save
-            </button>
-            
-            <button
-              onClick={() => setIsPreviewMode(!isPreviewMode)}
-              className="flex items-center justify-center px-3 py-2 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-            >
-              <Eye className="w-3 h-3 mr-1" />
-              {isPreviewMode ? 'Edit' : 'Preview'}
-            </button>
-
-            <button
-              onClick={() => setShowPDFPreview(!showPDFPreview)}
-              className={`flex items-center justify-center px-3 py-2 text-xs rounded-md transition-colors ${
-                showPDFPreview 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <FilePDF className="w-3 h-3 mr-1" />
-              PDF
-            </button>
-          </div>
         </div>
       </div>
 
@@ -411,35 +349,6 @@ export function MultiStepFormController({
                     </div>
                   ) : (
                     <>
-                      {/* Dynamic error display */}
-                      {(() => {
-                        const currentValidation = getStepValidation(currentStep.id);
-                        const currentSectionData = state.formData[currentStep.id as keyof typeof state.formData];
-                        const hasFormData = currentSectionData && Object.keys(currentSectionData).length > 0;
-                        const isCurrentStepVisited = state.visitedSteps.has(state.currentStep);
-                        
-                        // Show errors if:
-                        // 1. User has started filling the form (has data), OR
-                        // 2. User has visited this step before, OR  
-                        // 3. Submit was attempted
-                        const shouldShowErrors = hasFormData || isCurrentStepVisited || state.submitAttempted;
-                        
-                        return currentValidation && 
-                               currentValidation.errors.length > 0 && 
-                               shouldShowErrors && (
-                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 className="text-sm font-medium text-red-800 mb-2">
-                              Please fix the following errors:
-                            </h4>
-                            <ul className="text-sm text-red-700 space-y-1">
-                              {currentValidation.errors.map((error: any, index: number) => (
-                                <li key={index}>• {error.message}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })()}
-                      
                       {renderCurrentForm()}
                     </>
                   )}
@@ -529,35 +438,6 @@ export function MultiStepFormController({
                     </div>
                   ) : (
                     <>
-                      {/* Dynamic error display */}
-                      {(() => {
-                        const currentValidation = getStepValidation(currentStep.id);
-                        const currentSectionData = state.formData[currentStep.id as keyof typeof state.formData];
-                        const hasFormData = currentSectionData && Object.keys(currentSectionData).length > 0;
-                        const isCurrentStepVisited = state.visitedSteps.has(state.currentStep);
-                        
-                        // Show errors if:
-                        // 1. User has started filling the form (has data), OR
-                        // 2. User has visited this step before, OR  
-                        // 3. Submit was attempted
-                        const shouldShowErrors = hasFormData || isCurrentStepVisited || state.submitAttempted;
-                        
-                        return currentValidation && 
-                               currentValidation.errors.length > 0 && 
-                               shouldShowErrors && (
-                          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <h4 className="text-sm font-medium text-red-800 mb-2">
-                              Please fix the following errors:
-                            </h4>
-                            <ul className="text-sm text-red-700 space-y-1">
-                              {currentValidation.errors.map((error: any, index: number) => (
-                                <li key={index}>• {error.message}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        );
-                      })()}
-                      
                       {renderCurrentForm()}
                     </>
                   )}

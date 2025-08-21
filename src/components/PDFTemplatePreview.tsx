@@ -18,6 +18,14 @@ const formatDate = (dateString?: string): string => {
     });
 };
 
+// Assessment helper function for concentration text
+const getConcentrationText = (formData: Partial<FloridaCEExamForm>): string => {
+    const concentration = formData.assessment?.medicalSourceStatement?.understandingMemoryConcentration;
+    if (concentration && concentration.trim()) {
+        return `Understanding, memory, sustained concentration: ${concentration}`;
+    }
+    return 'Understanding, memory, sustained concentration: Normal.';
+};
 
 const formatDiagnosisList = (diagnoses?: string[]) => {
     if (!diagnoses || diagnoses.length === 0) return <li className="c0 c4 li-bullet-0">No diagnosis provided.</li>;
@@ -352,11 +360,11 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Neurological:</span></p>
             <p className="c0"><span className="c2">{physicalExam?.neurological || 'CNs Il-XII: intact.'} </span></p>
-            <p className="c0"><span className="c14">Sensory pin prick/light touch/vibration: </span><span className="c14 c19">Intact over all extremities.</span></p>
-            <p className="c0"><span className="c2">Rhomberg: Negative. </span></p>
+            <p className="c0"><span className="c14">Sensory pin prick/light touch/vibration: </span><span className="c14 c19">{physicalExam?.sensory || 'Intact over all extremities.'}</span></p>
+            <p className="c0"><span className="c2">Rhomberg: {physicalExam?.rhomberg || 'Negative.'} </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Psychiatry:</span></p>
-            <p className="c0"><span className="c2">Stable mood and affect.</span></p>
+            <p className="c0"><span className="c2">{physicalExam?.psychiatry || 'Stable mood and affect.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c15 c3">Neuromuscular Strength. </span></p>
@@ -375,7 +383,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0"><span className="c2">Left grip: {physicalExam?.neuromuscularStrength?.leftGrip ?? '[Not assessed]'}/5 </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Dexterity: Right-Handed, normal.</span></p>
+            <p className="c0"><span className="c2">Dexterity: {physicalExam?.neuromuscularStrength?.dexterityAssessment || 'Right-Handed, normal.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c3">FINE &amp; GROSS MANIPULATIVE SKILLS</span><span className="c2">: </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
@@ -522,24 +530,24 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c2">Based on the physical examination conducted today, the clinical findings are as follows: </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c5 c3">Abilities</span><span className="c2">: Claimant is able to walk into the examination room, able to sit for the duration of the visit &amp; walk unassisted with no difficulty. Claimant has adequate balance and strength.</span></p>
+            <p className="c0"><span className="c5 c3">Abilities</span><span className="c2">: {assessment?.medicalSourceStatement?.abilities || 'Claimant is able to walk into the examination room, able to sit for the duration of the visit & walk unassisted with no difficulty. Claimant has adequate balance and strength.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c6">Understanding, memory, sustained concentration: Normal.</span></p>
+            <p className="c0"><span className="c6">{getConcentrationText(formData)}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c5 c3">Limitations</span><span className="c2">: &nbsp;</span></p>
+            <p className="c0"><span className="c5 c3">Limitations</span><span className="c2">: {assessment?.medicalSourceStatement?.limitations || 'None noted during examination.'}</span></p>
             <p className="c0 c1"><span className="c6"></span></p>
-            <p className="c0"><span className="c2">Claimant’s activities of daily living is mildly affected by .</span></p>
+            {/* <p className="c0"><span className="c2">Claimant’s activities of daily living is mildly affected by .</span></p> */}
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c5 c15 c3">RECOMMENDATIONS: </span></p>
             <p className="c0 c1"><span className="c5 c15 c3"></span></p>
-            <p className="c0"><span className="c2">For --- claimant would benefit from multimodal pain management, physical therapy if not improved then spinal surgeon referral.</span></p>
+            <p className="c0"><span className="c2">{assessment?.recommendations || 'For the claimant\'s condition, would benefit from multimodal pain management, physical therapy if not improved then spinal surgeon referral.'}</span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">Claimant would benefit from establishing a PCP for </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
-            <p className="c0"><span className="c2">For anxiety and depression, claimant would benefit from psychiatric evaluation and counselling along with medication management.</span></p>
+            <p className="c0 c1"><span className="c2"></span></p>
+            <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             <p className="c0"><span className="c7 c3">Imaging reviewed: </span></p>
@@ -547,7 +555,7 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0 c1"><span className="c6"></span></p>
             <p className="c0"><span className="c2">STATEMENT RE REVIEW OF MEDICAL RECORDS: </span></p>
-            <p className="c0"><span className="c2">I have reviewed the patient’s medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient. </span></p>
+            <p className="c0"><span className="c2">I have reviewed the patient's medical history and radiological studies, if any, given to me to the best of my ability. I have performed a thorough history and physical examination of the patient to the best of my ability. The information in this document is based on the information given to me by the patient. </span></p>
             <p className="c0 c1"><span className="c2"></span></p>
             {/* Digital Signature */}
             {assessment?.examinerSignature ? (

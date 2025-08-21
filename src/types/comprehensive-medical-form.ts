@@ -105,6 +105,8 @@ export interface PhysicalExam {
   musculoskeletal?: string;
   neurological?: string;
   psychiatry?: string;
+  sensory?: string;
+  rhomberg?: string;
   neuromuscularStrength?: NeuroMuscularStrength;
   fineGrossManipulativeSkills?: FineGrossManipulativeSkills;
   reflexes?: Reflexes;
