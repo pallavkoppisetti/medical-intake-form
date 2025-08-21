@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Loader2 } from 'lucide-react';
 
 const authenticatePatient = async (patientId: string, lastName: string, dob: string): Promise<boolean> => {
-    const res = await fetch(`http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients-authentication`, {
+    const res = await fetch(`https://ceform-api.ezfylr.ai/patients-authentication`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: patientId, last_name: lastName, DOB: dob }),
@@ -66,7 +66,7 @@ export function SharedFunctionalStatusForm() {
     setSubmitError(null);
     setIsSubmitting(true);
     try {
-      const res = await fetch(`http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/functional_status_form?patient_id=${patientId}`,
+      const res = await fetch(`https://ceform-api.ezfylr.ai/patients/functional_status_form?patient_id=${patientId}`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },

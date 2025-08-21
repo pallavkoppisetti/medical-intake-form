@@ -1,48 +1,62 @@
-import { useState } from 'react';
-import { AuthLayout } from './AuthLayout';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AuthLayout } from "./AuthLayout";
 
 export function SignUp() {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleInputChange = (field: string) => (e: { target: { value: any; }; }) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: e.target.value
-    }));
-    // Clear error when user starts typing
-    if (error) setError('');
-  };
+  const handleInputChange =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+      // Clear error when user starts typing
+      if (error) setError("");
+    };
 
-  const passwordsMatch = !formData.confirmPassword || formData.password === formData.confirmPassword;
+  const passwordsMatch =
+    !formData.confirmPassword || formData.password === formData.confirmPassword;
 
   const validateForm = () => {
     if (!formData.fullName.trim()) {
-      setError('Full name is required');
+      setError("Full name is required");
       return false;
     }
     if (!formData.email.trim()) {
-      setError('Email is required');
+      setError("Email is required");
       return false;
     }
     if (!formData.password) {
-      setError('Password is required');
+      setError("Password is required");
       return false;
     }
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError("Password must be at least 6 characters long");
       return false;
     }
     if (!passwordsMatch) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return false;
     }
     return true;
@@ -50,150 +64,146 @@ export function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await fetch('http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          password: formData.password
-        }),
-      });
+      const response = await fetch(
+        "https://ceform-api.ezfylr.ai/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: formData.fullName,
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || 'Something went wrong');
+        throw new Error(data.detail || "Something went wrong");
       }
 
-      setSuccess('Account created successfully! You can now sign in.');
+      setSuccess("Account created successfully! You can now sign in.");
       setFormData({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
       });
-      
+
       // Optionally redirect to sign-in page after a delay
       setTimeout(() => {
-        window.location.href = '/signin';
+        window.location.href = "/signin";
       }, 2000);
-
     } catch (err: any) {
-      setError(err.message || 'Failed to create account. Please try again.');
+      setError(err.message || "Failed to create account. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <AuthLayout
-      title="Create an Account"
-      subtitle="Get started with your new account."
-    >
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-            {error}
+    <AuthLayout>
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Create an Account</CardTitle>
+          <CardDescription>
+            Get started with your new account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            {error && (
+              <div className="bg-destructive/10 text-destructive border-destructive/20 rounded-lg border p-3 text-sm">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-500/10 text-green-500 border-green-500/20 rounded-lg border p-3 text-sm">
+                {success}
+              </div>
+            )}
+            <div className="grid gap-2">
+              <Label htmlFor="fullName">Full Name</Label>
+              <Input
+                id="fullName"
+                type="text"
+                placeholder="John Doe"
+                required
+                value={formData.fullName}
+                onChange={handleInputChange("fullName")}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+                value={formData.email}
+                onChange={handleInputChange("email")}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                required
+                value={formData.password}
+                onChange={handleInputChange("password")}
+                disabled={isLoading}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                required
+                value={formData.confirmPassword}
+                onChange={handleInputChange("confirmPassword")}
+                disabled={isLoading}
+                className={!passwordsMatch ? "border-destructive" : ""}
+              />
+              {!passwordsMatch && (
+                <p className="text-destructive text-sm">
+                  Passwords do not match
+                </p>
+              )}
+            </div>
+            <Button
+              type="submit"
+              disabled={isLoading || !passwordsMatch}
+              className="w-full"
+            >
+              {isLoading ? "Creating Account..." : "Sign Up"}
+            </Button>
+          </form>
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/signin" className="underline">
+              Sign in
+            </Link>
           </div>
-        )}
-        
-        {success && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md">
-            {success}
-          </div>
-        )}
-
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Full Name <span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            required
-            value={formData.fullName}
-            onChange={handleInputChange('fullName')}
-            disabled={isLoading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500"
-          />
-        </div>
-
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address <span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            required
-            value={formData.email}
-            onChange={handleInputChange('email')}
-            disabled={isLoading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500"
-          />
-        </div>
-
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Password <span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            required
-            value={formData.password}
-            onChange={handleInputChange('password')}
-            disabled={isLoading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500"
-          />
-        </div>
-
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Confirm Password <span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            required
-            value={formData.confirmPassword}
-            onChange={handleInputChange('confirmPassword')}
-            disabled={isLoading}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors disabled:bg-gray-50 disabled:text-gray-500 ${
-              !passwordsMatch ? 'border-red-300' : 'border-gray-300'
-            }`}
-          />
-          {!passwordsMatch && (
-            <p className="text-red-500 text-sm mt-1">Passwords do not match</p>
-          )}
-        </div>
-
-        <button 
-          type="submit" 
-          disabled={isLoading || !passwordsMatch}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-        >
-          {isLoading ? 'Creating Account...' : 'Sign Up'}
-        </button>
-
-        <div className="text-center">
-          <span className="text-gray-600">Already have an account? </span>
-          <a href="/signin" className="text-blue-600 hover:text-blue-500 font-medium">
-            Sign in
-          </a>
-        </div>
-      </form>
+        </CardContent>
+      </Card>
     </AuthLayout>
   );
 }

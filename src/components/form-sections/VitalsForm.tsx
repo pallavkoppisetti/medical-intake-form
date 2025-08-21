@@ -74,7 +74,7 @@ export function VitalsForm() {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-        const res = await fetch(`http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/vitals?patient_id=${patientId}`,
+        const res = await fetch(`https://ceform-api.ezfylr.ai/patients/vitals?patient_id=${patientId}`,
         {
             method: "POST",
             headers: { "Content-Type": "application/json" },

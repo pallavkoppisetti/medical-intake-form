@@ -159,7 +159,7 @@ const shapePatients = (raw: any[], doctorId: number): Patient[] => {
 ================================ */
 const fetchPatients = async (doctorId: string): Promise<Patient[]> => {
   const res = await fetch(
-    `http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients?doctor_id=${doctorId}`,
+    `https://ceform-api.ezfylr.ai/patients?doctor_id=${doctorId}`,
     {
       method: "GET",
       headers: { Accept: "application/json" },
@@ -187,7 +187,7 @@ const createPatient = async (
     phone_number: patientInfo.phoneNumber,
   });
   const res = await fetch(
-    `http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/create?${params.toString()}`,
+    `https://ceform-api.ezfylr.ai/patients/create?${params.toString()}`,
     {
       method: "POST",
     }
@@ -201,7 +201,7 @@ const createPatient = async (
 
 const sendFunctionalStatusLink = async (patientId: string): Promise<any> => {
   const res = await fetch(
-    `http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/send_functionalStatus_link_to_patient?patient_id=${patientId}`,
+    `https://ceform-api.ezfylr.ai/patients/send_functionalStatus_link_to_patient?patient_id=${patientId}`,
     {
       method: "POST",
     }
@@ -458,7 +458,7 @@ const PatientsList = ({ onStartIntake }: { onStartIntake: (patientId: string) =>
   const handleViewDocument = async (patientId: string) => {
     setViewingDocumentId(patientId);
     try {
-      const res = await fetch(`http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/${patientId}/document-url`);
+      const res = await fetch(`https://ceform-api.ezfylr.ai/patients/${patientId}/document-url`);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.detail || "Failed to fetch document URL");
@@ -482,7 +482,7 @@ const PatientsList = ({ onStartIntake }: { onStartIntake: (patientId: string) =>
       localStorage.removeItem("medical-intake-form");
       localStorage.removeItem("medical-intake-draft");
       const res = await fetch(
-        `http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/${patientId}/form-data`
+        `https://ceform-api.ezfylr.ai/patients/${patientId}/form-data`
       );
       if (!res.ok) {
         const errorData = await res.json();
