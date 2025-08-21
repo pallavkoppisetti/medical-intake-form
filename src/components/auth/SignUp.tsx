@@ -58,7 +58,7 @@ export function SignUp() {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:8000/signup', {
+      const response = await fetch('http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

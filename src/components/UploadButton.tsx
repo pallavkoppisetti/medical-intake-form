@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { FloridaCEExamForm } from '../types/comprehensive-medical-form';
+import { PDFGeneratorService } from '../services/PDFGeneratorService';
+import { useNavigate } from 'react-router-dom';
 
 interface UploadButtonProps {
   formData: Partial<FloridaCEExamForm>;
@@ -13,114 +13,52 @@ interface UploadButtonProps {
 const UploadButton: React.FC<UploadButtonProps> = ({ formData, doctorId, patientName }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleUpload = async () => {
+  const handleUpload = () => {
     setIsUploading(true);
     setError(null);
-    setSuccess(null);
-    const state=localStorage.getItem('medical-intake-form');
-    try {
-      // Capture the PDF preview content as an image
-      const pdfPreview = document.getElementById('pdf-preview-content');
-      if (!pdfPreview) {
-        throw new Error('PDF preview content not found');
-      }
 
-      // Temporarily make the element visible for capture if it's hidden
-      const originalDisplay = pdfPreview.style.display;
-      const originalVisibility = pdfPreview.style.visibility;
-      pdfPreview.style.display = 'block';
-      pdfPreview.style.visibility = 'visible';
-
-      const canvas = await html2canvas(pdfPreview, {
-        scale: 2, // Increase resolution
-        useCORS: true,
-        logging: false,
-        allowTaint: true, // Allow capturing hidden elements
-      });
-
-      // Restore original styles
-      pdfPreview.style.display = originalDisplay;
-      pdfPreview.style.visibility = originalVisibility;
-
-      // Create PDF
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: 'letter',
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const scaledImgHeight = (imgHeight * pdfWidth) / imgWidth;
-
-      // Calculate number of pages needed
-      const pageHeight = pdfHeight;
-      const totalPages = Math.ceil(scaledImgHeight / pageHeight);
-
-      // Create a temporary canvas for cropping
-      const tempCanvas = document.createElement('canvas');
-      const tempContext = tempCanvas.getContext('2d');
-
-      for (let page = 0; page < totalPages; page++) {
-        if (page > 0) {
-          pdf.addPage();
+    const uploadProcess = async () => {
+      try {
+        const patientId = localStorage.getItem('currentPatientId');
+        if (!patientId) {
+          console.error('Patient ID not found. Please go back to the dashboard and select a patient.');
+          return;
         }
 
-        // Calculate the portion of the image for this page
-        const srcY = page * pageHeight * (imgWidth / pdfWidth);
-        const pageImgHeight = Math.min(pageHeight, scaledImgHeight - page * pageHeight);
+        // Generate PDF using the service
+        const pdfGenerator = new PDFGeneratorService();
+        const pdfBlob = pdfGenerator.generatePDF(formData);
+        const filename = pdfGenerator.getPDFFilename(formData);
 
-        // Set temporary canvas size to match the PDF page
-        tempCanvas.width = imgWidth;
-        tempCanvas.height = pageImgHeight * (imgWidth / pdfWidth);
+        // Prepare form data for API
+        const formDataToSend = new FormData();
+        formDataToSend.append('file', pdfBlob, filename);
+        formDataToSend.append('doctorId', doctorId);
+        formDataToSend.append('patientName', patientName);
+        formDataToSend.append('patientId', patientId);
+        formDataToSend.append('formData', JSON.stringify(formData));
 
-        // Draw the cropped portion of the original canvas
-        tempContext.drawImage(
-          canvas,
-          0,
-          srcY,
-          imgWidth,
-          tempCanvas.height,
-          0,
-          0,
-          imgWidth,
-          tempCanvas.height
-        );
-
-        // Get the cropped image data
-        const pageImgData = tempCanvas.toDataURL('image/png');
-
-        // Add the cropped image to the PDF
-        pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageImgHeight, undefined, 'FAST');
+        // Send to FastAPI endpoint
+        await axios.post('http://127.0.0.1:8000/upload/pdf', formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log('PDF upload completed in background.');
+      } catch (err) {
+        console.error('Background PDF upload failed:', err);
       }
+    };
 
-      // Convert PDF to blob
-      const pdfBlob = pdf.output('blob');
+    // Start the upload in the background
+    uploadProcess();
 
-      // Prepare form data for API
-      const formDataToSend = new FormData();
-      formDataToSend.append('file', pdfBlob, `${patientName.replace(' ', '_')}_intake_form.pdf`);
-      formDataToSend.append('doctorId', doctorId);
-      formDataToSend.append('patientName', patientName);
-      formDataToSend.append('formData', JSON.stringify(formData));
-
-      // Send to FastAPI endpoint
-      const response = await axios.post('http://127.0.0.1:8000/upload/pdf', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      setSuccess(response.data.message);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during upload');
-    } finally {
-      setIsUploading(false);
-    }
+    // Redirect to dashboard after a short delay to give user feedback
+    setTimeout(() => {
+      navigate('/dashboard');
+    }, 1500);
   };
 
   return (
@@ -134,8 +72,8 @@ const UploadButton: React.FC<UploadButtonProps> = ({ formData, doctorId, patient
       >
         {isUploading ? 'Uploading...' : 'Generate and Upload PDF'}
       </button>
-      {success && (
-        <p className="text-green-600 text-sm">{success}</p>
+      {isUploading && (
+        <p className="text-gray-600 text-sm">Redirecting to dashboard...</p>
       )}
       {error && (
         <p className="text-red-600 text-sm">{error}</p>

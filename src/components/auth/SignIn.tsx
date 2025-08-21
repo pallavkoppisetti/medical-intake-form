@@ -50,7 +50,7 @@ export function SignIn() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8000/signin', {
+      const response = await fetch('http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

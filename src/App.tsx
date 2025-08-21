@@ -9,7 +9,6 @@ import { SignIn } from './components/auth/SignIn';
 import { SignUp } from './components/auth/SignUp';
 import { SharedFunctionalStatusForm } from './components/form-sections/SharedFunctionalStatusForm';
 import { VitalsForm } from './components/form-sections/VitalsForm';
-import { Initial } from './components/form-sections/initial';
 
 function MainForm() {
   const handleFormSubmit = async (formData: any) => {
