@@ -15,10 +15,7 @@ import {
   CheckCircle, 
   Lock, 
   AlertCircle, 
-  Save,
-  Eye,
   EyeOff,
-  FileText as FilePDF,
   User,
   Heart,
   Activity,
@@ -26,6 +23,7 @@ import {
   Zap,
   FileText
 } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 // Icon mapping for each section
 const SECTION_ICONS = {
@@ -59,7 +57,6 @@ export function MultiStepFormController({
     canNavigateToStep,
     isStepComplete,
     isStepVisited,
-    saveForm,
   } = useMultiStepForm();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -98,10 +95,6 @@ export function MultiStepFormController({
       goToStep(stepIndex);
       setIsSidebarOpen(false); // Close mobile sidebar
     }
-  };
-
-  const handleSave = async () => {
-    await saveForm();
   };
 
   const renderCurrentForm = () => {
@@ -248,16 +241,9 @@ export function MultiStepFormController({
       <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        {/* Sidebar header */}
-        <div className="relative p-8 border-b border-gray-700 bg-gradient-to-b from-slate-900 to-slate-800 text-white overflow-hidden">
-          <div className="relative z-10">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-50 leading-tight">
-              Medical Intake
-            </h1>
-            <p className="mt-2 text-base text-slate-300 font-medium">
-              Florida CE Examination Form
-            </p>
-          </div>
+        {/* Sidebar header (logo only) */}
+        <div className="relative border-b border-gray-200 h-20 bg-white flex items-center justify-center px-4 py-4 shadow-sm select-none">
+          <BrandLogo height={52} className="flex-shrink-0" />
         </div>
 
         {/* Overall progress */}
@@ -279,51 +265,8 @@ export function MultiStepFormController({
         </div>
 
         {/* Navigation items */}
-        <div className="p-4 overflow-y-auto flex-1" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+        <div className="p-4 overflow-y-auto flex-1">
           {FORM_STEPS.map((step, index) => renderSidebarItem(step, index))}
-        </div>
-
-        {/* Sidebar footer */}
-        <div className="p-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-            <span>
-              {state.lastSaved ? `Saved: ${state.lastSaved.toLocaleTimeString()}` : 'Not saved'}
-            </span>
-            {state.hasUnsavedChanges && (
-              <span className="text-amber-600 font-medium">Unsaved changes</span>
-            )}
-          </div>
-          
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={handleSave}
-              disabled={!state.hasUnsavedChanges}
-              className="flex items-center justify-center px-3 py-2 text-xs bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Save className="w-3 h-3 mr-1" />
-              Save
-            </button>
-            
-            <button
-              onClick={() => setIsPreviewMode(!isPreviewMode)}
-              className="flex items-center justify-center px-3 py-2 text-xs border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-            >
-              <Eye className="w-3 h-3 mr-1" />
-              {isPreviewMode ? 'Edit' : 'Preview'}
-            </button>
-
-            <button
-              onClick={() => setShowPDFPreview(!showPDFPreview)}
-              className={`flex items-center justify-center px-3 py-2 text-xs rounded-md transition-colors ${
-                showPDFPreview 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <FilePDF className="w-3 h-3 mr-1" />
-              PDF
-            </button>
-          </div>
         </div>
       </div>
 

@@ -20,6 +20,7 @@ import {
   Zap,
   FileText
 } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 // Icon mapping for each section
 const SECTION_ICONS = {
@@ -216,31 +217,15 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
       <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl border-r border-gray-200 z-50 transform transition-transform duration-300 ease-in-out ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
-        {/* Sidebar header */}
-        <div className="relative p-8 border-b border-gray-200 bg-gradient-to-br from-slate-800 via-slate-900 to-gray-900 text-white overflow-hidden">
-          {/* Dark overlay for better text contrast */}
-          <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-          
-          <div className="relative flex items-center justify-between z-10">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tight text-white leading-tight shadow-2xl" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>
-                Medical Intake
-              </h1>
-              <p className="text-gray-100 text-base font-semibold shadow-lg" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.8)'}}>
-                Florida CE Examination Form
-              </p>
-            </div>
-            
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-all duration-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          
-          {/* Subtle bottom gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+        {/* Sidebar header (logo only) */}
+        <div className="relative border-b border-gray-200 h-20 bg-white flex items-center justify-center px-4 py-4 shadow-sm select-none">
+          <BrandLogo height={52} className="flex-shrink-0" />
+          <button
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden absolute top-2 right-2 p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-200 z-10"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
         </div>
 
         {/* Overall progress */}
