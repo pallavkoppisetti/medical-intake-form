@@ -1,14 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export function Initial() {
+export function Initial({ patientId }: { patientId: number | null }) {
   const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    localStorage.removeItem('medical-intake-form');
+    localStorage.removeItem('medical-intake-draft');
+  }, []);
+
   // Replace the endoint if hosted
   const API_URL = 'http://127.0.0.1:8000/autofill';
+
+  const handleCompletion = () => {
+    if (patientId) {
+        const storedStatus = JSON.parse(localStorage.getItem('patientsStatus') || '{}');
+        storedStatus[patientId] = { ...storedStatus[patientId], intake_status: 'completed' };
+        localStorage.setItem('patientsStatus', JSON.stringify(storedStatus));
+    }
+  };
 
   const handleProceed = async () => {
     setError('');
@@ -17,14 +30,36 @@ export function Initial() {
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({"input_text" : inputText})
+        body: JSON.stringify({ "text": inputText, "patient_id": patientId })
       });
       
       if (!response.ok) throw new Error('Failed to process document');
       
       const formData = await response.json();
       console.log('Received form data:', formData);
+
+      // Save to the generic key for the form to load
       localStorage.setItem('medical-intake-form', JSON.stringify(formData));
+      
+      // Also save to a patient-specific key for later retrieval
+      if (patientId) {
+        try {
+            const res = await fetch(`http://localhost:8000/patients/${patientId}/form-data`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.detail || "Failed to save form data for patient");
+            }
+        } catch (error: any) {
+            console.error("Failed to save form data to backend:", error.message);
+            // Decide if we should stop the flow here or just warn the user
+        }
+      }
+
+      handleCompletion();
       navigate('/form');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to process document');
@@ -33,11 +68,16 @@ export function Initial() {
     }
   };
 
+  const handleSkip = () => {
+    handleCompletion();
+    navigate('/form');
+  }
+
   return (
     <div className="max-w-5xl mx-auto p-6">
       <div className="bg-white rounded-xl shadow p-6 md:p-8">
         <div className="text-2xl font-bold text-gray-900 mb-6">
-          Welcome to Medical Intake Form
+          Welcome to Medical Intake Form {patientId && `for Patient ID: ${patientId}`}
         </div>
         <div className="text-gray-600 mb-8">
           <p className="mb-4">
@@ -71,7 +111,7 @@ export function Initial() {
           <div className="flex gap-4 justify-end">
             <button
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-              onClick={() => navigate('/form')}
+              onClick={handleSkip}
             >
               Skip & Start Manual Entry
             </button>
