@@ -50,7 +50,7 @@ export function Initial({ patientId }: { patientId: string | null }) {
       // Also save to a patient-specific key for later retrieval
       if (patientId) {
         try {
-            const res = await fetch(`http://ce-backend.eba-prtjiucu.us-east-1.elasticbeanstalk.com/patients/${patientId}/form-data`, {
+            const res = await fetch(`https://ceform-api.ezfylr.ai/patients/${patientId}/form-data`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

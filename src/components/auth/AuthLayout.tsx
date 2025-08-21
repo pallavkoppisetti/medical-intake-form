@@ -1,23 +1,12 @@
-import { ReactNode } from "react";
+import BrandLogo  from "../BrandLogo";
 
-interface AuthLayoutProps {
-  title: string;
-  subtitle?: string;
-  children: ReactNode;
-}
-
-export const AuthLayout = ({ title, subtitle, children }: AuthLayoutProps) => (
-  <div className="min-h-screen text-center bg-gray-50 flex items-center justify-center p-4">
-    <div className="w-full max-w-md">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-            {title}
-          </h1>
-          <p className="text-gray-600">{subtitle}</p>
-        </div>
-        {children}
+export function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-muted/30 flex min-h-screen flex-col items-center justify-center p-6">
+      <div className="w-full max-w-sm">{children}</div>
+      <div className="mt-8">
+        <BrandLogo />
       </div>
     </div>
-  </div>
-);
+  );
+}
