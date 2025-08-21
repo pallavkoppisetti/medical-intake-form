@@ -76,9 +76,9 @@ const PDFTemplatePreview: React.FC<PDFTemplatePreviewProps> = ({
             }}
         >
             <div>
-                <p className="c0 c11"><span className="c8 c16 c3 c21">Dr. [FIRST NAME] [LNAME].&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MD, FACP. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span className="c2">1234, W SR 001, Suite 1004,</span></p>
-                <p className="c0 c11"><span className="c2">Diplomate of American Board of Internal Medicine. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Atlanta, GA, 32750.</span></p>
-                <p className="c0 c11"><span className="c2">EZMEDTECH HEALTH &amp; WELLNESS CENTER. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Phone: 888-999-0000 </span></p>
+                <p className="c0 c11"><span className="c8 c16 c3 c21">Dr. Arabinda Behura.&nbsp;MD, FACP.&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span className="c2">1250, W SR 434, Suite 1004,</span></p>
+                <p className="c0 c11"><span className="c2">Diplomate of American Board of Internal Medicine.&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;Longwood, Florida, 32750.</span></p>
+                <p className="c0 c11"><span className="c2">WE CARE HEALTH &amp; WELLNESS CENTER.&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Phone: 888-575-6465</span></p>
                 <p className="c0 c1"><span className="c2"></span></p>
             </div>
             <p className="c0 c1"><span className="c2"></span></p>
