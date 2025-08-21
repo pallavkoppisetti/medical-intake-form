@@ -1,9 +1,14 @@
 import { MultiStepFormProvider } from './contexts/MultiStepFormContext';
 import { MultiStepFormController } from './components/MultiStepFormController';
-import { Initial } from './components/form-sections/initial';
 import { Toaster } from 'sonner';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
 import './App.css'
+import Dashboard from './components/DashBoard';
+import { SignIn } from './components/auth/SignIn';
+import { SignUp } from './components/auth/SignUp';
+import { SharedFunctionalStatusForm } from './components/form-sections/SharedFunctionalStatusForm';
+import { VitalsForm } from './components/form-sections/VitalsForm';
 
 function MainForm() {
   const handleFormSubmit = async (formData: any) => {
@@ -25,7 +30,7 @@ function MainForm() {
   };
 
   // Load any prefilled data from the initial component
-  const prefilledData = sessionStorage.getItem('prefilledData');
+  const prefilledData = localStorage.getItem('medical-intake-form');
   let initialFormData;
   
   if (prefilledData) {
@@ -69,12 +74,35 @@ function MainForm() {
   );
 }
 
+function PatientFormWrapper({ children }: { children: React.ReactNode }) {
+    const { patientId } = useParams();
+    // Here you could fetch patient data if needed
+    console.log("Rendering form for patient ID:", patientId);
+    return <div className="p-8 bg-gray-50 min-h-screen">{children}</div>;
+}
+
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Initial />} />
         <Route path="/form" element={<MainForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<SignIn/>}/>
+        <Route path="/signup" element={<SignUp/>}/>
+
+        <Route path="/functional-status/:patientId" element={
+            <PatientFormWrapper>
+                <SharedFunctionalStatusForm />
+            </PatientFormWrapper>
+        } />
+        <Route path="/vitals/:patientId" element={
+            <PatientFormWrapper>
+                <VitalsForm /> 
+            </PatientFormWrapper>
+        } />
+      
+        {/* Add other routes as needed */}
         {/* Catch all unmatched routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

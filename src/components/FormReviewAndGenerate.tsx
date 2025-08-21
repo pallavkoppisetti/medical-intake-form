@@ -516,7 +516,7 @@ export function FormReviewAndGenerate({ className = '' }: FormReviewAndGenerateP
   }
 
   function validateGaitStationSection(data: any): SectionValidation {
-    const required = ['gait', 'station'];
+    const required = ['gait'];
     const missing = required.filter(field => !data?.[field]);
     return {
       isComplete: missing.length === 0,
@@ -850,11 +850,7 @@ function SectionContent({
           
           <div>
             <span className="text-sm font-medium text-gray-700">History of Present Illness:</span>
-            <div className={`mt-1 p-3 bg-gray-50 rounded border ${
-              validation.missingFields.includes('historyOfPresentIllness') 
-                ? 'border-red-300 text-red-600' 
-                : 'border-gray-200'
-            }`}>
+            <div className={`mt-1 p-3 bg-gray-50 rounded border ${validation.missingFields.includes('historyOfPresentIllness') ? 'border-red-300 text-red-600' : 'border-gray-200'}`}>
               {data?.historyOfPresentIllness || 'No history documented'}
             </div>
           </div>
@@ -972,16 +968,14 @@ function SectionContent({
           
           <div>
             <span className="text-sm font-medium text-gray-700">Vital Signs:</span>
-            <div className={`mt-1 grid grid-cols-1 md:grid-cols-2 gap-2 ${
-              validation.missingFields.includes('vitalSigns') ? 'text-red-600' : ''
-            }`}>
+            <div className={`mt-1 grid grid-cols-1 md:grid-cols-2 gap-2 ${validation.missingFields.includes('vitalSigns') ? 'text-red-600' : ''}`}>
               {data?.vitalSigns ? (
                 <>
                   {renderField('Blood Pressure', `${data.vitalSigns.bloodPressure?.systolic || ''}/${data.vitalSigns.bloodPressure?.diastolic || ''} mmHg`)}
-                  {renderField('Heart Rate', `${data.vitalSigns.heartRate?.rate || ''} bpm`)}
-                  {renderField('Temperature', `${data.vitalSigns.temperature?.value || ''}°${data.vitalSigns.temperature?.unit || 'F'}`)}
-                  {renderField('Height', `${data.vitalSigns.height?.feet || ''}'${data.vitalSigns.height?.inches || ''}" (${data.vitalSigns.height?.cm || ''} cm)`)}
-                  {renderField('Weight', `${data.vitalSigns.weight?.pounds || ''} lbs (${data.vitalSigns.weight?.kg || ''} kg)`)}
+                  {renderField('Heart Rate', `${data.vitalSigns.heartRate || ''} bpm`)}
+                  {renderField('Temperature', `${data.vitalSigns.temperature || ''}°F`)}
+                  {renderField('Height', `${data.vitalSigns.height || ''} inches`)}
+                  {renderField('Weight', `${data.vitalSigns.weight || ''} lbs`)}
                 </>
               ) : (
                 <span className="text-red-600">Vital signs not documented</span>
@@ -1031,16 +1025,16 @@ function SectionContent({
                     <span className="ml-2">Left: {data.fineGrossManipulativeSkills.zipping.left || 'N/A'}/5, Right: {data.fineGrossManipulativeSkills.zipping.right || 'N/A'}/5</span>
                   </div>
                 )}
-                {data.fineGrossManipulativeSkills.pickingUpCoin && (
+                {data.fineGrossManipulativeSkills.pickingupcoin && (
                   <div className="bg-gray-50 p-2 rounded">
                     <span className="font-medium">Picking up a Coin:</span>
-                    <span className="ml-2">Left: {data.fineGrossManipulativeSkills.pickingUpCoin.left || 'N/A'}/5, Right: {data.fineGrossManipulativeSkills.pickingUpCoin.right || 'N/A'}/5</span>
+                    <span className="ml-2">Left: {data.fineGrossManipulativeSkills.pickingupcoin.left || 'N/A'}/5, Right: {data.fineGrossManipulativeSkills.pickingupcoin.right || 'N/A'}/5</span>
                   </div>
                 )}
-                {data.fineGrossManipulativeSkills.tyingShoelaces && (
+                {data.fineGrossManipulativeSkills.tyingshoelaces && (
                   <div className="bg-gray-50 p-2 rounded">
                     <span className="font-medium">Tying Shoelaces:</span>
-                    <span className="ml-2">Left: {data.fineGrossManipulativeSkills.tyingShoelaces.left || 'N/A'}/5, Right: {data.fineGrossManipulativeSkills.tyingShoelaces.right || 'N/A'}/5</span>
+                    <span className="ml-2">Left: {data.fineGrossManipulativeSkills.tyingshoelaces.left || 'N/A'}/5, Right: {data.fineGrossManipulativeSkills.tyingshoelaces.right || 'N/A'}/5</span>
                   </div>
                 )}
               </div>
@@ -1083,401 +1077,105 @@ function SectionContent({
       );
 
     case 'rangeOfMotion':
+      const renderRomValue = (value: { active: number, passive: number }) => value ? `${value.active}°` : 'N/A';
+      const renderRomJoint = (side: string, jointData: any) => {
+        if (!jointData) return null;
+        return (
+          <div>
+            <div className="font-medium text-xs text-gray-600">{side}</div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-sm">
+              {Object.entries(jointData).map(([key, value]: [string, any]) => (
+                <div key={key}>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').trim()}: {renderRomValue(value)}</div>
+              ))}
+            </div>
+          </div>
+        );
+      };
+
       return (
         <div className="space-y-4">
-          {data?.effortOnExam && (
-            <div>
-              <span className="text-sm font-medium text-gray-700">Effort on Examination:</span>
-              <span className="ml-2 text-gray-900 font-medium">{data.effortOnExam}</span>
-            </div>
-          )}
-
           {data?.cervicalSpine && (
             <div>
               <span className="text-sm font-medium text-gray-700">Cervical Spine:</span>
               <div className="mt-1 bg-gray-50 p-2 rounded">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
-                  {data.cervicalSpine.forwardFlexion && (
-                    <div>Forward Flexion: {data.cervicalSpine.forwardFlexion}° (0-60°)</div>
-                  )}
-                  {data.cervicalSpine.extension && (
-                    <div>Extension: {data.cervicalSpine.extension}° (0-60°)</div>
-                  )}
-                  {data.cervicalSpine.lateralFlexionRight && (
-                    <div>Lateral Flexion R: {data.cervicalSpine.lateralFlexionRight}° (0-45°)</div>
-                  )}
-                  {data.cervicalSpine.lateralFlexionLeft && (
-                    <div>Lateral Flexion L: {data.cervicalSpine.lateralFlexionLeft}° (0-45°)</div>
-                  )}
-                  {data.cervicalSpine.rotationRight && (
-                    <div>Rotation R: {data.cervicalSpine.rotationRight}° (0-80°)</div>
-                  )}
-                  {data.cervicalSpine.rotationLeft && (
-                    <div>Rotation L: {data.cervicalSpine.rotationLeft}° (0-80°)</div>
-                  )}
+                  {data.cervicalSpine.flexion && <div>Forward Flexion: {renderRomValue(data.cervicalSpine.flexion)} (0-60°)</div>}
+                  {data.cervicalSpine.extension && <div>Extension: {renderRomValue(data.cervicalSpine.extension)} (0-60°)</div>}
+                  {data.cervicalSpine.lateralFlexionLeft && <div>Lateral Flexion L: {renderRomValue(data.cervicalSpine.lateralFlexionLeft)} (0-45°)</div>}
+                  {data.cervicalSpine.lateralFlexionRight && <div>Lateral Flexion R: {renderRomValue(data.cervicalSpine.lateralFlexionRight)} (0-45°)</div>}
+                  {data.cervicalSpine.rotationLeft && <div>Rotation L: {renderRomValue(data.cervicalSpine.rotationLeft)} (0-80°)</div>}
+                  {data.cervicalSpine.rotationRight && <div>Rotation R: {renderRomValue(data.cervicalSpine.rotationRight)} (0-80°)</div>}
                 </div>
               </div>
             </div>
           )}
-
           {data?.lumbarSpine && (
             <div>
               <span className="text-sm font-medium text-gray-700">Lumbar Spine:</span>
               <div className="mt-1 bg-gray-50 p-2 rounded">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                  {data.lumbarSpine.forwardFlexion && (
-                    <div>Forward Flexion: {data.lumbarSpine.forwardFlexion}° (0-90°)</div>
-                  )}
-                  {data.lumbarSpine.extension && (
-                    <div>Extension: {data.lumbarSpine.extension}° (0-25°)</div>
-                  )}
-                  {data.lumbarSpine.lateralFlexionRight && (
-                    <div>Lateral Flexion R: {data.lumbarSpine.lateralFlexionRight}° (0-25°)</div>
-                  )}
-                  {data.lumbarSpine.lateralFlexionLeft && (
-                    <div>Lateral Flexion L: {data.lumbarSpine.lateralFlexionLeft}° (0-25°)</div>
-                  )}
+                    {data.lumbarSpine.flexion && <div>Forward Flexion: {renderRomValue(data.lumbarSpine.flexion)} (0-90°)</div>}
+                    {data.lumbarSpine.extension && <div>Extension: {renderRomValue(data.lumbarSpine.extension)} (0-25°)</div>}
+                    {data.lumbarSpine.lateralFlexionLeft && <div>Lateral Flexion L: {renderRomValue(data.lumbarSpine.lateralFlexionLeft)} (0-25°)</div>}
+                    {data.lumbarSpine.lateralFlexionRight && <div>Lateral Flexion R: {renderRomValue(data.lumbarSpine.lateralFlexionRight)} (0-25°)</div>}
                 </div>
               </div>
             </div>
           )}
-
           {data?.shoulders && (
             <div>
               <span className="text-sm font-medium text-gray-700">Shoulders:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.shoulders.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Shoulder:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-sm">
-                        {data.shoulders.left.forwardFlexion && (
-                          <div>Forward Flexion: {data.shoulders.left.forwardFlexion}°</div>
-                        )}
-                        {data.shoulders.left.extension && (
-                          <div>Extension: {data.shoulders.left.extension}°</div>
-                        )}
-                        {data.shoulders.left.abduction && (
-                          <div>Abduction: {data.shoulders.left.abduction}°</div>
-                        )}
-                        {data.shoulders.left.adduction && (
-                          <div>Adduction: {data.shoulders.left.adduction}°</div>
-                        )}
-                        {data.shoulders.left.internalRotation && (
-                          <div>Internal Rotation: {data.shoulders.left.internalRotation}°</div>
-                        )}
-                        {data.shoulders.left.externalRotation && (
-                          <div>External Rotation: {data.shoulders.left.externalRotation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.shoulders.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Shoulder:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-sm">
-                        {data.shoulders.right.forwardFlexion && (
-                          <div>Forward Flexion: {data.shoulders.right.forwardFlexion}°</div>
-                        )}
-                        {data.shoulders.right.extension && (
-                          <div>Extension: {data.shoulders.right.extension}°</div>
-                        )}
-                        {data.shoulders.right.abduction && (
-                          <div>Abduction: {data.shoulders.right.abduction}°</div>
-                        )}
-                        {data.shoulders.right.adduction && (
-                          <div>Adduction: {data.shoulders.right.adduction}°</div>
-                        )}
-                        {data.shoulders.right.internalRotation && (
-                          <div>Internal Rotation: {data.shoulders.right.internalRotation}°</div>
-                        )}
-                        {data.shoulders.right.externalRotation && (
-                          <div>External Rotation: {data.shoulders.right.externalRotation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Shoulder', data.shoulders.left)}
+                {renderRomJoint('Right Shoulder', data.shoulders.right)}
               </div>
             </div>
           )}
-
           {data?.elbows && (
             <div>
               <span className="text-sm font-medium text-gray-700">Elbows:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.elbows.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Elbow:</div>
-                      <div className="grid grid-cols-3 gap-1 text-sm">
-                        {data.elbows.left.flexion && (
-                          <div>Flexion: {data.elbows.left.flexion}°</div>
-                        )}
-                        {data.elbows.left.extension && (
-                          <div>Extension: {data.elbows.left.extension}°</div>
-                        )}
-                        {data.elbows.left.pronation && (
-                          <div>Pronation: {data.elbows.left.pronation}°</div>
-                        )}
-                        {data.elbows.left.supination && (
-                          <div>Supination: {data.elbows.left.supination}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.elbows.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Elbow:</div>
-                      <div className="grid grid-cols-3 gap-1 text-sm">
-                        {data.elbows.right.flexion && (
-                          <div>Flexion: {data.elbows.right.flexion}°</div>
-                        )}
-                        {data.elbows.right.extension && (
-                          <div>Extension: {data.elbows.right.extension}°</div>
-                        )}
-                        {data.elbows.right.pronation && (
-                          <div>Pronation: {data.elbows.right.pronation}°</div>
-                        )}
-                        {data.elbows.right.supination && (
-                          <div>Supination: {data.elbows.right.supination}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Elbow', data.elbows.left)}
+                {renderRomJoint('Right Elbow', data.elbows.right)}
               </div>
             </div>
           )}
-
           {data?.wrists && (
             <div>
               <span className="text-sm font-medium text-gray-700">Wrists:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.wrists.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Wrist:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-sm">
-                        {data.wrists.left.flexion && (
-                          <div>Flexion: {data.wrists.left.flexion}°</div>
-                        )}
-                        {data.wrists.left.extension && (
-                          <div>Extension: {data.wrists.left.extension}°</div>
-                        )}
-                        {data.wrists.left.radialDeviation && (
-                          <div>Radial Deviation: {data.wrists.left.radialDeviation}°</div>
-                        )}
-                        {data.wrists.left.ulnarDeviation && (
-                          <div>Ulnar Deviation: {data.wrists.left.ulnarDeviation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.wrists.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Wrist:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-sm">
-                        {data.wrists.right.flexion && (
-                          <div>Flexion: {data.wrists.right.flexion}°</div>
-                        )}
-                        {data.wrists.right.extension && (
-                          <div>Extension: {data.wrists.right.extension}°</div>
-                        )}
-                        {data.wrists.right.radialDeviation && (
-                          <div>Radial Deviation: {data.wrists.right.radialDeviation}°</div>
-                        )}
-                        {data.wrists.right.ulnarDeviation && (
-                          <div>Ulnar Deviation: {data.wrists.right.ulnarDeviation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Wrist', data.wrists.left)}
+                {renderRomJoint('Right Wrist', data.wrists.right)}
               </div>
             </div>
           )}
-
-          {data?.hands && (
-            <div>
-              <span className="text-sm font-medium text-gray-700">Hands:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.hands.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Hand:</div>
-                      <div className="grid grid-cols-2 gap-1 text-sm">
-                        {data.hands.left.thumbOpposition && (
-                          <div>Thumb Opposition: {data.hands.left.thumbOpposition}°</div>
-                        )}
-                        {data.hands.left.fingerFlexion && (
-                          <div>Finger Flexion: {data.hands.left.fingerFlexion}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.hands.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Hand:</div>
-                      <div className="grid grid-cols-2 gap-1 text-sm">
-                        {data.hands.right.thumbOpposition && (
-                          <div>Thumb Opposition: {data.hands.right.thumbOpposition}°</div>
-                        )}
-                        {data.hands.right.fingerFlexion && (
-                          <div>Finger Flexion: {data.hands.right.fingerFlexion}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           {data?.hips && (
             <div>
               <span className="text-sm font-medium text-gray-700">Hips:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.hips.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Hip:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-sm">
-                        {data.hips.left.flexion && (
-                          <div>Flexion: {data.hips.left.flexion}°</div>
-                        )}
-                        {data.hips.left.extension && (
-                          <div>Extension: {data.hips.left.extension}°</div>
-                        )}
-                        {data.hips.left.abduction && (
-                          <div>Abduction: {data.hips.left.abduction}°</div>
-                        )}
-                        {data.hips.left.adduction && (
-                          <div>Adduction: {data.hips.left.adduction}°</div>
-                        )}
-                        {data.hips.left.internalRotation && (
-                          <div>Internal Rotation: {data.hips.left.internalRotation}°</div>
-                        )}
-                        {data.hips.left.externalRotation && (
-                          <div>External Rotation: {data.hips.left.externalRotation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.hips.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Hip:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-1 text-sm">
-                        {data.hips.right.flexion && (
-                          <div>Flexion: {data.hips.right.flexion}°</div>
-                        )}
-                        {data.hips.right.extension && (
-                          <div>Extension: {data.hips.right.extension}°</div>
-                        )}
-                        {data.hips.right.abduction && (
-                          <div>Abduction: {data.hips.right.abduction}°</div>
-                        )}
-                        {data.hips.right.adduction && (
-                          <div>Adduction: {data.hips.right.adduction}°</div>
-                        )}
-                        {data.hips.right.internalRotation && (
-                          <div>Internal Rotation: {data.hips.right.internalRotation}°</div>
-                        )}
-                        {data.hips.right.externalRotation && (
-                          <div>External Rotation: {data.hips.right.externalRotation}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Hip', data.hips.left)}
+                {renderRomJoint('Right Hip', data.hips.right)}
               </div>
             </div>
           )}
-
           {data?.knees && (
             <div>
               <span className="text-sm font-medium text-gray-700">Knees:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.knees.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Knee:</div>
-                      <div className="grid grid-cols-2 gap-1 text-sm">
-                        {data.knees.left.flexion && (
-                          <div>Flexion: {data.knees.left.flexion}°</div>
-                        )}
-                        {data.knees.left.extension && (
-                          <div>Extension: {data.knees.left.extension}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.knees.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Knee:</div>
-                      <div className="grid grid-cols-2 gap-1 text-sm">
-                        {data.knees.right.flexion && (
-                          <div>Flexion: {data.knees.right.flexion}°</div>
-                        )}
-                        {data.knees.right.extension && (
-                          <div>Extension: {data.knees.right.extension}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Knee', data.knees.left)}
+                {renderRomJoint('Right Knee', data.knees.right)}
               </div>
             </div>
           )}
-
           {data?.ankles && (
             <div>
               <span className="text-sm font-medium text-gray-700">Ankles:</span>
-              <div className="mt-1 bg-gray-50 p-2 rounded">
-                <div className="space-y-2">
-                  {data.ankles.left && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Left Ankle:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-sm">
-                        {data.ankles.left.dorsiflexion && (
-                          <div>Dorsiflexion: {data.ankles.left.dorsiflexion}°</div>
-                        )}
-                        {data.ankles.left.plantarflexion && (
-                          <div>Plantarflexion: {data.ankles.left.plantarflexion}°</div>
-                        )}
-                        {data.ankles.left.inversion && (
-                          <div>Inversion: {data.ankles.left.inversion}°</div>
-                        )}
-                        {data.ankles.left.eversion && (
-                          <div>Eversion: {data.ankles.left.eversion}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {data.ankles.right && (
-                    <div>
-                      <div className="font-medium text-xs text-gray-600">Right Ankle:</div>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-1 text-sm">
-                        {data.ankles.right.dorsiflexion && (
-                          <div>Dorsiflexion: {data.ankles.right.dorsiflexion}°</div>
-                        )}
-                        {data.ankles.right.plantarflexion && (
-                          <div>Plantarflexion: {data.ankles.right.plantarflexion}°</div>
-                        )}
-                        {data.ankles.right.inversion && (
-                          <div>Inversion: {data.ankles.right.inversion}°</div>
-                        )}
-                        {data.ankles.right.eversion && (
-                          <div>Eversion: {data.ankles.right.eversion}°</div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="mt-1 bg-gray-50 p-2 rounded space-y-2">
+                {renderRomJoint('Left Ankle', data.ankles.left)}
+                {renderRomJoint('Right Ankle', data.ankles.right)}
               </div>
             </div>
           )}
-
           {(!data || Object.keys(data).length === 0) && (
             <span className={validation.missingFields.length > 0 ? 'text-red-600' : 'text-gray-500'}>
               No range of motion data recorded
@@ -1490,33 +1188,21 @@ function SectionContent({
       return (
         <div className="space-y-4">
           <div>
-            <span className="text-sm font-medium text-gray-700">Gait:</span>
-            <div className={`mt-1 space-y-2 ${validation.missingFields.includes('gait') ? 'text-red-600' : ''}`}>
-              {data?.gait ? (
-                <>
-                  {renderField('Pattern', data.gait.pattern)}
-                  {renderField('Speed', data.gait.speed)}
-                  {renderField('Assistive Device', data.gait.assistiveDevice)}
-                </>
-              ) : (
-                <span className="text-red-600">Gait assessment not documented</span>
-              )}
+            <span className="text-sm font-medium text-gray-700">Gait and Station:</span>
+            <div className={`mt-1 p-3 bg-gray-50 rounded border ${validation.missingFields.includes('gait') ? 'border-red-300 text-red-600' : 'border-gray-200'}`}>
+              {data?.gait?.description || 'Gait & Station not documented'}
             </div>
           </div>
-          
-          <div>
-            <span className="text-sm font-medium text-gray-700">Station:</span>
-            <div className={`mt-1 space-y-2 ${validation.missingFields.includes('station') ? 'text-red-600' : ''}`}>
-              {data?.station ? (
-                <>
-                  {renderField('Description', data.station.description)}
-                  {renderField('Balance', data.station.balance)}
-                </>
-              ) : (
-                <span className="text-red-600">Station assessment not documented</span>
-              )}
+          {data?.assistiveDevice && (
+            <div>
+              <span className="text-sm font-medium text-gray-700">Assistive Device:</span>
+              <div className="mt-1 p-3 bg-gray-50 rounded border border-gray-200 space-y-2">
+                {renderField('Type', data.assistiveDevice.type)}
+                {renderField('Medical Conditions', data.assistiveDevice.medicalConditions)}
+                {renderField('Necessity', data.assistiveDevice.necessity)}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       );
 

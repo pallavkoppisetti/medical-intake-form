@@ -131,9 +131,7 @@ export const generatePDFFilename = (formData: any): string => {
  * Save the preview as PDF using modern browser APIs
  */
 export const savePreviewAsPDF = async (
-  previewElement: HTMLElement,
-  formData: any
-): Promise<void> => {
+previewElement: HTMLElement, formData: any, ): Promise<void> => {
   const filename = generatePDFFilename(formData);
   
   // Try using the modern approach first (if available)
