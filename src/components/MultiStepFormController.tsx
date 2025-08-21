@@ -98,9 +98,10 @@ export function MultiStepFormController({
   };
 
   const renderCurrentForm = () => {
+    const patientId = localStorage.getItem('currentPatientId');
     // Handle initial step (-1) first
     if (state.currentStep === -1) {
-      return <Initial />;
+      return <Initial patientId={patientId} />;
     }
 
     // Type-safe rendering based on the current step

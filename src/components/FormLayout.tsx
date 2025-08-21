@@ -8,7 +8,6 @@ import {
   Menu,
   X,
   Save,
-  Send,
   RotateCcw,
   Eye,
   User,
@@ -49,7 +48,6 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
     isStepVisited,
     getStepValidation,
     saveForm,
-    submitForm,
     resetForm,
   } = useMultiStepForm();
 
@@ -101,9 +99,9 @@ export function FormLayout({ children, className = '' }: FormLayoutProps) {
     await saveForm();
   };
 
-  const handleSubmit = async () => {
-    await submitForm();
-  };
+  // const handleSubmit = async () => {
+  //   await submitForm();
+  // };
 
   const handleReset = () => {
     if (confirm('Are you sure you want to reset all form data? This action cannot be undone.')) {
