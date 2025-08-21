@@ -18,7 +18,7 @@ export function Initial({ patientId }: { patientId: string | null }) {
   }, [patientId]);
 
   // Replace the endoint if hosted
-  const API_URL = 'http://127.0.0.1:8000/autofill';
+  const API_URL = 'https://ceform-api.ezfylr.ai/autofill';
 
   const handleCompletion = () => {
     if (patientId) {
