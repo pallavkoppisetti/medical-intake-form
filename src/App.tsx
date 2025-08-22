@@ -6,9 +6,11 @@ import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-
 import './App.css'
 import Dashboard from './components/DashBoard';
 import { SignIn } from './components/auth/SignIn';
-import { SignUp } from './components/auth/SignUp';
+import { AdminLogin } from './components/auth/SignUp';
 import { SharedFunctionalStatusForm } from './components/form-sections/SharedFunctionalStatusForm';
 import { VitalsForm } from './components/form-sections/VitalsForm';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { ResetPassword } from './components/auth/ResetPassword';
 
 function MainForm() {
   const handleFormSubmit = async (formData: any) => {
@@ -89,7 +91,9 @@ function App() {
         <Route path="/form" element={<MainForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<SignIn/>}/>
-        <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/admin-login" element={<AdminLogin/>}/>
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/functional-status/:patientId" element={
             <PatientFormWrapper>

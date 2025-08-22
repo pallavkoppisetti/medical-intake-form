@@ -13,16 +13,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthLayout } from "./AuthLayout";
 
-export function SignIn() {
+export function ResetPassword() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
-    rememberMe: false,
+    tempPassword: "",
+    newPassword: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,25 +31,26 @@ export function SignIn() {
         ...prev,
         [field]: e.target.value,
       }));
-      // Clear error when user starts typing
       if (error) setError("");
+      if (success) setSuccess("");
     };
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      rememberMe: e.target.checked,
-    }));
-  };
 
   const validateForm = () => {
     if (!formData.email.trim()) {
-      setError("Email is required");
+      setError("Doctor mail is required");
       return false;
     }
-    if (!formData.password) {
-      setError("Password is required");
+    if (!formData.tempPassword) {
+      setError("Temporary password is required");
       return false;
+    }
+    if (!formData.newPassword) {
+      setError("New password is required");
+      return false;
+    }
+    if (formData.newPassword.length < 6) {
+        setError("New password must be at least 6 characters long");
+        return false;
     }
     return true;
   };
@@ -60,10 +62,11 @@ export function SignIn() {
 
     setIsLoading(true);
     setError("");
+    setSuccess("");
 
     try {
       const response = await fetch(
-        "https://ceform-api.ezfylr.ai/signin",
+        "https://ceform-api.ezfylr.ai/reset-password",
         {
           method: "POST",
           headers: {
@@ -71,7 +74,8 @@ export function SignIn() {
           },
           body: JSON.stringify({
             email: formData.email,
-            password: formData.password,
+            tempPassword: formData.tempPassword,
+            newPassword: formData.newPassword,
           }),
         }
       );
@@ -82,19 +86,14 @@ export function SignIn() {
         throw new Error(data.detail || "Something went wrong");
       }
 
-      localStorage.setItem("doctorid", data.user.id);
-      localStorage.setItem("isAuthenticated", "true");
-      console.log("Login successful:", data.user);
-      console.log("User data that would be stored:", {
-        user: data.user,
-        isAuthenticated: true,
-        rememberMe: formData.rememberMe,
-      });
+      setSuccess("Password reset successfully! You can now sign in with your new password.");
+      
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
 
-      // Navigate to dashboard
-      navigate("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Failed to sign in. Please try again.");
+      setError(err.message || "Failed to reset password. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -104,9 +103,9 @@ export function SignIn() {
     <AuthLayout>
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardTitle className="text-2xl">Reset Password</CardTitle>
           <CardDescription>
-            Welcome back! Please sign in to your account.
+            Enter your email and temporary password to set a new password.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -116,8 +115,13 @@ export function SignIn() {
                 {error}
               </div>
             )}
+            {success && (
+              <div className="bg-green-500/10 text-green-500 border-green-500/20 rounded-lg border p-3 text-sm">
+                {success}
+              </div>
+            )}
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Doctor Mail</Label>
               <Input
                 id="email"
                 type="email"
@@ -129,45 +133,36 @@ export function SignIn() {
               />
             </div>
             <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link
-                  to="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
+              <Label htmlFor="tempPassword">Temporary Password</Label>
               <Input
-                id="password"
+                id="tempPassword"
                 type="password"
                 placeholder="••••••••"
                 required
-                value={formData.password}
-                onChange={handleInputChange("password")}
+                value={formData.tempPassword}
+                onChange={handleInputChange("tempPassword")}
                 disabled={isLoading}
               />
             </div>
-            <div className="flex items-center">
-              <input
-                id="rememberMe"
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={handleCheckboxChange}
+            <div className="grid gap-2">
+              <Label htmlFor="newPassword">New Password</Label>
+              <Input
+                id="newPassword"
+                type="password"
+                placeholder="••••••••"
+                required
+                value={formData.newPassword}
+                onChange={handleInputChange("newPassword")}
                 disabled={isLoading}
-                className="h-4 w-4 text-primary border-muted-foreground rounded focus:ring-primary"
               />
-              <Label htmlFor="rememberMe" className="ml-2">
-                Remember me
-              </Label>
             </div>
             <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? "Resetting Password..." : "Reset Password"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            <Link to="/admin-login" className="underline">
-              Admin Login
+            <Link to="/" className="underline">
+              Back to Sign In
             </Link>
           </div>
         </CardContent>
