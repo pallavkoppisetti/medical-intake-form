@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,17 +13,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthLayout } from "./AuthLayout";
 
-export function SignUp() {
+export function AdminLogin() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,28 +33,13 @@ export function SignUp() {
       if (error) setError("");
     };
 
-  const passwordsMatch =
-    !formData.confirmPassword || formData.password === formData.confirmPassword;
-
   const validateForm = () => {
-    if (!formData.fullName.trim()) {
-      setError("Full name is required");
-      return false;
-    }
     if (!formData.email.trim()) {
       setError("Email is required");
       return false;
     }
     if (!formData.password) {
       setError("Password is required");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return false;
-    }
-    if (!passwordsMatch) {
-      setError("Passwords do not match");
       return false;
     }
     return true;
@@ -69,18 +52,16 @@ export function SignUp() {
 
     setIsLoading(true);
     setError("");
-    setSuccess("");
 
     try {
       const response = await fetch(
-        "https://ceform-api.ezfylr.ai/signup",
+        "https://ceform-api.ezfylr.ai/admin-login",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            fullName: formData.fullName,
             email: formData.email,
             password: formData.password,
           }),
@@ -93,20 +74,16 @@ export function SignUp() {
         throw new Error(data.detail || "Something went wrong");
       }
 
-      setSuccess("Account created successfully! You can now sign in.");
-      setFormData({
-        fullName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
+      // Assuming the API returns a token for the admin
+      localStorage.setItem("adminToken", data.token);
+      localStorage.setItem("isAdmin", "true");
+      
+      console.log("Admin login successful:", data);
 
-      // Optionally redirect to sign-in page after a delay
-      setTimeout(() => {
-        window.location.href = "/signin";
-      }, 2000);
+      // Navigate to admin dashboard
+      navigate("/admin/dashboard");
     } catch (err: any) {
-      setError(err.message || "Failed to create account. Please try again.");
+      setError(err.message || "Failed to sign in. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -116,9 +93,9 @@ export function SignUp() {
     <AuthLayout>
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Create an Account</CardTitle>
+          <CardTitle className="text-2xl">Admin Login</CardTitle>
           <CardDescription>
-            Get started with your new account.
+            Please enter your administrator credentials.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -128,24 +105,6 @@ export function SignUp() {
                 {error}
               </div>
             )}
-
-            {success && (
-              <div className="bg-green-500/10 text-green-500 border-green-500/20 rounded-lg border p-3 text-sm">
-                {success}
-              </div>
-            )}
-            <div className="grid gap-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="John Doe"
-                required
-                value={formData.fullName}
-                onChange={handleInputChange("fullName")}
-                disabled={isLoading}
-              />
-            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -170,36 +129,13 @@ export function SignUp() {
                 disabled={isLoading}
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                required
-                value={formData.confirmPassword}
-                onChange={handleInputChange("confirmPassword")}
-                disabled={isLoading}
-                className={!passwordsMatch ? "border-destructive" : ""}
-              />
-              {!passwordsMatch && (
-                <p className="text-destructive text-sm">
-                  Passwords do not match
-                </p>
-              )}
-            </div>
-            <Button
-              type="submit"
-              disabled={isLoading || !passwordsMatch}
-              className="w-full"
-            >
-              {isLoading ? "Creating Account..." : "Sign Up"}
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-            <Link to="/signin" className="underline">
-              Sign in
+            <Link to="/" className="underline">
+              User Login
             </Link>
           </div>
         </CardContent>
